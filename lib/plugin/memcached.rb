@@ -17,7 +17,6 @@ module CoppereggAgents
     end
 
     def monitor(server)
-      p server
       cache = MemcachedClient.new(server['hostname'] + ':' + server['port'].to_s)
       stats = cache.stats
 

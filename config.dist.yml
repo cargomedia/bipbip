@@ -1,14 +1,11 @@
 copperegg:
   apikey: "YOUR_APIKEY"
-  frequency: 10
+  frequency: 15
   services:
   - memcached
 memcached:
-  group_name: "memcached"
-  group_label: "Redis Metrics"
-  dashboard: "Redis Dashboard"
+  name: "Memcached"
   servers:
   -
-    name: "server01"
     hostname: "localhost"
     port: 6379
