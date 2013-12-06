@@ -11,20 +11,20 @@ module CoppereggAgents
         trap('INT') { interrupt if !@interrupted }
         trap('TERM') { interrupt if !@interrupted }
 
-        retry_delay = 1
+        retry_delay = frequency
         begin
           while !@interrupted do
             return if @interrupted
-            data = {:todo => 12}
+            data = monitor(server)
             #CopperEgg::MetricSample.save(service, server['name'], Time.now.to_i, data)
             puts "Data for #{name}: #{data}"
             interruptible_sleep frequency
-            retry_delay = 1
+            retry_delay = frequency
           end
         rescue => e
           Utils.log "Error gathering #{name} data: #{e.inspect}"
-          sleep retry_delay
-          retry_delay *= 2 if retry_delay < 100
+          interruptible_sleep retry_delay
+          retry_delay += frequency if retry_delay < frequency * 10
           retry
         end
       }
@@ -41,6 +41,9 @@ module CoppereggAgents
 
     def name
       self.class
+    end
+
+    def monitor(server)
     end
   end
 end
