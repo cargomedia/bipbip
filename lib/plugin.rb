@@ -42,7 +42,7 @@ module CoppereggAgents
       self.class
     end
 
-    def ensure_metric_group
+    def configure_metric_group(metric_group)
       raise 'Missing method ensure_metric_group'
     end
 

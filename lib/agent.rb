@@ -16,7 +16,7 @@ module CoppereggAgents
       frequency = 60 if ![5, 15, 60, 300, 900, 3600, 21600].include?(frequency)
       Utils.log "Update frequency set to #{frequency}s."
 
-      #metric_groups = CopperEgg::MetricGroup.find
+      metric_groups = CopperEgg::MetricGroup.find
       #dashboards = CopperEgg::CustomDashboard.find
 
       trap('INT') { interrupt }
@@ -27,7 +27,16 @@ module CoppereggAgents
         plugin_name = plugin_config['name']
         servers = plugin_config['servers']
         plugin = Plugin::const_get(plugin_name).new
-        plugin.ensure_metric_group
+
+        metric_group = metric_groups.detect {|m| m.name == plugin_name}
+        if metric_group.nil? || !metric_group.is_a?(CopperEgg::MetricGroup)
+          Utils.log "Creating #{plugin_name} metric group"
+          metric_group = CopperEgg::MetricGroup.new(:name => plugin_name, :label => plugin_name, :frequency => frequency)
+        else
+          metric_group.frequency = frequency
+        end
+        plugin.configure_metric_group(metric_group)
+
         servers.each do |server|
           plugin_pid = plugin.run(server, frequency)
           @plugin_pids.push plugin_pid
