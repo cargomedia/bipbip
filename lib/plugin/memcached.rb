@@ -2,8 +2,9 @@ module CoppereggAgents
 
   class Plugin::Memcached < Plugin
 
-    def monitor
-      12
+    def monitor(server)
+      p server
+      {:requests => 12}
     end
   end
 end
