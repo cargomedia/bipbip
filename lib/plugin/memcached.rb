@@ -6,6 +6,9 @@ module CoppereggAgents
 
   class Plugin::Memcached < Plugin
 
+    def ensure_metric_group
+
+    end
 
     def monitor(server)
       p server

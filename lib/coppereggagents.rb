@@ -7,5 +7,4 @@ module CoppereggAgents
   require 'agent'
   require 'plugin'
   require 'plugin/memcached'
-  require 'plugin/foo'
 end

@@ -2,8 +2,7 @@ module CoppereggAgents
 
   class Plugin
 
-    def initialize()
-
+    def initialize
     end
 
     def run(server, frequency)
@@ -43,7 +42,12 @@ module CoppereggAgents
       self.class
     end
 
+    def ensure_metric_group
+      raise 'Missing method ensure_metric_group'
+    end
+
     def monitor(server)
+      raise 'Missing method monitor'
     end
   end
 end

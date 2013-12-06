@@ -27,6 +27,7 @@ module CoppereggAgents
         plugin_name = plugin_config['name']
         servers = plugin_config['servers']
         plugin = Plugin::const_get(plugin_name).new
+        plugin.ensure_metric_group
         servers.each do |server|
           plugin_pid = plugin.run(server, frequency)
           @plugin_pids.push plugin_pid
