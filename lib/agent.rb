@@ -17,7 +17,7 @@ module CoppereggAgents
       Utils.log "Update frequency set to #{frequency}s."
 
       metric_groups = CopperEgg::MetricGroup.find
-      #dashboards = CopperEgg::CustomDashboard.find
+      dashboards = CopperEgg::CustomDashboard.find
 
       trap('INT') { interrupt }
       trap('TERM') { interrupt }
@@ -36,6 +36,13 @@ module CoppereggAgents
           metric_group.frequency = frequency
         end
         plugin.configure_metric_group(metric_group)
+
+        dashboard = dashboards.detect {|d| d.name == plugin_name}
+        if dashboard.nil?
+          Utils.log "Creating #{plugin_name} dashboard"
+          metrics = metric_group.metrics || []
+          CopperEgg::CustomDashboard.create(metric_group, :name => plugin_name, :identifiers => nil, :metrics => metrics)
+        end
 
         servers.each do |server|
           plugin_pid = plugin.run(server, frequency)
