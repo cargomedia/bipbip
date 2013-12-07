@@ -29,9 +29,9 @@ module CoppereggAgents
       ]
 
       data = {}
-      keys.each { |key|
+      keys.each do |key|
         data[key] = stats[key].shift.to_i
-      }
+      end
       data
     end
   end
