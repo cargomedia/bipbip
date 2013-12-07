@@ -13,8 +13,9 @@ module CoppereggAgents
       frequency = config['copperegg']['frequency']
       services = config['copperegg']['services']
 
-      frequency = 60 if ![5, 15, 60, 300, 900, 3600, 21600].include?(frequency)
-      Utils.log "Update frequency set to #{frequency}s."
+      if ![5, 15, 60, 300, 900, 3600, 21600].include?(frequency)
+        raise "Invalid frequency: #{frequency}"
+      end
 
       metric_groups = CopperEgg::MetricGroup.find
       dashboards = CopperEgg::CustomDashboard.find
