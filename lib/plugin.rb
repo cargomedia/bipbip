@@ -8,20 +8,21 @@ module CoppereggAgents
 
     def run(server, frequency)
       child_pid = fork do
-        trap('INT') { interrupt if !@interrupted }
-        trap('TERM') { interrupt if !@interrupted }
+        ['INT', 'TERM'].each { |sig| trap(sig) {
+          Thread.new { interrupt } if !@interrupted
+        } }
 
         retry_delay = frequency
         begin
           until interrupted? do
             data = monitor(server)
+            CoppereggAgents.logger.debug "#{name} data: #{data}"
             #CopperEgg::MetricSample.save(service, server['name'], Time.now.to_i, data)
-            puts "Data for #{name}: #{data}"
             interruptible_sleep frequency
             retry_delay = frequency
           end
         rescue => e
-          Utils.log "Error gathering #{name} data: #{e.inspect}"
+          CoppereggAgents.logger.error "Cannot get #{name} data: #{e.inspect}"
           interruptible_sleep retry_delay
           retry_delay += frequency if retry_delay < frequency * 10
           retry
@@ -32,7 +33,7 @@ module CoppereggAgents
     def interrupt
       @interrupted = true
       interrupt_sleep
-      Utils.log "Exiting pid #{Process.pid}"
+      CoppereggAgents.logger.info "Interrupting plugin process #{Process.pid}"
     end
 
     def interrupted?
@@ -40,7 +41,7 @@ module CoppereggAgents
     end
 
     def name
-      self.class
+      self.class.name.split('::').last
     end
 
     def configure_metric_group(metric_group)
