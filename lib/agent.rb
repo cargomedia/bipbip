@@ -53,6 +53,7 @@ module CoppereggAgents
         end
 
         servers.each do |server|
+          CoppereggAgents.logger.info "Starting plugin `#{plugin_name}` for server `#{server}`"
           plugin_pid = plugin.run(server, frequency)
           @plugin_pids.push plugin_pid
         end
