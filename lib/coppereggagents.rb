@@ -2,6 +2,7 @@ module CoppereggAgents
   require 'copperegg'
   require 'yaml'
   require 'logger'
+  require 'socket'
 
   require 'interruptible_sleep'
   require 'agent'
@@ -14,5 +15,9 @@ module CoppereggAgents
 
   def self.logger=(logger)
     @logger = logger
+  end
+
+  def self.fqdn
+    @fqdn ||= Socket.gethostbyname(Socket.gethostname).first
   end
 end
