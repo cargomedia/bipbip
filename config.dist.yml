@@ -1,3 +1,4 @@
+loglevel: "INFO"
 copperegg:
   apikey: "YOUR_APIKEY"
   frequency: 15
