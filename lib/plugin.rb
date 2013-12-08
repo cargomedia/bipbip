@@ -36,7 +36,7 @@ module CoppereggAgents
     end
 
     def interrupted?
-      @interrupted
+      @interrupted || Process.getpgid(Process.ppid) != Process.getpgrp
     end
 
     def name
