@@ -4,6 +4,7 @@ module CoppereggAgents
   require 'yaml'
 
   require 'utils'
+  require 'interruptible_sleep'
   require 'agent'
   require 'plugin'
   require 'plugin/memcached'
