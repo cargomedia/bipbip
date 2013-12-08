@@ -16,11 +16,12 @@ module CoppereggAgents
         metric_identifier = metric_identifier(server)
         begin
           until interrupted? do
+            time = Time.now
             data = monitor(server)
             CoppereggAgents.logger.debug "#{name} #{metric_identifier}: Data: #{data}"
             CopperEgg::MetricSample.save(name, metric_identifier, Time.now.to_i, data)
             retry_delay = frequency
-            interruptible_sleep frequency
+            interruptible_sleep (frequency - (Time.now - time))
           end
         rescue => e
           CoppereggAgents.logger.error "#{name} #{metric_identifier}: Error getting data: #{e.inspect}"
