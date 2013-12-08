@@ -63,15 +63,12 @@ module CoppereggAgents
 
     def interrupt
       CoppereggAgents.logger.info 'Interrupt, killing plugin processes...'
-
-      @plugin_pids.each do |pid|
-        Process.kill 'TERM', pid
-      end
+      @plugin_pids.each { |pid| Process.kill('TERM', pid) }
 
       CoppereggAgents.logger.info 'Waiting for all plugin processes to exit...'
       Process.waitall
 
-      CoppereggAgents.logger.info 'Exiting cleanly'
+      CoppereggAgents.logger.info 'Exiting'
       exit
     end
   end
