@@ -8,11 +8,11 @@ module CoppereggAgents
 
     def configure_metric_group(metric_group)
       metric_group.metrics = []
-      metric_group.metrics << {:type => "ce_counter", :name => "cmd_get", :position => 0, :label => "cmd_get"}
-      metric_group.metrics << {:type => "ce_counter", :name => "cmd_set", :position => 1, :label => "cmd_set"}
-      metric_group.metrics << {:type => "ce_counter", :name => "get_misses", :position => 2, :label => "get_misses"}
-      metric_group.metrics << {:type => "ce_gauge", :name => "limit_maxbytes", :position => 3, :label => "limit_maxbytes", :unit => "b"}
-      metric_group.metrics << {:type => "ce_gauge", :name => "bytes", :position => 4, :label => "bytes", :unit => "b"}
+      metric_group.metrics << {:type => 'ce_counter', :name => 'cmd_get', :position => 0, :label => 'cmd_get'}
+      metric_group.metrics << {:type => 'ce_counter', :name => 'cmd_set', :position => 1, :label => 'cmd_set'}
+      metric_group.metrics << {:type => 'ce_counter', :name => 'get_misses', :position => 2, :label => 'get_misses'}
+      metric_group.metrics << {:type => 'ce_gauge', :name => 'limit_maxbytes', :position => 3, :label => 'limit_maxbytes', :unit => 'b'}
+      metric_group.metrics << {:type => 'ce_gauge', :name => 'bytes', :position => 4, :label => 'bytes', :unit => 'b'}
       metric_group.save
     end
 
