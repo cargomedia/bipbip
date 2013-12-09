@@ -1,4 +1,6 @@
 module CoppereggAgents
+  require 'rubygems'
+
   require 'copperegg'
   require 'yaml'
   require 'logger'
