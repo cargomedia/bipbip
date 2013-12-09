@@ -13,4 +13,5 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.add_runtime_dependency 'copperegg', '~> 0.6.0'
   s.add_runtime_dependency 'memcached'
+  s.add_runtime_dependency 'mysql2'
 end

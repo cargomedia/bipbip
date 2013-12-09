@@ -9,6 +9,7 @@ module CoppereggAgents
   require 'copperegg_agents/agent'
   require 'copperegg_agents/plugin'
   require 'copperegg_agents/plugin/memcached'
+  require 'copperegg_agents/plugin/mysql'
 
   def self.logger
     @logger
