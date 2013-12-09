@@ -16,7 +16,7 @@ module CoppereggAgents
     def monitor(server)
       redis = RedisClient.new(
           :host => server['hostname'],
-          :port => server['port'],
+          :port => server['port']
       )
       stats = redis.info
 
