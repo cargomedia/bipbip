@@ -8,11 +8,11 @@ module CoppereggAgents
 
     def metrics_schema
       [
-          {:type => 'ce_counter', :name => 'cmd_get', :position => 0, :label => 'cmd_get'},
-          {:type => 'ce_counter', :name => 'cmd_set', :position => 1, :label => 'cmd_set'},
-          {:type => 'ce_counter', :name => 'get_misses', :position => 2, :label => 'get_misses'},
-          {:type => 'ce_gauge', :name => 'limit_maxbytes', :position => 3, :label => 'limit_maxbytes', :unit => 'b'},
-          {:type => 'ce_gauge', :name => 'bytes', :position => 4, :label => 'bytes', :unit => 'b'},
+          {:name => 'cmd_get', :type => 'ce_counter'},
+          {:name => 'cmd_set', :type => 'ce_counter'},
+          {:name => 'get_misses', :type => 'ce_counter'},
+          {:name => 'limit_maxbytes', :type => 'ce_gauge', :unit => 'b'},
+          {:name => 'bytes', :type => 'ce_gauge', :unit => 'b'},
       ]
     end
 
