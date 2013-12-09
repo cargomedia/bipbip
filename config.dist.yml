@@ -1,0 +1,12 @@
+loglevel: "INFO"
+copperegg:
+  apikey: "YOUR_APIKEY"
+  frequency: 15
+  services:
+  - memcached
+memcached:
+  name: "Memcached"
+  servers:
+  -
+    hostname: "localhost"
+    port: 11211
