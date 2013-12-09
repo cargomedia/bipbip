@@ -18,8 +18,8 @@ module CoppereggAgents
           {:name => 'Queries', :type => 'ce_counter', :unit => 'Queries'},
           {:name => 'Slow_queries', :type => 'ce_counter', :unit => 'Queries'},
 
-          {:name => 'Bytes_received', :type => 'ce_counter', :unit => 'Bytes'},
-          {:name => 'Bytes_sent', :type => 'ce_counter', :unit => 'Bytes'},
+          {:name => 'Bytes_received', :type => 'ce_counter', :unit => 'b'},
+          {:name => 'Bytes_sent', :type => 'ce_counter', :unit => 'b'},
 
           {:name => 'Table_locks_immediate', :type => 'ce_counter', :unit => 'Locks'},
           {:name => 'Table_locks_waited', :type => 'ce_counter', :unit => 'Locks'},
