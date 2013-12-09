@@ -7,7 +7,7 @@ module CoppereggAgents
     end
 
     def run(config_file)
-      config = YAML.load(config_file)
+      config = YAML.load(File.open(config_file))
 
       CoppereggAgents.logger = Logger.new(STDOUT)
       CoppereggAgents.logger.level = Logger::const_get(config['loglevel'] || 'INFO')
