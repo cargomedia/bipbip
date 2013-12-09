@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.description = "Custom agent plugins for CopperEgg RevealMetrics"
   s.authors     = ["Cargo Media"]
   s.email       = 'dev@cargomedia.ch'
-  s.files       = ['bin/copperegg_agents']
+  s.files       = Dir['LICENSE*', 'README*', '{bin,lib}/**/*']
   s.executables = ['copperegg_agents']
   s.homepage    = 'https://github.com/cargomedia/copperegg_agents'
   s.license     = 'MIT'
