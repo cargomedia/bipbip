@@ -27,19 +27,11 @@ module CoppereggAgents
           :password => server['password'],
       )
       stats = mysql.query('SHOW GLOBAL STATUS;')
-
-      keys = [
-          :Threads_connected,
-          :Created_tmp_disk_tables,
-          :Qcache_hits,
-          :Queries,
-          :Slow_queries,
-      ]
+      stats = Hash[stats.map {|v| [v['Variable_name'], v['Value']]}]
 
       data = {}
-      stats.each do |row|
-        p row
-        data[row['Variable_name']] = row['Value'].to_i
+      metrics_names.each do |key|
+        data[key] = stats[key.to_sym].to_i
       end
       data
     end
