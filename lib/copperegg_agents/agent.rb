@@ -17,7 +17,7 @@ module CoppereggAgents
       CopperEgg::Api.host = config['copperegg']['host'] if !config['copperegg']['host'].nil?
       frequency = config['copperegg']['frequency']
 
-      if ![5, 15, 60, 300, 900, 3600, 21600].include?(frequency)
+      if ![5, 15, 60, 300, 900, 3600, 21600].include?(frequency.to_i)
         CoppereggAgents.logger.fatal "Invalid frequency: #{frequency}"
         exit
       end
