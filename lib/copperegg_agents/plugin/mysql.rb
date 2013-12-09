@@ -10,13 +10,22 @@ module CoppereggAgents
           {:name => 'max_connections', :type => 'ce_gauge', :unit => 'Connections'},
           {:name => 'Max_used_connections', :type => 'ce_gauge', :unit => 'Connections'},
           {:name => 'Connections', :type => 'ce_counter', :unit => 'Connections'},
+
           {:name => 'Seconds_Behind_Master', :type => 'ce_gauge', :unit => 'Seconds'},
+
           {:name => 'Created_tmp_disk_tables', :type => 'ce_counter', :unit => 'Tables'},
+
           {:name => 'Qcache_hits', :type => 'ce_counter', :unit => 'Hits'},
+
           {:name => 'Queries', :type => 'ce_counter', :unit => 'Queries'},
           {:name => 'Slow_queries', :type => 'ce_counter', :unit => 'Queries'},
+
           {:name => 'Bytes_received', :type => 'ce_counter', :unit => 'Bytes'},
           {:name => 'Bytes_sent', :type => 'ce_counter', :unit => 'Bytes'},
+
+          {:name => 'Table_locks_immediate', :type => 'ce_counter', :unit => 'Locks'},
+          {:name => 'Table_locks_waited', :type => 'ce_counter', :unit => 'Locks'},
+
           {:name => 'Com_select', :type => 'ce_counter', :unit => 'Commands'},
           {:name => 'Com_delete', :type => 'ce_counter', :unit => 'Commands'},
           {:name => 'Com_insert', :type => 'ce_counter', :unit => 'Commands'},
