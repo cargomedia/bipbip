@@ -15,8 +15,6 @@ module CoppereggAgents
 
           {:name => 'Created_tmp_disk_tables', :type => 'ce_counter', :unit => 'Tables'},
 
-          {:name => 'Qcache_hits', :type => 'ce_counter', :unit => 'Hits'},
-
           {:name => 'Queries', :type => 'ce_counter', :unit => 'Queries'},
           {:name => 'Slow_queries', :type => 'ce_counter', :unit => 'Queries'},
 
