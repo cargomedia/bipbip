@@ -1,4 +1,4 @@
-copperegg-agents
+copperegg_agents
 ================
 Agent to collect server metrics and send them to the [CopperEgg RevealMetrics](http://copperegg.com/) platform.
 Plugins for different metrics available in the `plugin/`-directory.
