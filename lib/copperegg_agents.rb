@@ -4,6 +4,7 @@ module CoppereggAgents
   require 'logger'
   require 'socket'
 
+  require 'copperegg_agents/version'
   require 'interruptible_sleep'
   require 'agent'
   require 'plugin'
