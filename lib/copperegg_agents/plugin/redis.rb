@@ -9,7 +9,7 @@ module CoppereggAgents
     def metrics_schema
       [
           {:name => 'total_commands_processed', :type => 'ce_counter', :unit => 'Commands'},
-          {:name => 'used_memory', :type => 'ce_counter', :unit => 'b'},
+          {:name => 'used_memory', :type => 'ce_gauge', :unit => 'b'},
       ]
     end
 
@@ -22,7 +22,7 @@ module CoppereggAgents
 
       data = {}
       metrics_names.each do |key|
-        data[key] = stats[key]
+        data[key] = stats[key].to_i
       end
       data
     end
