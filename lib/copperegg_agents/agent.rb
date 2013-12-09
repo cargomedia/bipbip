@@ -40,10 +40,10 @@ module CoppereggAgents
         if metric_group.nil? || !metric_group.is_a?(CopperEgg::MetricGroup)
           CoppereggAgents.logger.info "Creating metric group `#{plugin_name}`"
           metric_group = CopperEgg::MetricGroup.new(:name => plugin_name, :label => plugin_name, :frequency => frequency)
-        else
-          metric_group.frequency = frequency
         end
-        plugin.configure_metric_group(metric_group)
+        metric_group.frequency = frequency
+        metric_group.metrics = plugin.metrics_schema
+        metric_group.save
 
         dashboard = dashboards.detect { |d| d.name == plugin_name }
         if dashboard.nil?

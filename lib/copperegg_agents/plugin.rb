@@ -50,8 +50,8 @@ module CoppereggAgents
       CoppereggAgents.fqdn + '::' + server['hostname']
     end
 
-    def configure_metric_group(metric_group)
-      raise 'Missing method ensure_metric_group'
+    def metrics_schema
+      raise 'Missing method metrics_schema'
     end
 
     def monitor(server)
