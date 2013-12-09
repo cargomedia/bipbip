@@ -22,7 +22,7 @@ module CoppereggAgents
 
       data = {}
       metrics_names.each do |key|
-        data[key] = stats[key.to_sym].shift.to_s
+        data[key] = stats[key.to_sym].shift.to_i
       end
       data
     end
