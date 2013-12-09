@@ -17,6 +17,7 @@ optparse = OptionParser.new do |opts|
 
   opts.on("-v", "--version", "Version") do |v|
     puts "#{name} v#{version}"
+    exit
   end
 
   opts.on("-h", "--help", "Show this help") do |h|
