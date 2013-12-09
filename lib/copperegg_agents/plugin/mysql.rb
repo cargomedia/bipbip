@@ -41,7 +41,7 @@ module CoppereggAgents
           :host => server['hostname'],
           :port => server['port'],
           :username => server['username'],
-          :password => server['password'],
+          :password => server['password']
       )
 
       stats = Hash.new(0)
