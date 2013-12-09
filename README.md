@@ -6,9 +6,9 @@ Will spawn a child process for every plugin and server you tell it to monitor.
 
 Configure and run
 -----------------
-Pass the path to your configuration file to `copperegg-agents` using the `-c` command line argument.
+Pass the path to your configuration file to `copperegg_agents` using the `-c` command line argument.
 ```sh
-copperegg-agents -c /etc/copperegg-agents.yml
+copperegg_agents -c /etc/copperegg_agents.yml
 ```
 
 The configuration file should list the services you want to collect for, and the servers for each of them, e.g.:
