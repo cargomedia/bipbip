@@ -2,5 +2,41 @@
 
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 require 'copperegg_agents'
+require 'optparse'
 
-CoppereggAgents::Agent.new.run
+name = 'copperegg_agents'
+version = '0.0.4'
+
+options = {}
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: #{name} [options]"
+
+  opts.on("-c", "--config PATH", "Configuration file") do |c|
+    options[:config] = c
+  end
+
+  opts.on("-v", "--version", "Version") do |v|
+    puts "#{name} v#{version}"
+    exit
+  end
+
+  opts.on("-h", "--help", "Show this help") do |h|
+    puts opts
+    exit
+  end
+end
+
+
+begin
+  optparse.parse!
+  if not options[:config]
+    puts "Missing options: config file [-c PATH]"
+    exit
+  end
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument
+  puts $!.to_s
+  puts optparse
+  exit
+end
+
+CoppereggAgents::Agent.new.run options[:config]
