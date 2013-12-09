@@ -24,6 +24,10 @@ module CoppereggAgents
           {:name => 'Table_locks_immediate', :type => 'ce_counter', :unit => 'Locks'},
           {:name => 'Table_locks_waited', :type => 'ce_counter', :unit => 'Locks'},
 
+          {:name => 'Processlist', :type => 'ce_gauge', :unit => 'Processes'},
+          {:name => 'Processlist_Locked', :type => 'ce_gauge', :unit => 'Processes'},
+          {:name => 'Processlist_Sending_data', :type => 'ce_gauge', :unit => 'Processes'},
+
           {:name => 'Com_select', :type => 'ce_counter', :unit => 'Commands'},
           {:name => 'Com_delete', :type => 'ce_counter', :unit => 'Commands'},
           {:name => 'Com_insert', :type => 'ce_counter', :unit => 'Commands'},
@@ -40,7 +44,7 @@ module CoppereggAgents
           :password => server['password'],
       )
 
-      stats = {}
+      stats = Hash.new { |hash,key| hash[key] = 0 }
 
       mysql.query('SHOW GLOBAL STATUS').each do |v|
         stats[v['Variable_name']] = v['Value'].to_i
@@ -53,6 +57,12 @@ module CoppereggAgents
       slave_status = mysql.query('SHOW SLAVE STATUS').first
       if slave_status
         stats['Seconds_Behind_Master'] = slave_status['Seconds_Behind_Master'].to_i
+      end
+
+      processlist =  mysql.query('SHOW PROCESSLIST')
+      stats['Processlist'] = processlist.count
+      processlist.each do |process|
+        stats['Processlist_' + process['State'].sub(' ', '_')] += 1 unless process['State'].empty?
       end
 
       data = {}
