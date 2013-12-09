@@ -6,31 +6,23 @@ module CoppereggAgents
 
   class Plugin::Memcached < Plugin
 
-    def configure_metric_group(metric_group)
-      metric_group.metrics = []
-      metric_group.metrics << {:type => 'ce_counter', :name => 'cmd_get', :position => 0, :label => 'cmd_get'}
-      metric_group.metrics << {:type => 'ce_counter', :name => 'cmd_set', :position => 1, :label => 'cmd_set'}
-      metric_group.metrics << {:type => 'ce_counter', :name => 'get_misses', :position => 2, :label => 'get_misses'}
-      metric_group.metrics << {:type => 'ce_gauge', :name => 'limit_maxbytes', :position => 3, :label => 'limit_maxbytes', :unit => 'b'}
-      metric_group.metrics << {:type => 'ce_gauge', :name => 'bytes', :position => 4, :label => 'bytes', :unit => 'b'}
-      metric_group.save
+    def metrics_schema
+      [
+          {:name => 'cmd_get', :type => 'ce_counter'},
+          {:name => 'cmd_set', :type => 'ce_counter'},
+          {:name => 'get_misses', :type => 'ce_counter'},
+          {:name => 'limit_maxbytes', :type => 'ce_gauge', :unit => 'b'},
+          {:name => 'bytes', :type => 'ce_gauge', :unit => 'b'},
+      ]
     end
 
     def monitor(server)
       cache = MemcachedClient.new(server['hostname'] + ':' + server['port'].to_s)
       stats = cache.stats
 
-      keys = [
-          :cmd_get,
-          :cmd_set,
-          :get_misses,
-          :bytes,
-          :limit_maxbytes,
-      ]
-
       data = {}
-      keys.each do |key|
-        data[key] = stats[key].shift.to_i
+      metrics_names.each do |key|
+        data[key] = stats[key.to_sym].shift.to_i
       end
       data
     end

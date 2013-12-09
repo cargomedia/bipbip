@@ -20,17 +20,27 @@ copperegg:
   frequency: 15
 
 services:
-    memcached:
-      name: "Memcached"
-      servers:
-      -
-        hostname: "localhost"
-        port: 11211
-    apache:
-      name: "Apache"
-      servers:
-      -
-        url: "http://localhost/server_status"
-      -
-        url: "http://localhost:8080/server_status"
+  memcached:
+    name: "Memcached"
+    servers:
+    -
+      hostname: "localhost"
+      port: 11211
+
+  mysql:
+    name: "Mysql"
+    servers:
+    -
+      hostname: "localhost"
+      port: 3306
+      username: "root"
+      password: "root"
+
+  apache:
+    name: "Apache"
+    servers:
+    -
+      url: "http://localhost/server_status"
+    -
+      url: "http://localhost:8080/server_status"
 ```
