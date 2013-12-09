@@ -6,8 +6,8 @@ module CoppereggAgents
       @plugin_pids = []
     end
 
-    def run
-      config = YAML.load(File.open('config.yml'))
+    def run(config_file)
+      config = YAML.load(config_file)
 
       CoppereggAgents.logger = Logger.new(STDOUT)
       CoppereggAgents.logger.level = Logger::const_get(config['loglevel'] || 'INFO')
