@@ -50,6 +50,10 @@ module CoppereggAgents
       CoppereggAgents.fqdn + '::' + server['hostname']
     end
 
+    def metrics_names
+      metrics_schema.map {|metric| metric[:name] }
+    end
+
     def metrics_schema
       raise 'Missing method metrics_schema'
     end

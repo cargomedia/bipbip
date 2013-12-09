@@ -20,17 +20,9 @@ module CoppereggAgents
       cache = MemcachedClient.new(server['hostname'] + ':' + server['port'].to_s)
       stats = cache.stats
 
-      keys = [
-          :cmd_get,
-          :cmd_set,
-          :get_misses,
-          :bytes,
-          :limit_maxbytes,
-      ]
-
       data = {}
-      keys.each do |key|
-        data[key] = stats[key].shift.to_i
+      metrics_names.each do |key|
+        data[key] = stats[key.to_sym].shift.to_s
       end
       data
     end
