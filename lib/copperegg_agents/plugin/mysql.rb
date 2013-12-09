@@ -6,10 +6,10 @@ module CoppereggAgents
 
     def metrics_schema
       [
-          {:name => 'Threads_connected', :type => 'ce_gauge', :unit => 'Threads'},
           {:name => 'max_connections', :type => 'ce_gauge', :unit => 'Connections'},
           {:name => 'Max_used_connections', :type => 'ce_gauge', :unit => 'Connections'},
           {:name => 'Connections', :type => 'ce_counter', :unit => 'Connections'},
+          {:name => 'Threads_connected', :type => 'ce_gauge', :unit => 'Threads'},
 
           {:name => 'Seconds_Behind_Master', :type => 'ce_gauge', :unit => 'Seconds'},
 
