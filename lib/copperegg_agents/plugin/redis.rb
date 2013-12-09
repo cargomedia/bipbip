@@ -18,7 +18,6 @@ module CoppereggAgents
           :host => server['hostname'],
           :port => server['port'],
       )
-
       stats = redis.info
 
       data = {}
