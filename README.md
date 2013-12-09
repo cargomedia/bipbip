@@ -27,6 +27,13 @@ services:
       hostname: "localhost"
       port: 11211
 
+  gearman:
+    name: "Gearman"
+    servers:
+    -
+      hostname: "localhost"
+      port: 4730
+
   mysql:
     name: "Mysql"
     servers:
