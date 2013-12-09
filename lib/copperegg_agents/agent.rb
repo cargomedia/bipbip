@@ -26,9 +26,8 @@ module CoppereggAgents
         Thread.new { interrupt }
       } }
 
-      metric_groups = CopperEgg::MetricGroup.find
-      dashboards = CopperEgg::CustomDashboard.find
-
+      metric_groups = load_metric_groups
+      dashboards = load_dashboards
       services = config['services']
 
       services.each do |service_name, plugin_config|
@@ -60,6 +59,24 @@ module CoppereggAgents
       end
 
       p Process.waitall
+    end
+
+    def load_metric_groups
+      CoppereggAgents.logger.info 'Loading metric groups'
+      metric_groups = CopperEgg::MetricGroup.find
+      if metric_groups.nil?
+        raise 'Cannot load metric groups'
+      end
+      metric_groups
+    end
+
+    def load_dashboards
+      CoppereggAgents.logger.info 'Loading dashboards'
+      dashboards = CopperEgg::CustomDashboard.find
+      if dashboards.nil?
+        raise 'Cannot load dashboards'
+      end
+      dashboards
     end
 
     def interrupt
