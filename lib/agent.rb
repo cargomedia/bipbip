@@ -16,7 +16,6 @@ module CoppereggAgents
       CopperEgg::Api.apikey = config['copperegg']['apikey']
       CopperEgg::Api.host = config['copperegg']['host'] if !config['copperegg']['host'].nil?
       frequency = config['copperegg']['frequency']
-      services = config['copperegg']['services']
 
       if ![5, 15, 60, 300, 900, 3600, 21600].include?(frequency)
         CoppereggAgents.logger.fatal "Invalid frequency: #{frequency}"
@@ -30,8 +29,9 @@ module CoppereggAgents
       metric_groups = CopperEgg::MetricGroup.find
       dashboards = CopperEgg::CustomDashboard.find
 
-      services.each do |service|
-        plugin_config = config[service]
+      services = config['services']
+
+      services.each do |service_name, plugin_config|
         plugin_name = plugin_config['name']
         servers = plugin_config['servers']
         plugin = Plugin::const_get(plugin_name).new
