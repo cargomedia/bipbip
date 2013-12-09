@@ -27,6 +27,13 @@ services:
       hostname: "localhost"
       port: 11211
 
+  redis:
+    name: "Redis"
+    servers:
+    -
+      hostname: "localhost"
+      port: 6380
+
   mysql:
     name: "Mysql"
     servers:
