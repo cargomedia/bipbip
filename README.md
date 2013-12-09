@@ -32,7 +32,7 @@ services:
     servers:
     -
       hostname: "localhost"
-      port: 6380
+      port: 6379
 
   mysql:
     name: "Mysql"
