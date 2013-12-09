@@ -5,10 +5,10 @@ module CoppereggAgents
   require 'socket'
 
   require 'copperegg_agents/version'
-  require 'interruptible_sleep'
-  require 'agent'
-  require 'plugin'
-  require 'plugin/memcached'
+  require 'copperegg_agents/interruptible_sleep'
+  require 'copperegg_agents/agent'
+  require 'copperegg_agents/plugin'
+  require 'copperegg_agents/plugin/memcached'
 
   def self.logger
     @logger
