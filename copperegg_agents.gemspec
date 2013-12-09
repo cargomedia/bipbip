@@ -1,14 +1,13 @@
-require 'rake'
+require File.expand_path('../lib/copperegg_agents/version', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'copperegg_agents'
-  s.version     = '0.0.4'
-  s.date        = '2013-12-09'
+  s.version     = CoppereggAgents::VERSION
   s.summary     = "CopperEgg RevealMetrics custom agents"
   s.description = "Custom agent plugins for CopperEgg RevealMetrics"
   s.authors     = ["Cargo Media"]
   s.email       = 'dev@cargomedia.ch'
-  s.files       = ['bin/copperegg_agents']
+  s.files       = Dir['LICENSE*', 'README*', '{bin,lib}/**/*']
   s.executables = ['copperegg_agents']
   s.homepage    = 'https://github.com/cargomedia/copperegg_agents'
   s.license     = 'MIT'
