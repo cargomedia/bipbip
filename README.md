@@ -14,23 +14,23 @@ copperegg_agents -c /etc/copperegg_agents.yml
 The configuration file should list the services you want to collect for, and the servers for each of them, e.g.:
 ```yml
 loglevel: "INFO"
+
 copperegg:
   apikey: "YOUR_APIKEY"
   frequency: 15
-  services:
-  - memcached
-  - apache
-memcached:
-  name: "Memcached"
-  servers:
-  -
-    hostname: "localhost"
-    port: 11211
-apache:
-  name: "Apache"
-  servers:
-  -
-    url: "http://localhost/server_status"
-  -
-    url: "http://localhost:8080/server_status"
+
+services:
+    memcached:
+      name: "Memcached"
+      servers:
+      -
+        hostname: "localhost"
+        port: 11211
+    apache:
+      name: "Apache"
+      servers:
+      -
+        url: "http://localhost/server_status"
+      -
+        url: "http://localhost:8080/server_status"
 ```
