@@ -44,7 +44,7 @@ module CoppereggAgents
           :password => server['password'],
       )
 
-      stats = Hash.new { |hash,key| hash[key] = 0 }
+      stats = Hash.new(0)
 
       mysql.query('SHOW GLOBAL STATUS').each do |v|
         stats[v['Variable_name']] = v['Value'].to_i
