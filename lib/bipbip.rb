@@ -10,10 +10,6 @@ module Bipbip
   require 'bipbip/interruptible_sleep'
   require 'bipbip/agent'
   require 'bipbip/plugin'
-  require 'bipbip/plugin/memcached'
-  require 'bipbip/plugin/mysql'
-  require 'bipbip/plugin/redis'
-  require 'bipbip/plugin/gearman'
 
   def self.logger
     @logger || Logger.new(STDOUT)

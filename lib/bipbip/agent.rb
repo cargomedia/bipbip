@@ -35,7 +35,7 @@ module Bipbip
 
       plugin_names = @services.map { |service| service['plugin'] }
       plugin_names.each do |plugin_name|
-        plugin = Plugin::const_get(plugin_name).new
+        plugin = plugin_factory(plugin_name)
 
         metric_group = metric_groups.detect { |m| m.name == plugin_name }
         if metric_group.nil? || !metric_group.is_a?(CopperEgg::MetricGroup)
@@ -56,8 +56,8 @@ module Bipbip
 
       @services.each do |service|
         plugin_name = service['plugin']
+        plugin = plugin_factory(plugin_name)
         Bipbip.logger.info "Starting plugin #{plugin_name}"
-        plugin = Plugin::const_get(plugin_name).new
         @plugin_pids.push plugin.run(service, @frequency)
       end
 
@@ -82,6 +82,14 @@ module Bipbip
         exit 1
       end
       dashboards
+    end
+
+    def plugin_factory(plugin_name)
+      file_name = plugin_name.tr('-', '_')
+      require "bipbip/plugin/#{file_name}"
+
+      class_name = plugin_name.split('-').each { |part| part[0] = part[0].chr.upcase }.join
+      Plugin::const_get(class_name).new
     end
 
     def load_config(config_file)

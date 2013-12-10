@@ -29,21 +29,21 @@ copperegg:
 
 services:
   -
-    plugin: Memcached
+    plugin: memcached
     hostname: localhost
     port: 11211
   -
-    plugin: Mysql
+    plugin: mysql
     hostname: localhost
     port: 3306
     username: root
     password: root
   -
-    plugin: Redis
+    plugin: redis
     hostname: localhost
     port: 6379
   -
-    plugin: Gearman
+    plugin: gearman
     hostname: localhost
     port: 4730
 ```
