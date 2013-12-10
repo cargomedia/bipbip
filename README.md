@@ -8,46 +8,44 @@ Configure and run
 -----------------
 Pass the path to your configuration file to `copperegg_agents` using the `-c` command line argument.
 ```sh
-copperegg_agents -c /etc/copperegg_agents.yml
+copperegg_agents -c /etc/copperegg_agents/copperegg_agents.yml
 ```
 
 The configuration file should list the services you want to collect for, and the servers for each of them, e.g.:
 ```yml
-loglevel: "INFO"
-
+loglevel: INFO
 copperegg:
-  apikey: "YOUR_APIKEY"
+  apikey: YOUR_APIKEY
   frequency: 15
 
 services:
-  memcached:
-    name: "Memcached"
-    servers:
-    -
-      hostname: "localhost"
-      port: 11211
+  -
+    plugin: Memcached
+    hostname: localhost
+    port: 11211
+  -
+    plugin: Mysql
+    hostname: localhost
+    port: 3306
+    username: root
+    password: root
+  -
+    plugin: Redis
+    hostname: localhost
+    port: 6379
+```
 
-  redis:
-    name: "Redis"
-    servers:
-    -
-      hostname: "localhost"
-      port: 6379
+Include configuration
+---------------------
+In your configuration you can specify a directory to include service configurations from:
+```
+include: services.d/
+```
+This will include files from `/etc/copperegg_agents/services.d/` and load them into the `services` configuration.
 
-  mysql:
-    name: "Mysql"
-    servers:
-    -
-      hostname: "localhost"
-      port: 3306
-      username: "root"
-      password: "root"
-
-  apache:
-    name: "Apache"
-    servers:
-    -
-      url: "http://localhost/server_status"
-    -
-      url: "http://localhost:8080/server_status"
+You could then add a file `/etc/copperegg_agents/services.d/memcached.yml`:
+```yml
+plugin: Memcached
+hostname: localhost
+port: 11211
 ```
