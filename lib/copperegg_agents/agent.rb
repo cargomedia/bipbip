@@ -27,6 +27,10 @@ module CoppereggAgents
       } }
 
       services = config['services']
+      if config.has_key?('include')
+        include_path = File.expand_path(config['include'], File.dirname(config_file))
+        services += load_include_configs(include_path)
+      end
 
       metric_groups = load_metric_groups
       dashboards = load_dashboards
@@ -78,6 +82,11 @@ module CoppereggAgents
         raise 'Cannot load dashboards'
       end
       dashboards
+    end
+
+    def load_include_configs(directory)
+      files = Dir[directory + '/**/*.yaml', directory + '/**/*.yml']
+      services = files.map {|file| YAML.load(File.open(file))}
     end
 
     def interrupt
