@@ -1,19 +1,27 @@
 bipbip
 ======
 Agent to collect server metrics and send them to the [CopperEgg RevealMetrics](http://copperegg.com/) platform.
-Plugins for different metrics available in the `plugin/`-directory.
+Plugins for different metrics available.
 Will spawn a child process for every plugin and server you tell it to monitor.
 
-Configure and run
------------------
+Installation
+------------
+```
+gem install bipbip
+```
+
+Configuration
+-------------
 Pass the path to your configuration file to `bipbip` using the `-c` command line argument.
 ```sh
 bipbip -c /etc/bipbip/bipbip.yml
 ```
 
-The configuration file should list the services you want to collect for, and the servers for each of them, e.g.:
+The configuration file should list the services you want to collect data for:
 ```yml
 loglevel: INFO
+include: services.d/
+
 copperegg:
   apikey: YOUR_APIKEY
   frequency: 15
