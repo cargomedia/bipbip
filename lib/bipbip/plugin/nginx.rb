@@ -16,11 +16,10 @@ module Bipbip
       uri = URI.parse(server['url'])
       response = Net::HTTP.get_response(uri)
 
-      connections_requested = 0
-      if response.code == "200"
-        nstats = response.body.split(/\r*\n/)
-        connections_requested = nstats[2].lstrip.split(/\s+/)[2].to_i
-      end
+      raise "Invalid response from server at #{server['url']}" unless response.code == "200"
+
+      nstats = response.body.split(/\r*\n/)
+      connections_requested = nstats[2].lstrip.split(/\s+/)[2].to_i
 
       {:connections_requested => connections_requested}
     end
