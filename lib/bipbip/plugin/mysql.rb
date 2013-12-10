@@ -1,6 +1,6 @@
 require 'mysql2'
 
-module CoppereggAgents
+module Bipbip
 
   class Plugin::Mysql < Plugin
 

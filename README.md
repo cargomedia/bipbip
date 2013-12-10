@@ -1,14 +1,14 @@
-copperegg_agents
-================
+bipbip
+======
 Agent to collect server metrics and send them to the [CopperEgg RevealMetrics](http://copperegg.com/) platform.
 Plugins for different metrics available in the `plugin/`-directory.
 Will spawn a child process for every plugin and server you tell it to monitor.
 
 Configure and run
 -----------------
-Pass the path to your configuration file to `copperegg_agents` using the `-c` command line argument.
+Pass the path to your configuration file to `bipbip` using the `-c` command line argument.
 ```sh
-copperegg_agents -c /etc/copperegg_agents/copperegg_agents.yml
+bipbip -c /etc/bipbip/bipbip.yml
 ```
 
 The configuration file should list the services you want to collect for, and the servers for each of them, e.g.:
@@ -45,9 +45,9 @@ In your configuration you can specify a directory to include service configurati
 ```
 include: services.d/
 ```
-This will include files from `/etc/copperegg_agents/services.d/` and load them into the `services` configuration.
+This will include files from `/etc/bipbip/services.d/` and load them into the `services` configuration.
 
-You could then add a file `/etc/copperegg_agents/services.d/memcached.yml`:
+You could then add a file `/etc/bipbip/services.d/memcached.yml`:
 ```yml
 plugin: Memcached
 hostname: localhost

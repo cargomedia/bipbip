@@ -1,4 +1,4 @@
-module CoppereggAgents
+module Bipbip
 
   class Agent
 
@@ -9,16 +9,16 @@ module CoppereggAgents
     def run(config_file)
       config = YAML.load(File.open(config_file))
 
-      CoppereggAgents.logger = Logger.new(STDOUT)
-      CoppereggAgents.logger.level = Logger::const_get(config['loglevel'] || 'INFO')
-      CoppereggAgents.logger.info 'Startup...'
+      Bipbip.logger = Logger.new(STDOUT)
+      Bipbip.logger.level = Logger::const_get(config['loglevel'] || 'INFO')
+      Bipbip.logger.info 'Startup...'
 
       CopperEgg::Api.apikey = config['copperegg']['apikey']
       CopperEgg::Api.host = config['copperegg']['host'] if !config['copperegg']['host'].nil?
       frequency = config['copperegg']['frequency'].to_i
 
       if ![5, 15, 60, 300, 900, 3600, 21600].include?(frequency)
-        CoppereggAgents.logger.fatal "Invalid frequency: #{frequency}"
+        Bipbip.logger.fatal "Invalid frequency: #{frequency}"
         exit
       end
 
@@ -41,7 +41,7 @@ module CoppereggAgents
 
         metric_group = metric_groups.detect { |m| m.name == plugin_name }
         if metric_group.nil? || !metric_group.is_a?(CopperEgg::MetricGroup)
-          CoppereggAgents.logger.info "Creating metric group `#{plugin_name}`"
+          Bipbip.logger.info "Creating metric group `#{plugin_name}`"
           metric_group = CopperEgg::MetricGroup.new(:name => plugin_name, :label => plugin_name, :frequency => frequency)
         end
         metric_group.frequency = frequency
@@ -50,7 +50,7 @@ module CoppereggAgents
 
         dashboard = dashboards.detect { |d| d.name == plugin_name }
         if dashboard.nil?
-          CoppereggAgents.logger.info "Creating dashboard `#{plugin_name}`"
+          Bipbip.logger.info "Creating dashboard `#{plugin_name}`"
           metrics = metric_group.metrics || []
           CopperEgg::CustomDashboard.create(metric_group, :name => plugin_name, :identifiers => nil, :metrics => metrics)
         end
@@ -58,7 +58,7 @@ module CoppereggAgents
 
       services.each do |service|
         plugin_name = service['plugin']
-        CoppereggAgents.logger.info "Starting plugin #{plugin_name}"
+        Bipbip.logger.info "Starting plugin #{plugin_name}"
         plugin = Plugin::const_get(plugin_name).new
         @plugin_pids.push plugin.run(service, frequency)
       end
@@ -67,7 +67,7 @@ module CoppereggAgents
     end
 
     def load_metric_groups
-      CoppereggAgents.logger.info 'Loading metric groups'
+      Bipbip.logger.info 'Loading metric groups'
       metric_groups = CopperEgg::MetricGroup.find
       if metric_groups.nil?
         raise 'Cannot load metric groups'
@@ -76,7 +76,7 @@ module CoppereggAgents
     end
 
     def load_dashboards
-      CoppereggAgents.logger.info 'Loading dashboards'
+      Bipbip.logger.info 'Loading dashboards'
       dashboards = CopperEgg::CustomDashboard.find
       if dashboards.nil?
         raise 'Cannot load dashboards'
@@ -90,13 +90,13 @@ module CoppereggAgents
     end
 
     def interrupt
-      CoppereggAgents.logger.info 'Interrupt, killing plugin processes...'
+      Bipbip.logger.info 'Interrupt, killing plugin processes...'
       @plugin_pids.each { |pid| Process.kill('TERM', pid) }
 
-      CoppereggAgents.logger.info 'Waiting for all plugin processes to exit...'
+      Bipbip.logger.info 'Waiting for all plugin processes to exit...'
       Process.waitall
 
-      CoppereggAgents.logger.info 'Exiting'
+      Bipbip.logger.info 'Exiting'
       exit
     end
   end

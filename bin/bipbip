@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
-require 'copperegg_agents'
+require 'bipbip'
 require 'optparse'
 
-name = 'copperegg_agents'
-version = CoppereggAgents::VERSION
+name = 'bipbip'
+version = Bipbip::VERSION
 
 options = {}
 optparse = OptionParser.new do |opts|
@@ -39,4 +39,4 @@ rescue OptionParser::InvalidOption, OptionParser::MissingArgument
   exit
 end
 
-CoppereggAgents::Agent.new.run options[:config]
+Bipbip::Agent.new.run options[:config]

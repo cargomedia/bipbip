@@ -2,7 +2,7 @@ require 'memcached'
 class MemcachedClient < Memcached
 end
 
-module CoppereggAgents
+module Bipbip
 
   class Plugin::Memcached < Plugin
 
