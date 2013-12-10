@@ -58,7 +58,7 @@ This will include files from `/etc/bipbip/services.d/` and load them into the `s
 
 You could then add a file `/etc/bipbip/services.d/memcached.yml`:
 ```yml
-plugin: Memcached
+plugin: memcached
 hostname: localhost
 port: 11211
 ```
