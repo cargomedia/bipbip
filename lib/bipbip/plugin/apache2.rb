@@ -24,7 +24,7 @@ module Bipbip
       end
 
       request_per_sec = ainfo["ReqPerSec"].to_f
-      busy_workers = ainfo["busy_workers"].to_i
+      busy_workers = ainfo["BusyWorkers"].to_i
 
       {:request_per_sec => request_per_sec, :busy_workers => busy_workers}
     end
