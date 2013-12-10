@@ -47,7 +47,7 @@ services:
     hostname: localhost
     port: 4730
   -
-    plugin: nginx
+    plugin: nginx2
     hostname: localhost
     url: http://localhost:80/server-status
 ```
