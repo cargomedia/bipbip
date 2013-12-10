@@ -39,4 +39,4 @@ rescue OptionParser::InvalidOption, OptionParser::MissingArgument
   exit
 end
 
-Bipbip::Agent.new.run options[:config]
+Bipbip::Agent.new(options[:config]).run

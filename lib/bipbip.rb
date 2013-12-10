@@ -16,7 +16,7 @@ module Bipbip
   require 'bipbip/plugin/gearman'
 
   def self.logger
-    @logger
+    @logger || Logger.new(STDOUT)
   end
 
   def self.logger=(logger)
