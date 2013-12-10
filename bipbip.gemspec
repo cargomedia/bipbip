@@ -4,6 +4,7 @@ Gem::Specification.new do |s|
   s.name        = 'bipbip'
   s.version     = Bipbip::VERSION
   s.summary     = "Gather services data and store in CopperEgg"
+  s.description = "Gather services data and store in CopperEgg"
   s.authors     = ["Cargo Media"]
   s.email       = 'hello@cargomedia.ch'
   s.files       = Dir['LICENSE*', 'README*', '{bin,lib}/**/*']
