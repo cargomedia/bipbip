@@ -1,6 +1,6 @@
 module Bipbip
 
-  class Plugin::Nginx2 < Plugin
+  class Plugin::Nginx < Plugin
 
     def metrics_schema
       [
