@@ -2,6 +2,10 @@ module Bipbip
 
   class Plugin::Nginx < Plugin
 
+    def metric_identifier(server)
+      Bipbip.fqdn + '::localhost'
+    end
+
     def metrics_schema
       [
           {:name => 'connections_requested', :type => 'ce_counter', :unit => 'Requests'},

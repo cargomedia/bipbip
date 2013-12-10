@@ -48,7 +48,6 @@ services:
     port: 4730
   -
     plugin: nginx
-    hostname: localhost
     url: http://localhost:80/server-status
 ```
 
