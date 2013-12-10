@@ -89,7 +89,7 @@ module Bipbip
       require "bipbip/plugin/#{file_name}"
 
       class_name = plugin_name.split('-').map{|w| w.capitalize}.join
-      Plugin::const_get(class_name).new
+      Plugin::const_get(class_name).new(plugin_name)
     end
 
     def load_config(config_file)
