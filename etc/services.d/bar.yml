@@ -1,3 +1,0 @@
-plugin: Memcached
-hostname: localhost
-port: 12345
