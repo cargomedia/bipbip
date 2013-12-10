@@ -26,13 +26,13 @@ module CoppereggAgents
         Thread.new { interrupt }
       } }
 
-      metric_groups = load_metric_groups
-      dashboards = load_dashboards
       services = config['services']
 
-      services.each do |service_name, plugin_config|
-        plugin_name = plugin_config['name']
-        servers = plugin_config['servers']
+      metric_groups = load_metric_groups
+      dashboards = load_dashboards
+
+      plugin_names = services.map { |service| service['plugin'] }
+      plugin_names.each do |plugin_name|
         plugin = Plugin::const_get(plugin_name).new
 
         metric_group = metric_groups.detect { |m| m.name == plugin_name }
@@ -50,12 +50,13 @@ module CoppereggAgents
           metrics = metric_group.metrics || []
           CopperEgg::CustomDashboard.create(metric_group, :name => plugin_name, :identifiers => nil, :metrics => metrics)
         end
+      end
 
-        servers.each do |server|
-          CoppereggAgents.logger.info "Starting plugin `#{plugin_name}` for server `#{server}`"
-          plugin_pid = plugin.run(server, frequency)
-          @plugin_pids.push plugin_pid
-        end
+      services.each do |service|
+        plugin_name = service['plugin']
+        CoppereggAgents.logger.info "Starting plugin #{plugin_name}"
+        plugin = Plugin::const_get(plugin_name).new
+        @plugin_pids.push plugin.run(service, frequency)
       end
 
       p Process.waitall
