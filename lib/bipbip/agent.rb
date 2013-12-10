@@ -2,49 +2,47 @@ module Bipbip
 
   class Agent
 
-    def initialize
+    def initialize(config_file)
       @plugin_pids = []
+      @logfile = STDOUT
+      @loglevel = 'INFO'
+      @frequency = 60
+      @services = []
+      @copperegg_api_key
+
+      load_config(config_file)
     end
 
-    def run(config_file)
-      config = YAML.load(File.open(config_file))
-
-      Bipbip.logger = Logger.new(STDOUT)
-      Bipbip.logger.level = Logger::const_get(config['loglevel'] || 'INFO')
+    def run
+      Bipbip.logger = Logger.new(@logfile)
+      Bipbip.logger.level = Logger::const_get(@loglevel)
       Bipbip.logger.info 'Startup...'
 
-      CopperEgg::Api.apikey = config['copperegg']['apikey']
-      CopperEgg::Api.host = config['copperegg']['host'] if !config['copperegg']['host'].nil?
-      frequency = config['copperegg']['frequency'].to_i
+      Bipbip.logger.info "Using CopperEgg API key `#{@copperegg_api_key}`"
+      CopperEgg::Api.apikey = @copperegg_api_key
 
-      if ![5, 15, 60, 300, 900, 3600, 21600].include?(frequency)
-        Bipbip.logger.fatal "Invalid frequency: #{frequency}"
-        exit
+      if ![5, 15, 60, 300, 900, 3600, 21600].include?(@frequency)
+        Bipbip.logger.fatal "Invalid frequency: #{@frequency}"
+        exit 1
       end
 
       ['INT', 'TERM'].each { |sig| trap(sig) {
         Thread.new { interrupt }
       } }
 
-      services = config['services'] || []
-      if config.has_key?('include')
-        include_path = File.expand_path(config['include'], File.dirname(config_file))
-        services += load_include_configs(include_path)
-      end
+      metric_groups = get_copperegg_metric_groups
+      dashboards = get_copperegg_dashboards
 
-      metric_groups = load_metric_groups
-      dashboards = load_dashboards
-
-      plugin_names = services.map { |service| service['plugin'] }
+      plugin_names = @services.map { |service| service['plugin'] }
       plugin_names.each do |plugin_name|
         plugin = Plugin::const_get(plugin_name).new
 
         metric_group = metric_groups.detect { |m| m.name == plugin_name }
         if metric_group.nil? || !metric_group.is_a?(CopperEgg::MetricGroup)
           Bipbip.logger.info "Creating metric group `#{plugin_name}`"
-          metric_group = CopperEgg::MetricGroup.new(:name => plugin_name, :label => plugin_name, :frequency => frequency)
+          metric_group = CopperEgg::MetricGroup.new(:name => plugin_name, :label => plugin_name, :frequency => @frequency)
         end
-        metric_group.frequency = frequency
+        metric_group.frequency = @frequency
         metric_group.metrics = plugin.metrics_schema
         metric_group.save
 
@@ -56,37 +54,61 @@ module Bipbip
         end
       end
 
-      services.each do |service|
+      @services.each do |service|
         plugin_name = service['plugin']
         Bipbip.logger.info "Starting plugin #{plugin_name}"
         plugin = Plugin::const_get(plugin_name).new
-        @plugin_pids.push plugin.run(service, frequency)
+        @plugin_pids.push plugin.run(service, @frequency)
       end
 
       p Process.waitall
     end
 
-    def load_metric_groups
+    def get_copperegg_metric_groups
       Bipbip.logger.info 'Loading metric groups'
       metric_groups = CopperEgg::MetricGroup.find
       if metric_groups.nil?
-        raise 'Cannot load metric groups'
+        Bipbip.logger.fatal 'Cannot load metric groups'
+        exit 1
       end
       metric_groups
     end
 
-    def load_dashboards
+    def get_copperegg_dashboards
       Bipbip.logger.info 'Loading dashboards'
       dashboards = CopperEgg::CustomDashboard.find
       if dashboards.nil?
-        raise 'Cannot load dashboards'
+        Bipbip.logger.fatal 'Cannot load dashboards'
+        exit 1
       end
       dashboards
     end
 
-    def load_include_configs(directory)
-      files = Dir[directory + '/**/*.yaml', directory + '/**/*.yml']
-      services = files.map {|file| YAML.load(File.open(file))}
+    def load_config(config_file)
+      config = YAML.load(File.open(config_file))
+      if config.has_key?('logfile')
+        @logfile = config['logfile'].to_s
+      end
+      if config.has_key?('loglevel')
+        @loglevel = config['loglevel'].to_s
+      end
+      if config.has_key?('frequency')
+        @frequency = config['frequency'].to_i
+      end
+      if config.has_key?('services')
+        @services = config['services'].to_a
+      end
+      if config.has_key?('include')
+        include_path = File.expand_path(config['include'].to_s, File.dirname(config_file))
+        files = Dir[include_path + '/**/*.yaml', include_path + '/**/*.yml']
+        @services += files.map {|file| YAML.load(File.open(file))}
+      end
+      if config.has_key?('copperegg')
+        config_copperegg = config['copperegg']
+        if config_copperegg.has_key?('apikey')
+          @copperegg_api_key = config_copperegg['apikey']
+        end
+      end
     end
 
     def interrupt

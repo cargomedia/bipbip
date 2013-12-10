@@ -19,12 +19,13 @@ bipbip -c /etc/bipbip/config.yml
 
 The configuration file should list the services you want to collect data for:
 ```yml
+logfile: /var/log/bipbip.log
 loglevel: INFO
+frequency: 15
 include: services.d/
 
 copperegg:
   apikey: YOUR_APIKEY
-  frequency: 15
 
 services:
   -
