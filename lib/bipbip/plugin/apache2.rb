@@ -8,7 +8,7 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'connections_requested', :type => 'ce_counter', :unit => 'Requests'},
+          {:name => 'request_per_sec', :type => 'ce_counter', :unit => 'Requests'},
       ]
     end
 
@@ -26,7 +26,9 @@ module Bipbip
         ainfo[name] = value
       end
 
-      {:connections_requested => connections_requested}
+      request_per_sec = ainfo["ReqPerSec"].to_f
+
+      {:request_per_sec => request_per_sec}
     end
   end
 end
