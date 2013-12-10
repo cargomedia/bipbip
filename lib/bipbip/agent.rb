@@ -26,7 +26,7 @@ module Bipbip
         Thread.new { interrupt }
       } }
 
-      services = config['services']
+      services = config['services'].to_a
       if config.has_key?('include')
         include_path = File.expand_path(config['include'], File.dirname(config_file))
         services += load_include_configs(include_path)
