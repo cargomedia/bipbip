@@ -21,11 +21,8 @@ The configuration file should list the services you want to collect data for:
 ```yml
 logfile: /var/log/bipbip.log
 loglevel: INFO
-<<<<<<< HEAD
 frequency: 15
-=======
 include: services.d/
->>>>>>> 40111fd6bcee80bd7a4ee5222e70c0ff06e451a2
 
 copperegg:
   apikey: YOUR_APIKEY
