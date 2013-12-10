@@ -88,7 +88,7 @@ module Bipbip
       file_name = plugin_name.tr('-', '_')
       require "bipbip/plugin/#{file_name}"
 
-      class_name = plugin_name.split('-').each { |part| part[0] = part[0].chr.upcase }.join
+      class_name = plugin_name.split('-').map{|w| w.capitalize}.join
       Plugin::const_get(class_name).new
     end
 
