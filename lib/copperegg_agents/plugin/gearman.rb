@@ -16,18 +16,14 @@ module CoppereggAgents
       gearman = GearmanServer.new(server['hostname'] + ':' + server['port'].to_s)
       stats = gearman.status
 
-      pre_data = {:jobs_queued_total => 0}
+      jobs_queued_total = 0
       stats.each do |function_name, data|
         data.each do |queue, stats|
-          pre_data[:jobs_queued_total] += queue.to_i
+          jobs_queued_total += queue.to_i
         end
       end
 
-      data = {}
-      metrics_names.each do |key|
-        data[key] = pre_data[key.to_sym].to_i
-      end
-      data
+      {:jobs_queued_total => jobs_queued_total}
     end
   end
 end
