@@ -33,6 +33,10 @@ services:
     plugin: Redis
     hostname: localhost
     port: 6379
+  -
+    plugin: Gearman
+    hostname: localhost
+    port: 4730
 ```
 
 Include configuration

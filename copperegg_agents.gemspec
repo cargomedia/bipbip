@@ -15,4 +15,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'memcached'
   s.add_runtime_dependency 'mysql2'
   s.add_runtime_dependency 'redis'
+  s.add_runtime_dependency 'gearman-ruby'
 end
