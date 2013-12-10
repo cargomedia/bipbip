@@ -14,7 +14,7 @@ Configuration
 -------------
 Pass the path to your configuration file to `bipbip` using the `-c` command line argument.
 ```sh
-bipbip -c /etc/bipbip/bipbip.yml
+bipbip -c /etc/bipbip/config.yml
 ```
 
 The configuration file should list the services you want to collect data for:
