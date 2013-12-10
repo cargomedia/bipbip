@@ -3,7 +3,8 @@ module Bipbip
   class Plugin
     include InterruptibleSleep
 
-    def initialize
+    def initialize(name)
+      @name = name.to_s
     end
 
     def run(server, frequency)
@@ -43,7 +44,7 @@ module Bipbip
     end
 
     def name
-      self.class.name.split('::').last
+      @name
     end
 
     def metric_identifier(server)
