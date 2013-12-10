@@ -29,6 +29,10 @@ services:
     port: 3306
     username: root
     password: root
+  -
+    plugin: Gearman
+    hostname: localhost
+    port: 4730    
 ```
 
 Include configuration
