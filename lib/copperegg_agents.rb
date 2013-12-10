@@ -12,6 +12,7 @@ module CoppereggAgents
   require 'copperegg_agents/plugin'
   require 'copperegg_agents/plugin/memcached'
   require 'copperegg_agents/plugin/mysql'
+  require 'copperegg_agents/plugin/redis'
   require 'copperegg_agents/plugin/gearman'
 
   def self.logger

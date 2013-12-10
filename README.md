@@ -30,9 +30,13 @@ services:
     username: root
     password: root
   -
+    plugin: Redis
+    hostname: localhost
+    port: 6379
+  -
     plugin: Gearman
     hostname: localhost
-    port: 4730    
+    port: 4730
 ```
 
 Include configuration
