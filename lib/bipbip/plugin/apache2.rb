@@ -2,13 +2,10 @@ module Bipbip
 
   class Plugin::Apache2 < Plugin
 
-    def metric_identifier(server)
-      Bipbip.fqdn + '::localhost'
-    end
-
     def metrics_schema
       [
           {:name => 'request_per_sec', :type => 'ce_counter', :unit => 'Requests'},
+          {:name => 'busy_workers', :type => 'ce_gauge', :unit => 'Workers'},
       ]
     end
 
@@ -27,8 +24,9 @@ module Bipbip
       end
 
       request_per_sec = ainfo["ReqPerSec"].to_f
+      busy_workers = ainfo["busy_workers"].to_i
 
-      {:request_per_sec => request_per_sec}
+      {:request_per_sec => request_per_sec, :busy_workers => busy_workers}
     end
   end
 end
