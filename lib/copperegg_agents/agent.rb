@@ -26,13 +26,17 @@ module CoppereggAgents
         Thread.new { interrupt }
       } }
 
+      services = config['services']
+      if config.has_key?('include')
+        include_path = File.expand_path(config['include'], File.dirname(config_file))
+        services += load_include_configs(include_path)
+      end
+
       metric_groups = load_metric_groups
       dashboards = load_dashboards
-      services = config['services']
 
-      services.each do |service_name, plugin_config|
-        plugin_name = plugin_config['name']
-        servers = plugin_config['servers']
+      plugin_names = services.map { |service| service['plugin'] }
+      plugin_names.each do |plugin_name|
         plugin = Plugin::const_get(plugin_name).new
 
         metric_group = metric_groups.detect { |m| m.name == plugin_name }
@@ -50,12 +54,13 @@ module CoppereggAgents
           metrics = metric_group.metrics || []
           CopperEgg::CustomDashboard.create(metric_group, :name => plugin_name, :identifiers => nil, :metrics => metrics)
         end
+      end
 
-        servers.each do |server|
-          CoppereggAgents.logger.info "Starting plugin `#{plugin_name}` for server `#{server}`"
-          plugin_pid = plugin.run(server, frequency)
-          @plugin_pids.push plugin_pid
-        end
+      services.each do |service|
+        plugin_name = service['plugin']
+        CoppereggAgents.logger.info "Starting plugin #{plugin_name}"
+        plugin = Plugin::const_get(plugin_name).new
+        @plugin_pids.push plugin.run(service, frequency)
       end
 
       p Process.waitall
@@ -77,6 +82,11 @@ module CoppereggAgents
         raise 'Cannot load dashboards'
       end
       dashboards
+    end
+
+    def load_include_configs(directory)
+      files = Dir[directory + '/**/*.yaml', directory + '/**/*.yml']
+      services = files.map {|file| YAML.load(File.open(file))}
     end
 
     def interrupt
