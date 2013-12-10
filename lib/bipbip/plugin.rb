@@ -1,4 +1,4 @@
-module CoppereggAgents
+module Bipbip
 
   class Plugin
     include InterruptibleSleep
@@ -18,13 +18,13 @@ module CoppereggAgents
           until interrupted? do
             time = Time.now
             data = monitor(server)
-            CoppereggAgents.logger.debug "#{name} #{metric_identifier}: Data: #{data}"
+            Bipbip.logger.debug "#{name} #{metric_identifier}: Data: #{data}"
             CopperEgg::MetricSample.save(name, metric_identifier, Time.now.to_i, data)
             retry_delay = frequency
             interruptible_sleep (frequency - (Time.now - time))
           end
         rescue => e
-          CoppereggAgents.logger.error "#{name} #{metric_identifier}: Error getting data: #{e.inspect}"
+          Bipbip.logger.error "#{name} #{metric_identifier}: Error getting data: #{e.inspect}"
           interruptible_sleep retry_delay
           retry_delay += frequency if retry_delay < frequency * 10
           retry
@@ -33,7 +33,7 @@ module CoppereggAgents
     end
 
     def interrupt
-      CoppereggAgents.logger.info "Interrupting plugin process #{Process.pid}"
+      Bipbip.logger.info "Interrupting plugin process #{Process.pid}"
       @interrupted = true
       interrupt_sleep
     end
@@ -47,7 +47,7 @@ module CoppereggAgents
     end
 
     def metric_identifier(server)
-      CoppereggAgents.fqdn + '::' + server['hostname']
+      Bipbip.fqdn + '::' + server['hostname']
     end
 
     def metrics_names

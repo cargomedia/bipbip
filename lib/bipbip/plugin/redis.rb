@@ -2,7 +2,7 @@ require 'redis'
 class RedisClient < Redis
 end
 
-module CoppereggAgents
+module Bipbip
 
   class Plugin::Redis < Plugin
 

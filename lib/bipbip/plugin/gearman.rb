@@ -2,7 +2,7 @@ require 'gearman/server'
 class GearmanServer < Gearman::Server
 end
 
-module CoppereggAgents
+module Bipbip
 
   class Plugin::Gearman < Plugin
 
