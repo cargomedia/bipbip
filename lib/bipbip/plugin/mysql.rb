@@ -6,7 +6,6 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'max_connections', :type => 'ce_gauge', :unit => 'Connections'},
           {:name => 'Max_used_connections', :type => 'ce_gauge', :unit => 'Connections'},
           {:name => 'Connections', :type => 'ce_counter', :unit => 'Connections'},
           {:name => 'Threads_connected', :type => 'ce_gauge', :unit => 'Threads'},
