@@ -66,6 +66,8 @@ module Bipbip
         stats['Processlist_' + state.sub(' ', '_')] += 1 unless state.empty?
       end
 
+      mysql.close
+
       data = {}
       metrics_names.each do |key|
         data[key] = stats[key]
