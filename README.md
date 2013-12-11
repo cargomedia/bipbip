@@ -73,16 +73,25 @@ hostname: localhost
 port: 11211
 ```
 
-Plugins source configuration
+Plugins
 ----------------------------
-For some specific plugins you have to configure data source.
+#### php-apc
+To collect `APC` stats of your apache process, please install the following script.
 
-#### php-apc for apache2
-This plugin works in thread of `apache2` worker process if `APC` for `PHP` is enabled.
+Create file `/usr/local/bin/apc-status.php` with content:
+```php
+<?php
 
-To **configure** data source please use example:
+  $infoOpcode = @apc_cache_info('opcode', true);
+  $infoUser = @apc_cache_info('user', true);
 
-Create file `/etc/apache2/conf.d/apc-status` with content:
+  echo json_encode(array(
+	  "opcode_mem_size" => (int) $infoOpcode['mem_size'],
+	  "user_mem_size"   => (int) $infoUser['mem_size'],
+  ));
+```
+
+Create apache config `/etc/apache2/conf.d/apc-status` with content:
 ```
 Alias /apc-status /usr/local/bin/apc-status.php
 
@@ -91,22 +100,6 @@ Alias /apc-status /usr/local/bin/apc-status.php
 	Deny from all
 	Allow from all
 </Files>
-
-```
-Create file `/usr/local/bin/apc-status.php` with content:
-```php
-<?php
-
-$infoOpcode = @apc_cache_info('opcode', true);
-$infoUser = @apc_cache_info('user', true);
-
-echo json_encode(array(
-	"opcode_mem_size" => (int) $infoOpcode['mem_size'],
-	"user_mem_size"   => (int) $infoUser['mem_size'],
-));
-
 ```
 
-For **enable** configuration above you should reload apache e.g `/etc/init.d/apache2 reload`. 
-
-For **test** you can e.g. `curl http//localhost:80/apc-status`
+Then set the `url`-configuration for the plugin to where the script is being served, e.g. `http//localhost:80/apc-status`.
