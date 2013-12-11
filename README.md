@@ -54,6 +54,9 @@ services:
     url: http://localhost:80/server-status
   -
     plugin: network
+  -
+    plugin: php-apc
+    url: http://localhost:80/apc-status
 ```
 
 Include configuration
@@ -70,3 +73,34 @@ plugin: memcached
 hostname: localhost
 port: 11211
 ```
+
+Plugins
+----------------------------
+#### php-apc
+To collect `APC` stats of your apache process, please install the following script.
+
+Create file `/usr/local/bin/apc-status.php` with content:
+```php
+<?php
+
+$infoOpcode = @apc_cache_info('opcode', true);
+$infoUser = @apc_cache_info('user', true);
+
+echo json_encode(array(
+  'opcode_mem_size' => (int) $infoOpcode['mem_size'],
+  'user_mem_size'   => (int) $infoUser['mem_size'],
+));
+```
+
+Create apache config `/etc/apache2/conf.d/apc-status` with content:
+```
+Alias /apc-status /usr/local/bin/apc-status.php
+
+<Files "/usr/local/bin/apc-status.php">
+	Order deny,allow
+	Deny from all
+	Allow from all
+</Files>
+```
+
+Then set the `url`-configuration for the plugin to where the script is being served, e.g. `http//localhost:80/apc-status`.
