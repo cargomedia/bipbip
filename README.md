@@ -52,6 +52,8 @@ services:
   -
     plugin: nginx
     url: http://localhost:80/server-status
+  -
+    plugin: network
 ```
 
 Include configuration
