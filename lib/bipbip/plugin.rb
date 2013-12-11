@@ -48,7 +48,11 @@ module Bipbip
     end
 
     def metric_identifier(server)
-      Bipbip.fqdn + '::' + server['hostname']
+      identifier = Bipbip.fqdn
+      unless server.empty?
+        identifier += '::' + server.values.first
+      end
+      identifier
     end
 
     def metrics_names

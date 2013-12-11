@@ -46,6 +46,9 @@ services:
     plugin: gearman
     hostname: localhost
     port: 4730
+  -
+    plugin: nginx
+    url: http://localhost:80/server-status
 ```
 
 Include configuration

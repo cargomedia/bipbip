@@ -57,8 +57,9 @@ module Bipbip
       @services.each do |service|
         plugin_name = service['plugin']
         plugin = plugin_factory(plugin_name)
+        service_config = service.select { |key| !['plugin'].include?(key) }
         Bipbip.logger.info "Starting plugin #{plugin_name}"
-        @plugin_pids.push plugin.run(service, @frequency)
+        @plugin_pids.push plugin.run(service_config, @frequency)
       end
 
       p Process.waitall
