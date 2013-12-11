@@ -62,7 +62,9 @@ module Bipbip
         @plugin_pids.push plugin.run(service_config, @frequency)
       end
 
-      p Process.waitall
+      while true
+        sleep 1
+      end
     end
 
     def get_copperegg_metric_groups
