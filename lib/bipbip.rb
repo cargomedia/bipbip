@@ -3,7 +3,7 @@ module Bipbip
 
   require 'copperegg'
   require 'yaml'
-  require 'json'
+  require 'json/pure'
   require 'logger'
   require 'socket'
 
