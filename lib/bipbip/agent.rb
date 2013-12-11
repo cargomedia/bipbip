@@ -10,7 +10,7 @@ module Bipbip
       @services = []
       @copperegg_api_key
 
-      load_config(config_file)
+      sload_config(config_file)
     end
 
     def run
