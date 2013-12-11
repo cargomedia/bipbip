@@ -11,7 +11,6 @@ module Bipbip
           {:name => 'cmd_get', :type => 'ce_counter'},
           {:name => 'cmd_set', :type => 'ce_counter'},
           {:name => 'get_misses', :type => 'ce_counter'},
-          {:name => 'limit_maxbytes', :type => 'ce_gauge', :unit => 'b'},
           {:name => 'bytes', :type => 'ce_gauge', :unit => 'b'},
       ]
     end
