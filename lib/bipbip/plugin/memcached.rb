@@ -17,8 +17,9 @@ module Bipbip
     end
 
     def monitor(server)
-      cache = MemcachedClient.new(server['hostname'] + ':' + server['port'].to_s)
-      stats = cache.stats
+      memcached = MemcachedClient.new(server['hostname'] + ':' + server['port'].to_s)
+      stats = memcached.stats
+      memcached.quit
 
       data = {}
       metrics_names.each do |key|

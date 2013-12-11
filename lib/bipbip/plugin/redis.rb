@@ -19,6 +19,7 @@ module Bipbip
           :port => server['port']
       )
       stats = redis.info
+      redis.quit
 
       data = {}
       metrics_names.each do |key|
