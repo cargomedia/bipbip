@@ -54,6 +54,8 @@ services:
     url: http://localhost:80/server-status
   -
     plugin: network
+  -
+    plugin: php-apc
 ```
 
 Include configuration
@@ -70,3 +72,41 @@ plugin: memcached
 hostname: localhost
 port: 11211
 ```
+
+Plugins source configuration
+----------------------------
+For some specific plugins you have to configure data source.
+
+#### php-apc for apache2
+This plugin works in thread of `apache2` worker process if `APC` for `PHP` is enabled.
+
+To **configure** data source please use example:
+
+Create file `/etc/apache2/conf.d/apc-status` with content:
+```
+Alias /apc-status /usr/local/bin/apc-status.php
+
+<Files "/usr/local/bin/apc-status.php">
+	Order deny,allow
+	Deny from all
+	Allow from all
+</Files>
+
+```
+Create file `/usr/local/bin/apc-status.php` with content:
+```php
+<?php
+
+$infoOpcode = @apc_cache_info('opcode', true);
+$infoUser = @apc_cache_info('user', true);
+
+echo json_encode(array(
+	"opcode_mem_size" => (int) $infoOpcode['mem_size'],
+	"user_mem_size"   => (int) $infoUser['mem_size'],
+));
+
+```
+
+For **enable** configuration above you should reload apache e.g `/etc/init.d/apache2 reload`. 
+
+For **test** you can e.g. `curl http//localhost:80/apc-status`
