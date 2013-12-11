@@ -56,6 +56,7 @@ services:
     plugin: network
   -
     plugin: php-apc
+    url: http://localhost:80/apc-status
 ```
 
 Include configuration
