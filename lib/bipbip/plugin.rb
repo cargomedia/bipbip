@@ -50,7 +50,7 @@ module Bipbip
     def metric_identifier(server)
       identifier = Bipbip.fqdn
       unless server.empty?
-        identifier += '::' + server.values.first
+        identifier += '::' + server.values.first.to_s
       end
       identifier
     end
