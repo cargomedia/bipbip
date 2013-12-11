@@ -18,7 +18,10 @@ module Bipbip
         begin
           until interrupted? do
             time = Time.now
-            data = monitor(server)
+            data = monitor(server).to_h
+            if data.empty?
+              raise "#{name} #{metric_identifier}: Empty data"
+            end
             Bipbip.logger.debug "#{name} #{metric_identifier}: Data: #{data}"
             CopperEgg::MetricSample.save(name, metric_identifier, Time.now.to_i, data)
             retry_delay = frequency
