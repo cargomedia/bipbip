@@ -57,12 +57,14 @@ module Bipbip
       @services.each do |service|
         plugin_name = service['plugin']
         plugin = plugin_factory(plugin_name)
-        service_config = service.select { |key| !['plugin'].include?(key) }
+        service_config = service.select { |key, value| !['plugin'].include?(key) }
         Bipbip.logger.info "Starting plugin #{plugin_name}"
         @plugin_pids.push plugin.run(service_config, @frequency)
       end
 
-      p Process.waitall
+      while true
+        sleep 1
+      end
     end
 
     def get_copperegg_metric_groups
