@@ -22,7 +22,6 @@ module Bipbip
 
           {:name => 'Processlist', :type => 'ce_gauge', :unit => 'Processes'},
           {:name => 'Processlist_Locked', :type => 'ce_gauge', :unit => 'Processes'},
-          {:name => 'Processlist_Sending_data', :type => 'ce_gauge', :unit => 'Processes'},
 
           {:name => 'Com_select', :type => 'ce_counter', :unit => 'Commands'},
           {:name => 'Com_delete', :type => 'ce_counter', :unit => 'Commands'},
