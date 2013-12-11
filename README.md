@@ -83,13 +83,13 @@ Create file `/usr/local/bin/apc-status.php` with content:
 ```php
 <?php
 
-  $infoOpcode = @apc_cache_info('opcode', true);
-  $infoUser = @apc_cache_info('user', true);
+$infoOpcode = @apc_cache_info('opcode', true);
+$infoUser = @apc_cache_info('user', true);
 
-  echo json_encode(array(
-	  "opcode_mem_size" => (int) $infoOpcode['mem_size'],
-	  "user_mem_size"   => (int) $infoUser['mem_size'],
-  ));
+echo json_encode(array(
+  'opcode_mem_size' => (int) $infoOpcode['mem_size'],
+  'user_mem_size'   => (int) $infoUser['mem_size'],
+));
 ```
 
 Create apache config `/etc/apache2/conf.d/apc-status` with content:
