@@ -62,7 +62,8 @@ module Bipbip
       processlist =  mysql.query('SHOW PROCESSLIST')
       stats['Processlist'] = processlist.count
       processlist.each do |process|
-        stats['Processlist_' + process['State'].sub(' ', '_')] += 1 unless process['State'].empty?
+        state = process['State'].to_s
+        stats['Processlist_' + state.sub(' ', '_')] += 1 unless state.empty?
       end
 
       data = {}
