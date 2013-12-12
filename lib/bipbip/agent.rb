@@ -18,13 +18,8 @@ module Bipbip
       Bipbip.logger.level = Logger::const_get(@loglevel)
       Bipbip.logger.info 'Startup...'
 
-      if @services.empty?
-        Bipbip.logger.warn 'No services configured'
-      end
-
-      if @storages.empty?
-        Bipbip.logger.warn 'No storages configured'
-      end
+      Bipbip.logger.warn 'No services configured' if @services.empty?
+      Bipbip.logger.warn 'No storages configured' if @storages.empty?
 
       plugin_instances = @services.map do |service|
         name = service['plugin'].to_s
@@ -76,7 +71,7 @@ module Bipbip
       if config.has_key?('include')
         include_path = File.expand_path(config['include'].to_s, File.dirname(config_file))
         files = Dir[include_path + '/**/*.yaml', include_path + '/**/*.yml']
-        @services += files.map {|file| YAML.load(File.open(file))}
+        @services += files.map { |file| YAML.load(File.open(file)) }
       end
       if config.has_key?('storages')
         @storages = config['storages'].to_a
