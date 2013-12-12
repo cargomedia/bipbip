@@ -26,13 +26,13 @@ module Bipbip
       plugin_instances = @services.map do |service|
         name = service['plugin'].to_s
         config = service.reject { |key, value| ['plugin'].include?(key) }
-        plugin_factory(name, config, @frequency)
+        Bipbip::Plugin.factory(name, config, @frequency)
       end
 
       storages_instances = @storages.map do |storage|
         name = storage['name'].to_s
         config = storage.reject { |key, value| ['name'].include?(key) }
-        storage_factory(name, config)
+        Bipbip::Storage.factory(name, config)
       end
 
       storages_instances.each do |storage|
@@ -54,18 +54,6 @@ module Bipbip
       while true
         sleep 1
       end
-    end
-
-
-
-    def plugin_factory(name, config, frequency)
-      require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
-      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency)
-    end
-
-    def storage_factory(name, config)
-      require "bipbip/storage/#{Bipbip::Helper.name_to_filename(name)}"
-      Storage::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config)
     end
 
     def load_config(config_file)

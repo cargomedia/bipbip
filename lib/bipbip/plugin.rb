@@ -6,6 +6,11 @@ module Bipbip
     attr_accessor :name
     attr_accessor :config
 
+    def self.factory(name, config, frequency)
+      require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
+      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency)
+    end
+
     def initialize(name, config, frequency)
       @name = name.to_s
       @config = config
