@@ -2,6 +2,9 @@ module Bipbip
 
   class Agent
 
+    attr_accessor :plugins
+    attr_accessor :storages
+
     def initialize(config_file = nil)
       @plugins = []
       @storages = []
