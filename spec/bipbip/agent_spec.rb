@@ -13,7 +13,7 @@ describe Bipbip::Agent do
     Bipbip.logger.should_receive(:warn).with('No storages configured')
 
     thread = Thread.new { agent.run }
-    sleep 0.1
+    sleep 0.5
 
     thread.alive?.should eq(true)
 
@@ -27,7 +27,7 @@ describe Bipbip::Agent do
     plugin.should_receive(:run)
 
     thread = Thread.new { agent.run }
-    sleep 0.1
+    sleep 0.5
 
     thread.alive?.should eq(true)
 
