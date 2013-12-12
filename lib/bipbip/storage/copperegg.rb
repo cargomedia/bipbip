@@ -8,8 +8,8 @@ module Bipbip
     end
 
     def setup_plugin(plugin)
-      @metric_groups ||= load_metric_groups
-      @dashboards ||= load_dashboards
+      @metric_groups ||= _load_metric_groups
+      @dashboards ||= _load_dashboards
 
       if ![5, 15, 60, 300, 900, 3600, 21600].include?(plugin.frequency)
         Bipbip.logger.fatal "Copperegg cannot use frequency #{plugin.frequency}"
@@ -37,7 +37,7 @@ module Bipbip
       CopperEgg::MetricSample.save(plugin.name, plugin.metric_identifier, time.to_i, data)
     end
 
-    def load_metric_groups
+    def _load_metric_groups
       Bipbip.logger.info 'Loading copperegg metric groups'
       metric_groups = CopperEgg::MetricGroup.find
       if metric_groups.nil?
@@ -47,7 +47,7 @@ module Bipbip
       metric_groups
     end
 
-    def load_dashboards
+    def _load_dashboards
       Bipbip.logger.info 'Loading copperegg dashboards'
       dashboards = CopperEgg::CustomDashboard.find
       if dashboards.nil?
