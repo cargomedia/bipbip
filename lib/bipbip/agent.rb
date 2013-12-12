@@ -56,7 +56,7 @@ module Bipbip
 
       plugin_instances.each do |plugin|
         Bipbip.logger.info "Starting plugin #{plugin.name} with config #{plugin.config}"
-        @plugin_pids.push plugin.run
+        @plugin_pids.push plugin.run(storages_instances)
       end
 
       while true

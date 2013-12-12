@@ -15,8 +15,12 @@ module Bipbip
       @config = config.to_h
     end
 
-    def setup_plugin
+    def setup_plugin(plugin)
       raise 'Missing method setup_plugin'
+    end
+
+    def store_sample(plugin, time, data)
+      raise 'Missing method store_sample'
     end
 
   end

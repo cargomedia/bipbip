@@ -28,6 +28,10 @@ module Bipbip
       end
     end
 
+    def store_sample(plugin, time, data)
+      CopperEgg::MetricSample.save(plugin.name, plugin.metric_identifier, time.to_i, data)
+    end
+
     def load_metric_groups
       Bipbip.logger.info 'Loading copperegg metric groups'
       metric_groups = CopperEgg::MetricGroup.find

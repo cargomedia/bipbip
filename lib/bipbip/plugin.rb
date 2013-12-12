@@ -17,7 +17,7 @@ module Bipbip
       @frequency = frequency.to_i
     end
 
-    def run
+    def run(storages)
       child_pid = fork do
         ['INT', 'TERM'].each { |sig| trap(sig) {
           Thread.new { interrupt } if !@interrupted
@@ -32,7 +32,9 @@ module Bipbip
               raise "#{name} #{metric_identifier}: Empty data"
             end
             Bipbip.logger.debug "#{name} #{metric_identifier}: Data: #{data}"
-            CopperEgg::MetricSample.save(name, metric_identifier, Time.now.to_i, data)
+            storages.each do |storage|
+              storage.store_sample(self, time, data)
+            end
             retry_delay = frequency
             interruptible_sleep (frequency - (Time.now - time))
           end
