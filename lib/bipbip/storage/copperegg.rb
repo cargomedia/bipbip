@@ -13,7 +13,7 @@ module Bipbip
 
       metric_group = @metric_groups.detect { |m| m.name == plugin.name }
       if metric_group.nil? || !metric_group.is_a?(CopperEgg::MetricGroup)
-        Bipbip.logger.info "Creating metric group `#{plugin.name}`"
+        Bipbip.logger.info "Creating copperegg metric group `#{plugin.name}`"
         metric_group = CopperEgg::MetricGroup.new(:name => plugin.name, :label => plugin.name, :frequency => plugin.frequency)
       end
       metric_group.frequency = plugin.frequency
@@ -22,14 +22,14 @@ module Bipbip
 
       dashboard = @dashboards.detect { |d| d.name == plugin.name }
       if dashboard.nil?
-        Bipbip.logger.info "Creating dashboard `#{plugin.name}`"
+        Bipbip.logger.info "Creating copperegg dashboard `#{plugin.name}`"
         metrics = metric_group.metrics || []
         CopperEgg::CustomDashboard.create(metric_group, :name => plugin.name, :identifiers => nil, :metrics => metrics)
       end
     end
 
     def load_metric_groups
-      Bipbip.logger.info 'Loading metric groups'
+      Bipbip.logger.info 'Loading copperegg metric groups'
       metric_groups = CopperEgg::MetricGroup.find
       if metric_groups.nil?
         Bipbip.logger.fatal 'Cannot load metric groups'
@@ -39,7 +39,7 @@ module Bipbip
     end
 
     def load_dashboards
-      Bipbip.logger.info 'Loading dashboards'
+      Bipbip.logger.info 'Loading copperegg dashboards'
       dashboards = CopperEgg::CustomDashboard.find
       if dashboards.nil?
         Bipbip.logger.fatal 'Cannot load dashboards'

@@ -27,16 +27,10 @@ module Bipbip
         Thread.new { interrupt }
       } }
 
-      plugin_instances = {}
-      services_instances = @services.map do |service|
+      plugin_instances = @services.map do |service|
         name = service['plugin'].to_s
         config = service.reject { |key, value| ['plugin'].include?(key) }
-        if plugin_instances.has_key?(name)
-          plugin = plugin_instances[name]
-        else
-          plugin = plugin_instances[name] = plugin_factory(name, @frequency)
-        end
-        Bipbip::Service.new(plugin, config)
+        plugin_factory(name, config, @frequency)
       end
 
       storages_instances = @storages.map do |storage|
@@ -46,13 +40,15 @@ module Bipbip
       end
 
       storages_instances.each do |storage|
-        plugin_instances.each do |name, plugin|
+        plugin_instances.each do |plugin|
+          Bipbip.logger.info "Setting up plugin #{plugin.name} for storage #{storage.name}"
           storage.setup_plugin(plugin)
         end
       end
 
-      services_instances.each do |service|
-        @plugin_pids.push service.run
+      plugin_instances.each do |plugin|
+        Bipbip.logger.info "Starting plugin #{plugin.name} with config #{plugin.config}"
+        @plugin_pids.push plugin.run
       end
 
       while true
@@ -62,9 +58,9 @@ module Bipbip
 
 
 
-    def plugin_factory(name, frequency)
+    def plugin_factory(name, config, frequency)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
-      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, frequency)
+      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency)
     end
 
     def storage_factory(name, config)

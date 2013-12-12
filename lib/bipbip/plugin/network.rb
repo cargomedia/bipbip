@@ -8,7 +8,7 @@ module Bipbip
       ]
     end
 
-    def monitor(server)
+    def monitor
       connections = `netstat -tn | wc -l`
       {:connections_total => connections.to_i}
     end

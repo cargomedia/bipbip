@@ -13,10 +13,10 @@ module Bipbip
       ]
     end
 
-    def monitor(server)
+    def monitor
       redis = RedisClient.new(
-          :host => server['hostname'],
-          :port => server['port']
+          :host => config['hostname'],
+          :port => config['port']
       )
       stats = redis.info
       redis.quit

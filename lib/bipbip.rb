@@ -13,7 +13,6 @@ module Bipbip
   require 'bipbip/agent'
   require 'bipbip/storage'
   require 'bipbip/plugin'
-  require 'bipbip/service'
 
   def self.logger
     @logger || Logger.new(STDOUT)

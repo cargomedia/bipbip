@@ -16,8 +16,8 @@ module Bipbip
       ]
     end
 
-    def monitor(server)
-      memcached = MemcachedClient.new(server['hostname'] + ':' + server['port'].to_s)
+    def monitor
+      memcached = MemcachedClient.new(config['hostname'] + ':' + config['port'].to_s)
       stats = memcached.stats
       memcached.quit
 

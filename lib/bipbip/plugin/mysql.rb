@@ -36,12 +36,12 @@ module Bipbip
       ]
     end
 
-    def monitor(server)
+    def monitor
       mysql = Mysql2::Client.new(
-          :host => server['hostname'],
-          :port => server['port'],
-          :username => server['username'],
-          :password => server['password']
+          :host => config['hostname'],
+          :port => config['port'],
+          :username => config['username'],
+          :password => config['password']
       )
 
       stats = Hash.new(0)
