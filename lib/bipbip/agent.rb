@@ -23,10 +23,6 @@ module Bipbip
         exit 1
       end
 
-      ['INT', 'TERM'].each { |sig| trap(sig) {
-        Thread.new { interrupt }
-      } }
-
       plugin_instances = @services.map do |service|
         name = service['plugin'].to_s
         config = service.reject { |key, value| ['plugin'].include?(key) }
@@ -45,6 +41,10 @@ module Bipbip
           storage.setup_plugin(plugin)
         end
       end
+
+      ['INT', 'TERM'].each { |sig| trap(sig) {
+        Thread.new { interrupt }
+      } }
 
       plugin_instances.each do |plugin|
         Bipbip.logger.info "Starting plugin #{plugin.name} with config #{plugin.config}"
