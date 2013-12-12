@@ -13,6 +13,6 @@ describe Bipbip::Agent do
     thread = Thread.new { agent.run }
     sleep 0.1
 
-    thread.alive?.should == true
+    thread.alive?.should be true
   end
 end
