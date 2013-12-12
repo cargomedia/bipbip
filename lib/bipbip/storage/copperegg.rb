@@ -11,6 +11,11 @@ module Bipbip
       @metric_groups ||= load_metric_groups
       @dashboards ||= load_dashboards
 
+      if ![5, 15, 60, 300, 900, 3600, 21600].include?(plugin.frequency)
+        Bipbip.logger.fatal "Copperegg cannot use frequency #{plugin.frequency}"
+        exit 1
+      end
+
       metric_group = @metric_groups.detect { |m| m.name == plugin.name }
       if metric_group.nil? || !metric_group.is_a?(CopperEgg::MetricGroup)
         Bipbip.logger.info "Creating copperegg metric group `#{plugin.name}`"

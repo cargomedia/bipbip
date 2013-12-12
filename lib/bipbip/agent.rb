@@ -18,11 +18,6 @@ module Bipbip
       Bipbip.logger.level = Logger::const_get(@loglevel)
       Bipbip.logger.info 'Startup...'
 
-      if ![5, 15, 60, 300, 900, 3600, 21600].include?(@frequency)
-        Bipbip.logger.fatal "Invalid frequency: #{@frequency}"
-        exit 1
-      end
-
       if @services.empty?
         Bipbip.logger.warn 'No services configured'
       end
