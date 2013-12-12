@@ -3,11 +3,12 @@ module Bipbip
   class Plugin
     include InterruptibleSleep
 
-    def initialize(name)
+    def initialize(name, frequency)
       @name = name.to_s
+      @frequency = frequency.to_i
     end
 
-    def run(server, frequency)
+    def run(server)
       child_pid = fork do
         ['INT', 'TERM'].each { |sig| trap(sig) {
           Thread.new { interrupt } if !@interrupted
@@ -45,6 +46,10 @@ module Bipbip
 
     def name
       @name
+    end
+
+    def frequency
+      @frequency
     end
 
     def metric_identifier(server)

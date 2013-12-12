@@ -24,8 +24,10 @@ loglevel: INFO
 frequency: 15
 include: services.d/
 
-copperegg:
-  apikey: YOUR_APIKEY
+storages:
+  -
+    name: copperegg
+    api_key: YOUR_APIKEY
 
 services:
   -

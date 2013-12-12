@@ -8,9 +8,12 @@ module Bipbip
   require 'socket'
 
   require 'bipbip/version'
+  require 'bipbip/helper'
   require 'bipbip/interruptible_sleep'
   require 'bipbip/agent'
+  require 'bipbip/storage'
   require 'bipbip/plugin'
+  require 'bipbip/service'
 
   def self.logger
     @logger || Logger.new(STDOUT)

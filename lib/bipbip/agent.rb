@@ -8,7 +8,7 @@ module Bipbip
       @loglevel = 'INFO'
       @frequency = 60
       @services = []
-      @copperegg_api_key
+      @storages = []
 
       load_config(config_file) if config_file
     end
@@ -17,9 +17,6 @@ module Bipbip
       Bipbip.logger = Logger.new(@logfile)
       Bipbip.logger.level = Logger::const_get(@loglevel)
       Bipbip.logger.info 'Startup...'
-
-      Bipbip.logger.info "Using CopperEgg API key `#{@copperegg_api_key}`"
-      CopperEgg::Api.apikey = @copperegg_api_key
 
       if ![5, 15, 60, 300, 900, 3600, 21600].include?(@frequency)
         Bipbip.logger.fatal "Invalid frequency: #{@frequency}"
@@ -30,36 +27,32 @@ module Bipbip
         Thread.new { interrupt }
       } }
 
-      metric_groups = get_copperegg_metric_groups
-      dashboards = get_copperegg_dashboards
-
-      plugin_names = @services.map { |service| service['plugin'] }
-      plugin_names.each do |plugin_name|
-        plugin = plugin_factory(plugin_name)
-
-        metric_group = metric_groups.detect { |m| m.name == plugin_name }
-        if metric_group.nil? || !metric_group.is_a?(CopperEgg::MetricGroup)
-          Bipbip.logger.info "Creating metric group `#{plugin_name}`"
-          metric_group = CopperEgg::MetricGroup.new(:name => plugin_name, :label => plugin_name, :frequency => @frequency)
+      plugin_instances = {}
+      services_instances = @services.map do |service|
+        name = service['plugin'].to_s
+        config = service.reject { |key, value| ['plugin'].include?(key) }
+        if plugin_instances.has_key?(name)
+          plugin = plugin_instances[name]
+        else
+          plugin = plugin_instances[name] = plugin_factory(name, @frequency)
         end
-        metric_group.frequency = @frequency
-        metric_group.metrics = plugin.metrics_schema
-        metric_group.save
+        Bipbip::Service.new(plugin, config)
+      end
 
-        dashboard = dashboards.detect { |d| d.name == plugin_name }
-        if dashboard.nil?
-          Bipbip.logger.info "Creating dashboard `#{plugin_name}`"
-          metrics = metric_group.metrics || []
-          CopperEgg::CustomDashboard.create(metric_group, :name => plugin_name, :identifiers => nil, :metrics => metrics)
+      storages_instances = @storages.map do |storage|
+        name = storage['name'].to_s
+        config = storage.reject { |key, value| ['name'].include?(key) }
+        storage_factory(name, config)
+      end
+
+      storages_instances.each do |storage|
+        plugin_instances.each do |name, plugin|
+          storage.setup_plugin(plugin)
         end
       end
 
-      @services.each do |service|
-        plugin_name = service['plugin']
-        plugin = plugin_factory(plugin_name)
-        service_config = service.reject { |key, value| ['plugin'].include?(key) }
-        Bipbip.logger.info "Starting plugin #{plugin_name}"
-        @plugin_pids.push plugin.run(service_config, @frequency)
+      services_instances.each do |service|
+        @plugin_pids.push service.run
       end
 
       while true
@@ -67,32 +60,16 @@ module Bipbip
       end
     end
 
-    def get_copperegg_metric_groups
-      Bipbip.logger.info 'Loading metric groups'
-      metric_groups = CopperEgg::MetricGroup.find
-      if metric_groups.nil?
-        Bipbip.logger.fatal 'Cannot load metric groups'
-        exit 1
-      end
-      metric_groups
+
+
+    def plugin_factory(name, frequency)
+      require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
+      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, frequency)
     end
 
-    def get_copperegg_dashboards
-      Bipbip.logger.info 'Loading dashboards'
-      dashboards = CopperEgg::CustomDashboard.find
-      if dashboards.nil?
-        Bipbip.logger.fatal 'Cannot load dashboards'
-        exit 1
-      end
-      dashboards
-    end
-
-    def plugin_factory(plugin_name)
-      file_name = plugin_name.tr('-', '_')
-      require "bipbip/plugin/#{file_name}"
-
-      class_name = plugin_name.split('-').map{|w| w.capitalize}.join
-      Plugin::const_get(class_name).new(plugin_name)
+    def storage_factory(name, config)
+      require "bipbip/storage/#{Bipbip::Helper.name_to_filename(name)}"
+      Storage::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config)
     end
 
     def load_config(config_file)
@@ -114,11 +91,8 @@ module Bipbip
         files = Dir[include_path + '/**/*.yaml', include_path + '/**/*.yml']
         @services += files.map {|file| YAML.load(File.open(file))}
       end
-      if config.has_key?('copperegg')
-        config_copperegg = config['copperegg']
-        if config_copperegg.has_key?('apikey')
-          @copperegg_api_key = config_copperegg['apikey']
-        end
+      if config.has_key?('storages')
+        @storages = config['storages'].to_a
       end
     end
 
