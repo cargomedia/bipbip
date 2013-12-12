@@ -39,4 +39,9 @@ rescue OptionParser::InvalidOption, OptionParser::MissingArgument
   exit
 end
 
-Bipbip::Agent.new(options[:config]).run
+begin
+  Bipbip::Agent.new(options[:config]).run
+rescue => e
+  Bipbip.logger.fatal e.message + "\n" + e.backtrace.map{|s| "\t#{s}"}.join("\n")
+  exit 1
+end
