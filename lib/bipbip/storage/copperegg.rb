@@ -32,7 +32,7 @@ module Bipbip
       Bipbip.logger.info 'Loading copperegg metric groups'
       metric_groups = CopperEgg::MetricGroup.find
       if metric_groups.nil?
-        Bipbip.logger.fatal 'Cannot load metric groups'
+        Bipbip.logger.fatal 'Cannot load copperegg metric groups'
         exit 1
       end
       metric_groups
@@ -42,7 +42,7 @@ module Bipbip
       Bipbip.logger.info 'Loading copperegg dashboards'
       dashboards = CopperEgg::CustomDashboard.find
       if dashboards.nil?
-        Bipbip.logger.fatal 'Cannot load dashboards'
+        Bipbip.logger.fatal 'Cannot load copperegg dashboards'
         exit 1
       end
       dashboards
