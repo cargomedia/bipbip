@@ -23,6 +23,14 @@ module Bipbip
         exit 1
       end
 
+      if @services.empty?
+        Bipbip.logger.warn 'No services configured'
+      end
+
+      if @storages.empty?
+        Bipbip.logger.warn 'No storages configured'
+      end
+
       plugin_instances = @services.map do |service|
         name = service['plugin'].to_s
         config = service.reject { |key, value| ['plugin'].include?(key) }
