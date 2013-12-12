@@ -3,12 +3,9 @@ module Bipbip
   class Agent
 
     def initialize(config_file = nil)
-      @plugin_pids = []
-      @logfile = STDOUT
-      @loglevel = 'INFO'
-      @frequency = 60
       @plugins = []
       @storages = []
+      @plugin_pids = []
 
       load_config(config_file) if config_file
     end
@@ -53,8 +50,9 @@ module Bipbip
       Bipbip.logger = Logger.new(logfile)
       Bipbip.logger.level = Logger::const_get(loglevel)
 
+      frequency = 60
       if config.has_key?('frequency')
-        @frequency = config['frequency'].to_i
+        frequency = config['frequency'].to_i
       end
 
       services = []
@@ -69,7 +67,7 @@ module Bipbip
       @plugins = services.map do |service|
         name = service['plugin'].to_s
         config = service.reject { |key, value| ['plugin'].include?(key) }
-        Bipbip::Plugin.factory(name, config, @frequency)
+        Bipbip::Plugin.factory(name, config, frequency)
       end
 
       storages = []
