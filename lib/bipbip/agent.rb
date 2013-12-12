@@ -7,7 +7,7 @@ module Bipbip
       @logfile = STDOUT
       @loglevel = 'INFO'
       @frequency = 60
-      @services = []
+      @plugins = []
       @storages = []
 
       load_config(config_file) if config_file
@@ -18,23 +18,11 @@ module Bipbip
       Bipbip.logger.level = Logger::const_get(@loglevel)
       Bipbip.logger.info 'Startup...'
 
-      Bipbip.logger.warn 'No services configured' if @services.empty?
+      Bipbip.logger.warn 'No services configured' if @plugins.empty?
       Bipbip.logger.warn 'No storages configured' if @storages.empty?
 
-      plugin_instances = @services.map do |service|
-        name = service['plugin'].to_s
-        config = service.reject { |key, value| ['plugin'].include?(key) }
-        Bipbip::Plugin.factory(name, config, @frequency)
-      end
-
-      storages_instances = @storages.map do |storage|
-        name = storage['name'].to_s
-        config = storage.reject { |key, value| ['name'].include?(key) }
-        Bipbip::Storage.factory(name, config)
-      end
-
-      storages_instances.each do |storage|
-        plugin_instances.each do |plugin|
+      @storages.each do |storage|
+        @plugins.each do |plugin|
           Bipbip.logger.info "Setting up plugin #{plugin.name} for storage #{storage.name}"
           storage.setup_plugin(plugin)
         end
@@ -44,9 +32,9 @@ module Bipbip
         Thread.new { interrupt }
       } }
 
-      plugin_instances.each do |plugin|
+      @plugins.each do |plugin|
         Bipbip.logger.info "Starting plugin #{plugin.name} with config #{plugin.config}"
-        @plugin_pids.push plugin.run(storages_instances)
+        @plugin_pids.push plugin.run(@storages)
       end
 
       while true
@@ -65,16 +53,30 @@ module Bipbip
       if config.has_key?('frequency')
         @frequency = config['frequency'].to_i
       end
+
+      services = []
       if config.has_key?('services')
-        @services = config['services'].to_a
+        services += config['services'].to_a
       end
       if config.has_key?('include')
         include_path = File.expand_path(config['include'].to_s, File.dirname(config_file))
         files = Dir[include_path + '/**/*.yaml', include_path + '/**/*.yml']
-        @services += files.map { |file| YAML.load(File.open(file)) }
+        services += files.map { |file| YAML.load(File.open(file)) }
       end
+      @plugins = services.map do |service|
+        name = service['plugin'].to_s
+        config = service.reject { |key, value| ['plugin'].include?(key) }
+        Bipbip::Plugin.factory(name, config, @frequency)
+      end
+
+      storages = []
       if config.has_key?('storages')
-        @storages = config['storages'].to_a
+        storages += config['storages'].to_a
+      end
+      @storages = storages.map do |storage|
+        name = storage['name'].to_s
+        config = storage.reject { |key, value| ['name'].include?(key) }
+        Bipbip::Storage.factory(name, config)
       end
     end
 
