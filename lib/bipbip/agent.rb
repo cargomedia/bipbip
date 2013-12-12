@@ -14,10 +14,7 @@ module Bipbip
     end
 
     def run
-      Bipbip.logger = Logger.new(@logfile)
-      Bipbip.logger.level = Logger::const_get(@loglevel)
       Bipbip.logger.info 'Startup...'
-
       Bipbip.logger.warn 'No services configured' if @plugins.empty?
       Bipbip.logger.warn 'No storages configured' if @storages.empty?
 
@@ -44,12 +41,18 @@ module Bipbip
 
     def load_config(config_file)
       config = YAML.load(File.open(config_file))
+
+      logfile = STDOUT
       if config.has_key?('logfile')
-        @logfile = config['logfile'].to_s
+        logfile = config['logfile'].to_s
       end
+      loglevel = 'INFO'
       if config.has_key?('loglevel')
-        @loglevel = config['loglevel'].to_s
+        loglevel = config['loglevel'].to_s
       end
+      Bipbip.logger = Logger.new(logfile)
+      Bipbip.logger.level = Logger::const_get(loglevel)
+
       if config.has_key?('frequency')
         @frequency = config['frequency'].to_i
       end
