@@ -7,9 +7,10 @@ module Bipbip
   require 'logger'
   require 'socket'
 
+  require 'interruptible_sleep'
+
   require 'bipbip/version'
   require 'bipbip/helper'
-  require 'bipbip/interruptible_sleep'
   require 'bipbip/agent'
   require 'bipbip/storage'
   require 'bipbip/plugin'
