@@ -2,7 +2,7 @@ module Bipbip
 
   class Agent
 
-    def initialize(config_file)
+    def initialize(config_file = nil)
       @plugin_pids = []
       @logfile = STDOUT
       @loglevel = 'INFO'
@@ -10,7 +10,7 @@ module Bipbip
       @services = []
       @copperegg_api_key
 
-      load_config(config_file)
+      load_config(config_file) if config_file
     end
 
     def run
