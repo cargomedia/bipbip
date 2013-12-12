@@ -8,4 +8,16 @@ describe Bipbip::Agent do
       agent.run
     }.should raise_error SystemExit
   end
+
+  it 'should run' do
+
+    thread = Thread.new do
+      agent.copperegg_api_key = 'foo'
+      agent.run
+    end
+
+    lambda {
+      agent.run
+    }.should raise_error SystemExit
+  end
 end
