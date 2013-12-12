@@ -18,14 +18,17 @@ module Bipbip
         begin
           until interrupted? do
             time = Time.now
-            data = monitor(server)
+            data = monitor(server).to_h
+            if data.empty?
+              raise "#{name} #{metric_identifier}: Empty data"
+            end
             Bipbip.logger.debug "#{name} #{metric_identifier}: Data: #{data}"
             CopperEgg::MetricSample.save(name, metric_identifier, Time.now.to_i, data)
             retry_delay = frequency
             interruptible_sleep (frequency - (Time.now - time))
           end
         rescue => e
-          Bipbip.logger.error "#{name} #{metric_identifier}: Error getting data: #{e.inspect}"
+          Bipbip.logger.error "#{name} #{metric_identifier}: Error getting data: #{e.message}"
           interruptible_sleep retry_delay
           retry_delay += frequency if retry_delay < frequency * 10
           retry
