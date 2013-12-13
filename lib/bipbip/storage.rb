@@ -12,7 +12,7 @@ module Bipbip
 
     def initialize(name, config)
       @name = name.to_s
-      @config = config.to_h
+      @config = config.to_hash
     end
 
     def setup_plugin(plugin)

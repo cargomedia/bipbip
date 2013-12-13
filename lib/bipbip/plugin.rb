@@ -13,7 +13,7 @@ module Bipbip
 
     def initialize(name, config, frequency)
       @name = name.to_s
-      @config = config.to_h
+      @config = config.to_hash
       @frequency = frequency.to_i
     end
 
