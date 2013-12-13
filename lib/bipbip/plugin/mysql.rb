@@ -6,7 +6,6 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'max_connections', :type => 'ce_gauge', :unit => 'Connections'},
           {:name => 'Max_used_connections', :type => 'ce_gauge', :unit => 'Connections'},
           {:name => 'Connections', :type => 'ce_counter', :unit => 'Connections'},
           {:name => 'Threads_connected', :type => 'ce_gauge', :unit => 'Threads'},
@@ -18,15 +17,11 @@ module Bipbip
           {:name => 'Queries', :type => 'ce_counter', :unit => 'Queries'},
           {:name => 'Slow_queries', :type => 'ce_counter', :unit => 'Queries'},
 
-          {:name => 'Bytes_received', :type => 'ce_counter', :unit => 'b'},
-          {:name => 'Bytes_sent', :type => 'ce_counter', :unit => 'b'},
-
           {:name => 'Table_locks_immediate', :type => 'ce_counter', :unit => 'Locks'},
           {:name => 'Table_locks_waited', :type => 'ce_counter', :unit => 'Locks'},
 
           {:name => 'Processlist', :type => 'ce_gauge', :unit => 'Processes'},
           {:name => 'Processlist_Locked', :type => 'ce_gauge', :unit => 'Processes'},
-          {:name => 'Processlist_Sending_data', :type => 'ce_gauge', :unit => 'Processes'},
 
           {:name => 'Com_select', :type => 'ce_counter', :unit => 'Commands'},
           {:name => 'Com_delete', :type => 'ce_counter', :unit => 'Commands'},
