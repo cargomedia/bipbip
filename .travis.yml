@@ -8,3 +8,4 @@ rvm:
 services:
   - memcached
   - mysql
+  - redis-server
