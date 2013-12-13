@@ -1,4 +1,4 @@
-bipbip
+bipbip [![Build Status](https://travis-ci.org/cargomedia/bipbip.png)](https://travis-ci.org/cargomedia/bipbip)
 ======
 Agent to collect server metrics and send them to the [CopperEgg RevealMetrics](http://copperegg.com/) platform.
 Plugins for different metrics available.
