@@ -7,3 +7,4 @@ rvm:
 
 services:
   - memcached
+  - mysql
