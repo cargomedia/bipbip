@@ -4,8 +4,8 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'opcode_mem_size', :type => 'ce_gauge', :unit => 'b'},
-          {:name => 'user_mem_size', :type => 'ce_gauge', :unit => 'b'},
+          {:name => 'opcode_mem_size', :type => 'gauge', :unit => 'b'},
+          {:name => 'user_mem_size', :type => 'gauge', :unit => 'b'},
       ]
     end
 

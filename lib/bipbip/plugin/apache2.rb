@@ -4,8 +4,8 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'request_per_sec', :type => 'ce_gauge', :unit => 'Requests'},
-          {:name => 'busy_workers', :type => 'ce_gauge', :unit => 'Workers'},
+          {:name => 'request_per_sec', :type => 'gauge', :unit => 'Requests'},
+          {:name => 'busy_workers', :type => 'gauge', :unit => 'Workers'},
       ]
     end
 

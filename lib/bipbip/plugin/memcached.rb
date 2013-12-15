@@ -8,11 +8,11 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'cmd_get', :type => 'ce_counter'},
-          {:name => 'cmd_set', :type => 'ce_counter'},
-          {:name => 'get_misses', :type => 'ce_counter'},
-          {:name => 'limit_maxbytes', :type => 'ce_gauge', :unit => 'b'},
-          {:name => 'bytes', :type => 'ce_gauge', :unit => 'b'},
+          {:name => 'cmd_get', :type => 'counter'},
+          {:name => 'cmd_set', :type => 'counter'},
+          {:name => 'get_misses', :type => 'counter'},
+          {:name => 'limit_maxbytes', :type => 'gauge', :unit => 'b'},
+          {:name => 'bytes', :type => 'gauge', :unit => 'b'},
       ]
     end
 

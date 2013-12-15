@@ -22,7 +22,13 @@ module Bipbip
         metric_group = CopperEgg::MetricGroup.new(:name => plugin.name, :label => plugin.name, :frequency => plugin.frequency)
       end
       metric_group.frequency = plugin.frequency
-      metric_group.metrics = plugin.metrics_schema
+      metric_group.metrics = plugin.metrics_schema.map do |sample|
+        {
+            :name => sample[:name],
+            :type => 'ce_' + sample[:type],
+            :unit => sample[:unit],
+        }
+      end
       metric_group.save
 
       dashboard = @dashboards.detect { |d| d.name == plugin.name }

@@ -8,7 +8,7 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'jobs_queued_total', :type => 'ce_gauge', :unit => 'Jobs'},
+          {:name => 'jobs_queued_total', :type => 'gauge', :unit => 'Jobs'},
       ]
     end
 
