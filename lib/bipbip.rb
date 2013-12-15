@@ -24,6 +24,6 @@ module Bipbip
   end
 
   def self.fqdn
-    @fqdn ||= Socket.gethostbyname(Socket.gethostname).first
+    @fqdn ||= Socket.gethostbyname(Socket.gethostname).first rescue Socket.gethostname
   end
 end
