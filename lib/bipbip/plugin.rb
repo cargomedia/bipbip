@@ -18,7 +18,7 @@ module Bipbip
         begin
           until interrupted? do
             time = Time.now
-            data = monitor(server).to_h
+            data = monitor(server).to_hash
             if data.empty?
               raise "#{name} #{metric_identifier}: Empty data"
             end
