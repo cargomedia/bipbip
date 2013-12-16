@@ -10,7 +10,6 @@ describe Bipbip::Plugin::Memcached do
     data['cmd_get'].should be_instance_of(Fixnum)
     data['cmd_set'].should be_instance_of(Fixnum)
     data['get_misses'].should be_instance_of(Fixnum)
-    data['limit_maxbytes'].should be_instance_of(Fixnum)
     data['bytes'].should be_instance_of(Fixnum)
   end
 end

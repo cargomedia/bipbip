@@ -8,6 +8,6 @@ describe Bipbip::Plugin::Mysql do
     data = plugin.monitor
 
     data['Com_select'].should be_instance_of(Fixnum)
-    data['Processlist_Sending_data'].should be_instance_of(Fixnum)
+    data['Processlist_Locked'].should be_instance_of(Fixnum)
   end
 end
