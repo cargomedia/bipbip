@@ -1,4 +1,4 @@
-bipbip
+bipbip [![Build Status](https://travis-ci.org/cargomedia/bipbip.png)](https://travis-ci.org/cargomedia/bipbip)
 ======
 Agent to collect server metrics and send them to the [CopperEgg RevealMetrics](http://copperegg.com/) platform.
 Plugins for different metrics available.
@@ -24,8 +24,10 @@ loglevel: INFO
 frequency: 15
 include: services.d/
 
-copperegg:
-  apikey: YOUR_APIKEY
+storages:
+  -
+    name: copperegg
+    api_key: YOUR_APIKEY
 
 services:
   -

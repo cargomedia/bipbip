@@ -8,12 +8,12 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'jobs_queued_total', :type => 'ce_gauge', :unit => 'Jobs'},
+          {:name => 'jobs_queued_total', :type => 'gauge', :unit => 'Jobs'},
       ]
     end
 
-    def monitor(server)
-      gearman = GearmanServer.new(server['hostname'] + ':' + server['port'].to_s)
+    def monitor
+      gearman = GearmanServer.new(config['hostname'] + ':' + config['port'].to_s)
       stats = gearman.status
 
       jobs_queued_total = 0

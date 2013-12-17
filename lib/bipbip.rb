@@ -7,9 +7,12 @@ module Bipbip
   require 'logger'
   require 'socket'
 
+  require 'interruptible_sleep'
+
   require 'bipbip/version'
-  require 'bipbip/interruptible_sleep'
+  require 'bipbip/helper'
   require 'bipbip/agent'
+  require 'bipbip/storage'
   require 'bipbip/plugin'
 
   def self.logger
@@ -21,6 +24,6 @@ module Bipbip
   end
 
   def self.fqdn
-    @fqdn ||= Socket.gethostbyname(Socket.gethostname).first
+    @fqdn ||= Socket.gethostbyname(Socket.gethostname).first rescue Socket.gethostname
   end
 end

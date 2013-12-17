@@ -4,16 +4,16 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'request_per_sec', :type => 'ce_gauge', :unit => 'Requests'},
-          {:name => 'busy_workers', :type => 'ce_gauge', :unit => 'Workers'},
+          {:name => 'request_per_sec', :type => 'gauge', :unit => 'Requests'},
+          {:name => 'busy_workers', :type => 'gauge', :unit => 'Workers'},
       ]
     end
 
-    def monitor(server)
-      uri = URI.parse(server['url'])
+    def monitor
+      uri = URI.parse(config['url'])
       response = Net::HTTP.get_response(uri)
 
-      raise "Invalid response from server at #{server['url']}" unless response.code == '200'
+      raise "Invalid response from server at #{config['url']}" unless response.code == '200'
 
       astats = response.body.split(/\r*\n/)
 

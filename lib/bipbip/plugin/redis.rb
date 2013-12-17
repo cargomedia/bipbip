@@ -8,15 +8,15 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'total_commands_processed', :type => 'ce_counter', :unit => 'Commands'},
-          {:name => 'used_memory', :type => 'ce_gauge', :unit => 'b'},
+          {:name => 'total_commands_processed', :type => 'counter', :unit => 'Commands'},
+          {:name => 'used_memory', :type => 'gauge', :unit => 'b'},
       ]
     end
 
-    def monitor(server)
+    def monitor
       redis = RedisClient.new(
-          :host => server['hostname'],
-          :port => server['port']
+          :host => config['hostname'],
+          :port => config['port']
       )
       stats = redis.info
       redis.quit

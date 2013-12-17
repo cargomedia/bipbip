@@ -4,11 +4,11 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'connections_total', :type => 'ce_gauge', :unit => 'Connections'},
+          {:name => 'connections_total', :type => 'gauge', :unit => 'Connections'},
       ]
     end
 
-    def monitor(server)
+    def monitor
       connections = `netstat -tn | wc -l`
       {:connections_total => connections.to_i}
     end

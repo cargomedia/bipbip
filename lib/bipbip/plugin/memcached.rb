@@ -8,15 +8,15 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'cmd_get', :type => 'ce_counter'},
-          {:name => 'cmd_set', :type => 'ce_counter'},
-          {:name => 'get_misses', :type => 'ce_counter'},
-          {:name => 'bytes', :type => 'ce_gauge', :unit => 'b'},
+          {:name => 'cmd_get', :type => 'counter'},
+          {:name => 'cmd_set', :type => 'counter'},
+          {:name => 'get_misses', :type => 'counter'},
+          {:name => 'bytes', :type => 'gauge', :unit => 'b'},
       ]
     end
 
-    def monitor(server)
-      memcached = MemcachedClient.new(server['hostname'] + ':' + server['port'].to_s)
+    def monitor
+      memcached = MemcachedClient.new(config['hostname'].to_s + ':' + config['port'].to_s)
       stats = memcached.stats
       memcached.quit
 

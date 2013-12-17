@@ -11,9 +11,13 @@ Gem::Specification.new do |s|
   s.executables = ['bipbip']
   s.homepage    = 'https://github.com/cargomedia/bipbip'
   s.license     = 'MIT'
+
   s.add_runtime_dependency 'copperegg', '~> 0.6.0'
   s.add_runtime_dependency 'memcached'
   s.add_runtime_dependency 'mysql2'
   s.add_runtime_dependency 'redis'
   s.add_runtime_dependency 'gearman-ruby'
+
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rspec', '~> 2.0'
 end
