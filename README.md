@@ -55,6 +55,9 @@ services:
     plugin: nginx
     url: http://localhost:80/server-status
   -
+    plugin: php-fpm
+    url: http://localhost:80/status?json
+  -
     plugin: network
   -
     plugin: php-apc
