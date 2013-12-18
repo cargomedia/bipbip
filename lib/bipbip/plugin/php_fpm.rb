@@ -11,11 +11,20 @@ module Bipbip
     end
 
     def monitor
-      uri = URI.parse(config['url'])
-      response = Net::HTTP.get_response(uri)
-      raise "Invalid response from server at #{config['url']}" unless response.code == '200'
+      authority = config['host'].to_s + ':' + config['port'].to_s
+      path = config['path'].to_s
 
-      status = JSON.parse(response.body)
+      env_backup = ENV.to_hash
+      ENV['REQUEST_METHOD'] = 'GET'
+      ENV['SCRIPT_NAME'] = path
+      ENV['SCRIPT_FILENAME'] = path
+      ENV['QUERY_STRING'] = 'json'
+      response = `cgi-fcgi -bind -connect #{authority.shellescape} 2>&1`
+      ENV.replace(env_backup)
+
+      body = response.split(/\r?\n\r?\n/)[1]
+      raise "FastCGI response has no body: #{response}" unless body
+      status = JSON.parse(body)
 
       status.reject{|k, v| !metrics_names.include?(k)}
     end
