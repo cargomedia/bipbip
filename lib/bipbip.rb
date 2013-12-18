@@ -6,6 +6,7 @@ module Bipbip
   require 'json/pure'
   require 'logger'
   require 'socket'
+  require 'shellwords'
 
   require 'interruptible_sleep'
 

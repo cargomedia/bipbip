@@ -56,7 +56,9 @@ services:
     url: http://localhost:80/server-status
   -
     plugin: php-fpm
-    url: http://localhost:80/status?json
+    host: localhost
+    port: 9000
+    path: /fpm-status
   -
     plugin: network
   -
@@ -81,6 +83,9 @@ port: 11211
 
 Plugins
 ----------------------------
+#### php-fpm
+Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
+
 #### php-apc
 To collect `APC` stats of your apache process, please install the following script.
 
