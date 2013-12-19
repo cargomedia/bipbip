@@ -11,7 +11,7 @@ module Bipbip
 
     def monitor
       authority = config['host'].to_s + ':' + config['port'].to_s
-      path = config['path'].to_s
+      path = File.join(Bipbip::Helper.data_path, 'apc-status.php')
 
       env_backup = ENV.to_hash
       ENV['REQUEST_METHOD'] = 'GET'

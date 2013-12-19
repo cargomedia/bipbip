@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.description = 'Agent to collect data for common server programs and push them to CopperEgg'
   s.authors     = ["Cargo Media"]
   s.email       = 'hello@cargomedia.ch'
-  s.files       = Dir['LICENSE*', 'README*', '{bin,lib}/**/*']
+  s.files       = Dir['LICENSE*', 'README*', '{bin,lib,data}/**/*']
   s.executables = ['bipbip']
   s.homepage    = 'https://github.com/cargomedia/bipbip'
   s.license     = 'MIT'

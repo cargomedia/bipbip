@@ -7,4 +7,8 @@ module Bipbip::Helper
   def self.name_to_filename(name)
     name.tr('-', '_')
   end
+
+  def self.data_path
+    File.expand_path('../../../data', __FILE__)
+  end
 end
