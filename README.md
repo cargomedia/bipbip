@@ -60,7 +60,7 @@ services:
     plugin: php-apc
     url: http://localhost:80/apc-status
   -
-    plugin: php-fpm
+    plugin: fastcgi-php-fpm
     host: localhost
     port: 9000
     path: /fpm-status
@@ -88,7 +88,7 @@ port: 11211
 
 Plugins
 ----------------------------
-#### php-fpm
+#### fastcgi-php-fpm
 Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
 
 #### fastcgi-php-apc

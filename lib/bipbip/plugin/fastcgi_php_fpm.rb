@@ -1,6 +1,6 @@
 module Bipbip
 
-  class Plugin::PhpFpm < Plugin
+  class Plugin::FastcgiPhpFpm < Plugin
 
     def metrics_schema
       [
