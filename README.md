@@ -55,15 +55,19 @@ services:
     plugin: nginx
     url: http://localhost:80/server-status
   -
-    plugin: php-fpm
-    host: localhost
-    port: 9000
-    path: /fpm-status
-  -
     plugin: network
   -
     plugin: php-apc
     url: http://localhost:80/apc-status
+  -
+    plugin: fastcgi-php-fpm
+    host: localhost
+    port: 9000
+    path: /fpm-status
+  -
+    plugin: fastcgi-php-apc
+    host: localhost
+    port: 9000
 ```
 
 Include configuration
@@ -83,24 +87,16 @@ port: 11211
 
 Plugins
 ----------------------------
-#### php-fpm
+#### fastcgi-php-fpm
+Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
+
+#### fastcgi-php-apc
 Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
 
 #### php-apc
 To collect `APC` stats of your apache process, please install the following script.
 
-Create file `/usr/local/bin/apc-status.php` with content:
-```php
-<?php
-
-$infoOpcode = @apc_cache_info('opcode', true);
-$infoUser = @apc_cache_info('user', true);
-
-echo json_encode(array(
-  'opcode_mem_size' => (int) $infoOpcode['mem_size'],
-  'user_mem_size'   => (int) $infoUser['mem_size'],
-));
-```
+Create file `/usr/local/bin/apc-status.php` with content of `data/apc-status.php`.
 
 Create apache config `/etc/apache2/conf.d/apc-status` with content:
 ```
@@ -109,7 +105,7 @@ Alias /apc-status /usr/local/bin/apc-status.php
 <Files "/usr/local/bin/apc-status.php">
 	Order deny,allow
 	Deny from all
-	Allow from all
+	Allow from 127.0.0.1
 </Files>
 ```
 

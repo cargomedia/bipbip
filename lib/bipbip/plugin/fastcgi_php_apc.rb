@@ -1,32 +1,30 @@
 module Bipbip
 
-  class Plugin::PhpFpm < Plugin
+  class Plugin::FastcgiPhpApc < Plugin
 
     def metrics_schema
       [
-          {:name => 'accepted conn', :type => 'counter', :unit => 'Connections'},
-          {:name => 'listen queue', :type => 'gauge', :unit => 'Connections'},
-          {:name => 'active processes', :type => 'gauge', :unit => 'Processes'},
+          {:name => 'opcode_mem_size', :type => 'gauge', :unit => 'b'},
+          {:name => 'user_mem_size', :type => 'gauge', :unit => 'b'},
       ]
     end
 
     def monitor
       authority = config['host'].to_s + ':' + config['port'].to_s
-      path = config['path'].to_s
+      path = File.join(Bipbip::Helper.data_path, 'apc-status.php')
 
       env_backup = ENV.to_hash
       ENV['REQUEST_METHOD'] = 'GET'
-      ENV['SCRIPT_NAME'] = path
+      ENV['SCRIPT_NAME'] = File.basename(path)
       ENV['SCRIPT_FILENAME'] = path
-      ENV['QUERY_STRING'] = 'json'
       response = `cgi-fcgi -bind -connect #{authority.shellescape} 2>&1`
       ENV.replace(env_backup)
 
       body = response.split(/\r?\n\r?\n/)[1]
       raise "FastCGI response has no body: #{response}" unless body
-      status = JSON.parse(body)
+      stats = JSON.parse(body)
 
-      status.reject{|k, v| !metrics_names.include?(k)}
+      {:opcode_mem_size => stats['opcode_mem_size'].to_i, :user_mem_size => stats['user_mem_size'].to_i}
     end
   end
 end
