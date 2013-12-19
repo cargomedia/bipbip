@@ -55,15 +55,20 @@ services:
     plugin: nginx
     url: http://localhost:80/server-status
   -
+    plugin: network
+  -
+    plugin: php-apc
+    url: http://localhost:80/apc-status
+  -
     plugin: php-fpm
     host: localhost
     port: 9000
     path: /fpm-status
   -
-    plugin: network
-  -
-    plugin: php-apc
-    url: http://localhost:80/apc-status
+    plugin: fastcgi-php-apc
+    host: localhost
+    port: 9000
+    path: /usr/local/bin/apc-status.php
 ```
 
 Include configuration
@@ -85,6 +90,22 @@ Plugins
 ----------------------------
 #### php-fpm
 Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
+
+#### fastcgi-php-apc
+Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
+
+Create file `/usr/local/bin/apc-status.php` with content:
+```php
+<?php
+
+$infoOpcode = @apc_cache_info('opcode', true);
+$infoUser = @apc_cache_info('user', true);
+
+echo json_encode(array(
+  'opcode_mem_size' => (int) $infoOpcode['mem_size'],
+  'user_mem_size'   => (int) $infoUser['mem_size'],
+));
+```
 
 #### php-apc
 To collect `APC` stats of your apache process, please install the following script.
