@@ -8,9 +8,10 @@ Forked Version Information: [![Build Status](https://travis-ci.org/thefooj/bipbi
 ------------
 This is a forked version of https://github.com/cargomedia/bipbip.  Changes include:
 
-* Added a Resque plugin to track along with test cases
+* Added a Resque plugin to track worker + queue stats along with test cases
 * Added `used_memory_rss`, `mem_fragmentation_ratio`, `connected_clients`, and `blocked_clients` to Redis, with float-rounding for `mem_fragmentation_ratio`
 
+Note: I've temporarily removed 1.8.7 testing from Travis due to a rubygems compatibility issue. See: https://github.com/bundler/bundler/issues/2784.
 
 
 Installation
