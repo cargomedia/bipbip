@@ -25,6 +25,7 @@ describe Bipbip::Agent do
 
       sorted_plugins[2].name.should eq 'resque'
       sorted_plugins[2].frequency.should eq 15  # default frequency
+      sorted_plugins[2].config['namespace'].should eq 'resque:prefix'
 
       Bipbip.logger = nil
     end
