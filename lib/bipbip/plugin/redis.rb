@@ -10,6 +10,10 @@ module Bipbip
       [
           {:name => 'total_commands_processed', :type => 'counter', :unit => 'Commands'},
           {:name => 'used_memory', :type => 'gauge', :unit => 'b'},
+          {:name => 'used_memory_rss', :type => 'gauge', :unit => 'b'},
+          {:name => 'mem_fragmentation_ratio', :type => 'gauge', :unit => 'Frag'},
+          {:name => 'connected_clients', :type => 'gauge', :unit => 'Clients'},
+          {:name => 'blocked_clients', :type => 'gauge', :unit => 'BlockedClients'},
       ]
     end
 
