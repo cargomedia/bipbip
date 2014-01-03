@@ -1,0 +1,4 @@
+plugin: redis
+hostname: localhost
+port: 6379
+frequency: 60
