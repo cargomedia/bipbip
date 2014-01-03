@@ -16,6 +16,12 @@ module Bipbip
           {:name => 'blocked_clients', :type => 'gauge', :unit => 'BlockedClients'},
       ]
     end
+    
+    def float_roundings
+      {
+        'mem_fragmentation_ratio' => 2 
+      }
+    end
 
     def monitor
       redis = RedisClient.new(
@@ -25,9 +31,15 @@ module Bipbip
       stats = redis.info
       redis.quit
 
+      roundings = float_roundings
       data = {}
+      
       metrics_names.each do |key|
-        data[key] = stats[key].to_i
+        if !roundings[key].nil?
+          data[key] = stats[key].to_f.round(roundings[key])
+        else
+          data[key] = stats[key].to_i
+        end
       end
       data
     end

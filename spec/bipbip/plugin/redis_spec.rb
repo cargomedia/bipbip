@@ -9,5 +9,6 @@ describe Bipbip::Plugin::Redis do
 
     data['total_commands_processed'].should be_instance_of(Fixnum)
     data['used_memory'].should be_instance_of(Fixnum)
+    data['mem_fragmentation_ratio'].should be_instance_of(Float)
   end
 end
