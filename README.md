@@ -4,6 +4,15 @@ Agent to collect server metrics and send them to the [CopperEgg RevealMetrics](h
 Plugins for different metrics available.
 Will spawn a child process for every plugin and server you tell it to monitor.
 
+Forked Version Information: [![Build Status](https://travis-ci.org/thefooj/bipbip.png)](https://travis-ci.org/thefooj/bipbip.png)
+------------
+This is a forked version of https://github.com/cargomedia/bipbip.  Changes include:
+
+* Added a Resque plugin to track along with test cases
+* Added `used_memory_rss`, `mem_fragmentation_ratio`, `connected_clients`, and `blocked_clients` to Redis, with float-rounding for `mem_fragmentation_ratio`
+
+
+
 Installation
 ------------
 ```
@@ -44,6 +53,12 @@ services:
     plugin: redis
     hostname: localhost
     port: 6379
+  - 
+    plugin: resque
+    hostname: localhost
+    port: 6379
+    database: 10
+    namespace: resque-prefix
   -
     plugin: gearman
     hostname: localhost
