@@ -1,6 +1,7 @@
 require 'redis'
 require 'resque'
 
+
 module Bipbip
 
   class Plugin::Resque < Plugin
@@ -13,7 +14,7 @@ module Bipbip
       ]
       
       with_resque_connection do 
-        Resque.queues.each do |queue|
+        ::Resque.queues.each do |queue|
           schema_list << {:name => "queue_size_#{sanitize_queue_name(queue)}", :type => 'gauge', :unit => 'Jobs' }
         end
       end
@@ -26,27 +27,27 @@ module Bipbip
     end
 
     def with_resque_connection
-      redis = Redis.new(
+      redis = ::Redis.new(
           :host => config['hostname'] || 'localhost',
           :port => config['port'] || 6369,
       )
       redis.select config['database']
-      Resque.redis = redis
-      Resque.redis.namespace = config['namespace'] unless config['namespace'].nil?
+      ::Resque.redis = redis
+      ::Resque.redis.namespace = config['namespace'] unless config['namespace'].nil?
 
       yield
 
-      # TODO: should we do a redis.quit ? There's no close/quite for Resque
+      redis.quit
     end
 
     def monitor
       data = {}
       with_resque_connection do
-        data['num_workers'] = Resque.workers.count
-        data['num_idle_workers'] = Resque.workers.select {|w| w.idle? }.count
+        data['num_workers'] = ::Resque.workers.count
+        data['num_idle_workers'] = ::Resque.workers.select {|w| w.idle? }.count
         data['num_active_workers'] = data['num_workers'] - data['num_idle_workers']
-        Resque.queues.each do |queue|
-          data["queue_size_#{sanitize_queue_name(queue)}"] = Resque.size(queue).to_i
+        ::Resque.queues.each do |queue|
+          data["queue_size_#{sanitize_queue_name(queue)}"] = ::Resque.size(queue).to_i
         end
       end      
       data
