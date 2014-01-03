@@ -1,8 +1,7 @@
 require 'bipbip'
 
 describe Bipbip::Agent do
-  let(:agent) { Bipbip::Agent.new }
-  let(:plugin) { Bipbip::Plugin::Memcached.new('memcached', {'hostname' => 'localhost', 'port' => 123}, 10) }
+
 
   describe "loading up YAML config with includes" do
     before(:each) do
