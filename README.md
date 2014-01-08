@@ -4,16 +4,6 @@ Agent to collect server metrics and send them to the [CopperEgg RevealMetrics](h
 Plugins for different metrics available.
 Will spawn a child process for every plugin and server you tell it to monitor.
 
-Forked Version Information: [![Build Status](https://travis-ci.org/thefooj/bipbip.png)](https://travis-ci.org/thefooj/bipbip.png)
-------------
-This is a forked version of https://github.com/cargomedia/bipbip.  Changes include:
-
-* Added a Resque plugin to track worker + queue stats along with test cases
-* Added `used_memory_rss`, `mem_fragmentation_ratio`, `connected_clients`, and `blocked_clients` to Redis, with float-rounding for `mem_fragmentation_ratio`
-
-Note: I've temporarily removed 1.8.7 testing from Travis due to a rubygems compatibility issue. See: https://github.com/bundler/bundler/issues/2784.
-
-
 Installation
 ------------
 ```
@@ -60,6 +50,7 @@ services:
     port: 6379
     database: 10
     namespace: resque-prefix
+    frequency: 60
   -
     plugin: gearman
     hostname: localhost
@@ -100,6 +91,8 @@ plugin: memcached
 hostname: localhost
 port: 11211
 ```
+
+You can also set an override frequency per service in the main config or in these included configs.
 
 Plugins
 ----------------------------
