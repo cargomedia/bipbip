@@ -86,7 +86,7 @@ port: 11211
 ```
 
 Plugins
-----------------------------
+-------
 #### fastcgi-php-fpm
 Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
 
@@ -110,3 +110,11 @@ Alias /apc-status /usr/local/bin/apc-status.php
 ```
 
 Then set the `url`-configuration for the plugin to where the script is being served, e.g. `http//localhost:80/apc-status`.
+
+Custom external plugins
+-----------------------
+Additional plugins can be created as independent gems.
+They should include a class `Plugin::MyPlugin` in the `BipBip` module extending `Plugin`.
+On that class the functions `metrics_schema` and `monitor` should be implemented.
+
+For a complete example see [cargomedia/bipbip-random-example](https://github.com/cargomedia/bipbip-random-example).
