@@ -68,6 +68,10 @@ services:
     plugin: fastcgi-php-apc
     host: localhost
     port: 9000
+  -
+    plugin: fastcgi-php-opcache
+    host: localhost
+    port: 9000
 ```
 
 Include configuration
@@ -91,6 +95,9 @@ Plugins
 Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
 
 #### fastcgi-php-apc
+Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
+
+#### fastcgi-php-opcache
 Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
 
 #### php-apc
