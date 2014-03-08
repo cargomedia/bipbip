@@ -7,7 +7,7 @@ module Bipbip
           {:name => 'free_memory', :type => 'gauge', :unit => 'b'},
           {:name => 'current_wasted_percentage', :type => 'gauge', :unit => '%'},
           {:name => 'num_cached_keys', :type => 'gauge', :unit => 'Keys'},
-          {:name => 'opcache_hit_rate', :type => 'gauge', :unit => 'Hits'},
+          {:name => 'opcache_hit_rate', :type => 'gauge', :unit => '%'},
       ]
     end
 
