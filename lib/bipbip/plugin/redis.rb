@@ -16,10 +16,10 @@ module Bipbip
           {:name => 'blocked_clients', :type => 'gauge', :unit => 'BlockedClients'},
       ]
     end
-    
+
     def float_roundings
       {
-        'mem_fragmentation_ratio' => 2 
+          'mem_fragmentation_ratio' => 2
       }
     end
 
@@ -33,10 +33,11 @@ module Bipbip
 
       roundings = float_roundings
       data = {}
-      
+
       metrics_names.each do |key|
         if !roundings[key].nil?
-          data[key] = stats[key].to_f.round()
+          precision = roundings[key]
+          data[key] = (stats[key].to_f * 10**precision).round.to_f / (10**precision)
         else
           data[key] = stats[key].to_i
         end
