@@ -1,7 +1,6 @@
 require 'redis'
 require 'resque'
 
-
 module Bipbip
 
   class Plugin::Resque < Plugin
@@ -12,10 +11,10 @@ module Bipbip
           {:name => 'num_idle_workers', :type => 'counter', :unit => 'Workers'},
           {:name => 'num_active_workers', :type => 'counter', :unit => 'Workers'},
       ]
-      
-      with_resque_connection do 
+
+      with_resque_connection do
         ::Resque.queues.each do |queue|
-          schema_list << {:name => "queue_size_#{sanitize_queue_name(queue)}", :type => 'gauge', :unit => 'Jobs' }
+          schema_list << {:name => "queue_size_#{sanitize_queue_name(queue)}", :type => 'gauge', :unit => 'Jobs'}
         end
       end
 
@@ -23,7 +22,7 @@ module Bipbip
     end
 
     def sanitize_queue_name(queue)
-      queue.gsub(/\s/,'-')
+      queue.gsub(/\s/, '-')
     end
 
     def with_resque_connection
@@ -44,12 +43,12 @@ module Bipbip
       data = {}
       with_resque_connection do
         data['num_workers'] = ::Resque.workers.count
-        data['num_idle_workers'] = ::Resque.workers.select {|w| w.idle? }.count
+        data['num_idle_workers'] = ::Resque.workers.select { |w| w.idle? }.count
         data['num_active_workers'] = data['num_workers'] - data['num_idle_workers']
         ::Resque.queues.each do |queue|
           data["queue_size_#{sanitize_queue_name(queue)}"] = ::Resque.size(queue).to_i
         end
-      end      
+      end
       data
     end
   end
