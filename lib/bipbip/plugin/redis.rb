@@ -36,8 +36,7 @@ module Bipbip
 
       metrics_names.each do |key|
         if !roundings[key].nil?
-          precision = roundings[key]
-          data[key] = (stats[key].to_f * 10**precision).round.to_f / (10**precision)
+          data[key] = stats[key].to_f.round(roundings[key])
         else
           data[key] = stats[key].to_i
         end
