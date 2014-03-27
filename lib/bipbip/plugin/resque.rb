@@ -29,7 +29,7 @@ module Bipbip
     def with_resque_connection
       redis = ::Redis.new(
           :host => config['hostname'] || 'localhost',
-          :port => config['port'] || 6369,
+          :port => config['port'] || 6369
       )
       redis.select config['database']
       ::Resque.redis = redis
