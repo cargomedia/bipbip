@@ -44,6 +44,13 @@ services:
     plugin: redis
     hostname: localhost
     port: 6379
+  - 
+    plugin: resque
+    hostname: localhost
+    port: 6379
+    database: 10
+    namespace: resque-prefix
+    frequency: 60
   -
     plugin: gearman
     hostname: localhost
@@ -88,6 +95,8 @@ plugin: memcached
 hostname: localhost
 port: 11211
 ```
+
+You can also set an override frequency per service in the main config or in these included configs.
 
 Plugins
 -------

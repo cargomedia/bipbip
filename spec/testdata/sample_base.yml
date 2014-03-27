@@ -1,0 +1,17 @@
+logfile: /tmp/bipbip.log
+loglevel: INFO
+frequency: 15
+include: sample_base_includes.d/
+
+storages:
+  -
+    name: copperegg
+    api_key: MOCK_APIKEY
+
+services:
+  - 
+    plugin: mysql
+    username: travis
+    password: 
+    hostname: localhost
+    port: 3306

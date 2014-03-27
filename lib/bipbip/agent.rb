@@ -56,13 +56,16 @@ module Bipbip
       services = config['services'].to_a
       if config['include']
         include_path = File.expand_path(config['include'].to_s, File.dirname(config_file))
+        
         files = Dir[include_path + '/**/*.yaml', include_path + '/**/*.yml']
         services += files.map { |file| YAML.load(File.open(file)) }
-      end
+      end      
+      
       @plugins = services.map do |service|
         service_name = service['plugin'].to_s
-        service_config = service.reject { |key, value| ['plugin'].include?(key) }
-        Bipbip::Plugin.factory(service_name, service_config, config['frequency'])
+        frequency = service['frequency'].nil? ? config['frequency'] : service['frequency'].to_i
+        service_config = service.reject { |key, value| ['plugin','frequency'].include?(key) }
+        Bipbip::Plugin.factory(service_name, service_config, frequency)
       end
 
       storages = config['storages'].to_a

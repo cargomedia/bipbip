@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'mysql2'
   s.add_runtime_dependency 'redis'
   s.add_runtime_dependency 'gearman-ruby'
+  s.add_runtime_dependency 'resque', '~> 1.25'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 2.0'
