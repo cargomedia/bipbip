@@ -10,6 +10,7 @@ module Bipbip
           {:name => 'Connections', :type => 'counter', :unit => 'Connections'},
           {:name => 'Threads_connected', :type => 'gauge', :unit => 'Threads'},
 
+          {:name => 'Slave_running', :type => 'gauge', :unit => 'Boolean'},
           {:name => 'Seconds_Behind_Master', :type => 'gauge', :unit => 'Seconds'},
 
           {:name => 'Created_tmp_disk_tables', :type => 'counter', :unit => 'Tables'},
@@ -42,19 +43,19 @@ module Bipbip
       stats = Hash.new(0)
 
       mysql.query('SHOW GLOBAL STATUS').each do |v|
-        stats[v['Variable_name']] = v['Value'].to_i
+        stats[v['Variable_name']] = v['Value']
       end
 
       mysql.query('SHOW VARIABLES').each do |v|
-        stats[v['Variable_name']] = v['Value'].to_i
+        stats[v['Variable_name']] = v['Value']
       end
 
       slave_status = mysql.query('SHOW SLAVE STATUS').first
       if slave_status
-        stats['Seconds_Behind_Master'] = slave_status['Seconds_Behind_Master'].to_i
+        stats['Seconds_Behind_Master'] = slave_status['Seconds_Behind_Master']
       end
 
-      processlist =  mysql.query('SHOW PROCESSLIST')
+      processlist = mysql.query('SHOW PROCESSLIST')
       stats['Processlist'] = processlist.count
       processlist.each do |process|
         state = process['State'].to_s
@@ -64,8 +65,14 @@ module Bipbip
       mysql.close
 
       data = {}
-      metrics_names.each do |key|
-        data[key] = stats[key]
+      metrics_schema.each do |metric|
+        name = metric[:name]
+        unit = metric[:unit]
+        if 'Boolean' == unit
+          data[name] = ('ON' === stats[name] || 'Yes' === stats[name]) ? 1 : 0
+        else
+          data[name] = stats[name].to_i
+        end
       end
       data
     end
