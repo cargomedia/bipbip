@@ -1,4 +1,3 @@
-require 'mysql2'
 require 'monit'
 class MonitStatus < Monit::Status
 
@@ -20,29 +19,14 @@ module Bipbip
           :host => config['host'],
           :auth => config['auth']
       )
-      value = Hash.new(0)
+      data = Hash.new(0)
 
       begin
-        value['Running'] = status.get
+        data['Running'] = status.get ? 1 : 0
+        data['All_Services_ok'] = status.services.any? { |service| service.monitor != "1" || service.status != "0" } ? 0 : 1
       rescue
-        value['Running'] = false
-        value['All_Services_ok'] = false
-      end
-
-      if value['Running']
-        value['All_Services_ok'] = true
-        status.services.each do |service|
-          if service.monitor != 1 || service.status != 0
-            value['All_Services_ok'] = false
-            break
-          end
-        end
-      end
-
-      data = {}
-      metrics_schema.each do |metric|
-        name = metric[:name]
-        data[name] = value[name]? 1 : 0
+        data['Running'] = 0
+        data['All_Services_ok'] = 0
       end
       data
     end
