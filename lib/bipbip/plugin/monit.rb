@@ -1,6 +1,5 @@
 require 'monit'
 class MonitStatus < Monit::Status
-
 end
 
 module Bipbip
