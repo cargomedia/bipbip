@@ -1,6 +1,6 @@
 require 'monit'
-class MonitStatus < Monit::Status
-end
+#class MonitStatus < Monit::Status
+#end
 
 module Bipbip
 
@@ -14,7 +14,7 @@ module Bipbip
     end
 
     def monitor
-      status =  MonitStatus.new(
+      status =  ::Monit::Status.new(
           :host => config['host'],
           :auth => config['auth']
       )
