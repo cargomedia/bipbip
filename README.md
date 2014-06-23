@@ -64,6 +64,14 @@ services:
   -
     plugin: network
   -
+    plugin: monit
+    hostname: localhost
+    port: 2888
+    ssl:  true
+    auth: true
+    username: foo
+    password: bar
+  -
     plugin: php-apc
     url: http://localhost:80/apc-status
   -
