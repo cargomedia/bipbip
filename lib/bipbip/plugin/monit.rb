@@ -14,7 +14,7 @@ module Bipbip
     def monitor
       status =  ::Monit::Status.new(
           :host => config['host'],
-          :auth => config['auth']
+          :auth => false,
       )
       data = Hash.new(0)
 
