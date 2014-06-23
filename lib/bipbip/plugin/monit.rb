@@ -12,14 +12,15 @@ module Bipbip
     end
 
     def monitor
-      status =  ::Monit::Status.new(
-          :host     => config['host'] || 'localhost',
-          :port     => (config['port'] || 2812).to_i,
-          :ssl      => config['ssl'] || false,
-          :auth     => config['auth'] || false,
-          :username => config['username'],
-          :password => config['password'],
-      )
+      status =  ::Monit::Status.new({
+        :host => 'localhost',
+        :port => 2812,
+        :ssl => false,
+        :auth => false,
+        :username => nil,
+        :password => nil,
+      }.merge(config))
+
       data = Hash.new(0)
 
       begin
