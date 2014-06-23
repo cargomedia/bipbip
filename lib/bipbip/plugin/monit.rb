@@ -13,8 +13,8 @@ module Bipbip
 
     def monitor
       status =  ::Monit::Status.new(
-          :host     => config['host'],
-          :port     => config['port'],
+          :host     => config['host'] || 'localhost',
+          :port     => (config['port'] || 2812).to_i,
           :ssl      => config['ssl'] || false,
           :auth     => config['auth'] || false,
           :username => config['username'],
