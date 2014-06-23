@@ -13,8 +13,12 @@ module Bipbip
 
     def monitor
       status =  ::Monit::Status.new(
-          :host => config['host'],
-          :auth => false,
+          :host     => config['host'],
+          :port     => config['port'],
+          :ssl      => config['ssl'] || false,
+          :auth     => config['auth'] || false,
+          :username => config['username'],
+          :password => config['password'],
       )
       data = Hash.new(0)
 
