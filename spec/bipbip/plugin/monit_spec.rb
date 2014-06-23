@@ -3,7 +3,7 @@ require 'bipbip/plugin/monit'
 
 describe Bipbip::Plugin::Monit do
   let(:plugin) {
-    Bipbip::Plugin::Monit.new('monit', {'host' => "10.10.20.2", 'auth' => false}, 10)
+    Bipbip::Plugin::Monit.new('monit', {'host' => "127.0.0.1", 'auth' => false}, 10)
   }
 
   it 'should collect data' do
