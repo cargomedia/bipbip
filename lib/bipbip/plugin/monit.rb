@@ -25,7 +25,7 @@ module Bipbip
 
       begin
         data['Running'] = status.get ? 1 : 0
-        data['All_Services_ok'] = status.services.any? { |service| service.monitor != '1' || service.status != '0' } ? 0 : 1
+        data['All_Services_ok'] = status.services.any? { |service| service.monitor == '0' || service.status == '1' } ? 0 : 1
       rescue
         data['Running'] = 0
         data['All_Services_ok'] = 0
