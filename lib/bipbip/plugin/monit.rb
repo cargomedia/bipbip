@@ -4,6 +4,11 @@ module Bipbip
 
   class Plugin::Monit < Plugin
 
+    #See https://bitbucket.org/tildeslash/monit/src/d60968cf7972cc902e5b6e2961d44456e1d9b736/src/monit.h?at=master#cl-135
+    #    https://bitbucket.org/tildeslash/monit/src/d60968cf7972cc902e5b6e2961d44456e1d9b736/src/monit.h?at=master#cl-146
+    STATE_FAILED = '1'
+    MONITOR_NOT = '0'
+
     def metrics_schema
       [
           {:name => 'Running', :type => 'gauge', :unit => 'Boolean'},
@@ -25,7 +30,8 @@ module Bipbip
 
       begin
         data['Running'] = status.get ? 1 : 0
-        data['All_Services_ok'] = status.services.any? { |service| service.monitor == '0' || service.status == '1' } ? 0 : 1
+        data['All_Services_ok'] = status.services.any? { |service|
+          service.monitor == MONITOR_NOT || service.status == STATE_FAILED } ? 0 : 1
       rescue
         data['Running'] = 0
         data['All_Services_ok'] = 0
