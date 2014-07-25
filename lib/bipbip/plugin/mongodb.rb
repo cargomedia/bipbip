@@ -39,19 +39,15 @@ module Bipbip
       end
       response = `2>&1 mongo --eval 'printjson(db.serverStatus())' #{mongo_options.join(' ')}`
 
-      # Sanitize JSON
-      # sed -E 's/NumberLong\("?([0-9]+)"?\)/\1/' output
-      # sed -E 's/ISODate\((".+Z")\)/\1/' output
       sanitized_response = response.gsub /NumberLong\("?([0-9]+)"?\)/, '\1'
       sanitized_response = sanitized_response.gsub /ISODate\((".+Z")\)/, '\1'
 
       status = JSON.parse(sanitized_response)
-
       data = {}
       metrics_schema.each do |metric|
         name = metric[:name]
         unit = metric[:unit]
-        data[name] = status.access(metric[:keyname])
+        data[name] = status.access(metric[:keyname]).to_i
       end
       data
     end
