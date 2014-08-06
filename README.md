@@ -151,7 +151,7 @@ vagrant up
 vagrant ssh
 ```
 
-All dependencies are installed and you can run `bipbip` like this:
+You can then run `bipbip` from within the mounted projected root directory:
 ```
 /vagrant/bin/bipbip
 ```
