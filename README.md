@@ -142,3 +142,16 @@ They should include a class `Plugin::MyPlugin` in the `BipBip` module extending 
 On that class the functions `metrics_schema` and `monitor` should be implemented.
 
 For a complete example see [cargomedia/bipbip-random-example](https://github.com/cargomedia/bipbip-random-example).
+
+Development
+-----------
+Start and provision the development-VM with vagrant, then log in:
+```
+vagrant up
+vagrant ssh
+```
+
+You can then run `bipbip` from within the mounted projected root directory:
+```
+/vagrant/bin/bipbip
+```
