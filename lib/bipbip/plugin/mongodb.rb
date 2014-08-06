@@ -49,7 +49,7 @@ module Bipbip
       ]
       configConnection = {}
       connectionArguments.each do |k|
-        configConnection[k] = @config[k] if @config[k]
+        configConnection[k] = @config.has_key?(k) ? @config[k] : nil
       end
 
       mongo = _connect('admin', configConnection)
