@@ -1,5 +1,4 @@
-require 'json'
-require 'vine'
+require 'mongo'
 
 module Bipbip
 
@@ -7,49 +6,115 @@ module Bipbip
 
     def metrics_schema
       [
-        {:name => 'Inserts', :keyname => 'opcounters.insert', :type => 'counter'},
-        {:name => 'Queries', :keyname => 'opcounters.query', :type => 'counter'},
-        {:name => 'Updates', :keyname => 'opcounters.update', :type => 'counter'},
-        {:name => 'Deletes', :keyname => 'opcounters.delete', :type => 'counter'},
-        {:name => 'Getmores', :keyname => 'opcounters.getmore', :type => 'counter'},
-        {:name => 'Commands', :keyname => 'opcounters.command', :type => 'counter'},
-        {:name => 'Flushes', :keyname => 'backgroundFlushing.flushes', :type => 'counter'},
-        {:name => 'FlushTotal', :keyname => 'backgroundFlushing.total_ms', :type => 'gauge', :unit => 'ms'},
-        {:name => 'FlushAvg', :keyname => 'backgroundFlushing.average_ms', :type => 'gauge', :unit => 'ms'},
-        {:name => 'FlushLast', :keyname => 'backgroundFlushing.last_ms', :type => 'gauge', :unit => 'ms'},
-        {:name => 'Mapped', :keyname => 'mem.mapped', :type => 'gauge', :unit => 'MB'},
-        {:name => 'Vsize', :keyname => 'mem.virtual', :type => 'gauge', :unit => 'MB'},
-        {:name => 'Rsize', :keyname => 'mem.resident', :type => 'gauge', :unit => 'MB'},
-        {:name => 'PageFaults', :keyname => 'extra_info.page_faults', :type => 'gauge'},
-        {:name => 'IndexMiss', :keyname => 'indexCounters.missRatio', :type => 'counter', :unit => '%'},
-        {:name => 'IndexAccess', :keyname => 'indexCounters.accesses', :type => 'counter'},
-        {:name => 'IndexHits', :keyname => 'indexCounters.hits', :type => 'counter'},
-        {:name => 'IndexResets', :keyname => 'indexCounters.resets', :type => 'counter'},
-        {:name => 'TrafficIn', :keyname => 'network.bytesIn', :type => 'gauge', :unit => 'b'},
-        {:name => 'TrafficOut', :keyname => 'network.bytesOut', :type => 'gauge', :unit => 'b'},
-        {:name => 'Connections', :keyname => 'connections.current', :type => 'gauge'},
+        {:name => 'flushing_flushes', :type => 'counter', :unit => 'flushes'},
+        {:name => 'flushing_total_ms', :type => 'gauge', :unit => 'ms'},
+        {:name => 'flushing_average_ms', :type => 'gauge', :unit => 'ms'},
+        {:name => 'flushing_last_ms', :type => 'gauge', :unit => 'ms'},
+        {:name => 'btree_accesses' , :type => 'gauge', :unit => 'accesses'},
+        {:name => 'btree_misses' , :type => 'gauge', :unit => 'misses'},
+        {:name => 'btree_hits' , :type => 'gauge', :unit => 'hits'},
+        {:name => 'btree_resets' , :type => 'gauge', :unit => 'resets'},
+        {:name => 'cursors_totalOpen' , :type => 'gauge', :unit => 'crs'},
+        {:name => 'cursors_timedOut' , :type => 'gauge', :unit => 'crs/sec'},
+        {:name => 'op_inserts' , :type => 'counter'},
+        {:name => 'op_queries' , :type => 'counter'},
+        {:name => 'op_updates' , :type => 'counter'},
+        {:name => 'op_deletes' , :type => 'counter'},
+        {:name => 'op_getmores' , :type => 'counter'},
+        {:name => 'op_commands' , :type => 'counter'},
+        {:name => 'asserts_regular' , :type => 'counter'},
+        {:name => 'asserts_warning' , :type => 'counter'},
+        {:name => 'asserts_msg' , :type => 'counter'},
+        {:name => 'asserts_user' , :type => 'counter'},
+        {:name => 'asserts_rollover' , :type => 'counter'},
+        {:name => 'connections_available' , :type => 'gauge'},
+        {:name => 'connections_current' , :type => 'gauge'},
+        {:name => 'mem_resident' , :type => 'gauge', :unit => 'MB'},
+        {:name => 'mem_virtual' , :type => 'gauge', :unit => 'MB'},
+        {:name => 'mem_mapped' , :type => 'gauge', :unit => 'MB'},
+        {:name => 'mem_pagefaults' , :type => 'gauge', :unit => 'faults'},
+        {:name => 'globalLock_ratio' , :type => 'gauge', :unit => '%'},
+        {:name => 'globalLock_currentQueue' , :type => 'gauge'},
+        {:name => 'globalLock_activeClients' , :type => 'gauge'},
+        {:name => 'uptime' , :type => 'counter', :unit => 's'},
       ]
     end
 
     def monitor
-      arguments = ['port', 'host', 'username', 'password']
-      mongo_options = ['--quiet']
-      arguments.each do |arg|
-        mongo_options << ["--#{arg}", config[arg]] if config.has_key?(arg)
+      connectionArguments = [
+          'port',
+          'host',
+          'user',
+          'password',
+      ]
+      configConnection = {}
+      connectionArguments.each do |k|
+        configConnection[k] = @config[k] if @config[k]
       end
-      response = `2>&1 mongo --eval 'printjson(db.serverStatus())' #{mongo_options.join(' ')}`
 
-      sanitized_response = response.gsub /NumberLong\("?([0-9]+)"?\)/, '\1'
-      sanitized_response = sanitized_response.gsub /ISODate\((".+Z")\)/, '\1'
+      mongo = _connect('admin', configConnection)
+      begin
+        mongoStats = mongo.command('serverStatus' => 1) if mongo
+      rescue Exception => e
+        log "Error getting mongo admin stats from: #{configConnection['host']} [skipping]"
+      end
 
-      status = JSON.parse(sanitized_response)
       data = {}
-      metrics_schema.each do |metric|
-        name = metric[:name]
-        unit = metric[:unit]
-        data[name] = status.access(metric[:keyname]).to_i
-      end
+      data['btree_accesses']           = mongoStats['indexCounters']['accesses'].to_i
+      data['btree_misses']             = mongoStats['indexCounters']['misses'].to_i
+      data['btree_hits']               = mongoStats['indexCounters']['hits'].to_i
+      data['btree_resets']             = mongoStats['indexCounters']['resets'].to_i
+      data['flushing_flushes']         = mongoStats['backgroundFlushing']['flushes'].to_i
+      data['flushing_total_ms']        = mongoStats['backgroundFlushing']['total_ms'].to_i
+      data['flushing_average_ms']      = mongoStats['backgroundFlushing']['average_ms'].to_i
+      data['flushing_last_ms']         = mongoStats['backgroundFlushing']['last_ms'].to_i
+      data['cursors_totalOpen']        = mongoStats['cursors']['totalOpen'].to_i
+      data['cursors_timedOut']         = mongoStats['cursors']['timedOut'].to_i
+      data['op_inserts']               = mongoStats['opcounters']['insert'].to_i
+      data['op_queries']               = mongoStats['opcounters']['query'].to_i
+      data['op_updates']               = mongoStats['opcounters']['update'].to_i
+      data['op_deletes']               = mongoStats['opcounters']['delete'].to_i
+      data['op_getmores']              = mongoStats['opcounters']['getmore'].to_i
+      data['op_commands']              = mongoStats['opcounters']['command'].to_i
+      data['asserts_regular']          = mongoStats['asserts']['regular'].to_i
+      data['asserts_warning']          = mongoStats['asserts']['warning'].to_i
+      data['asserts_msg']              = mongoStats['asserts']['msg'].to_i
+      data['asserts_user']             = mongoStats['asserts']['user'].to_i
+      data['asserts_rollover']         = mongoStats['asserts']['rollovers'].to_i
+      data['connections_available']    = mongoStats['connections']['available'].to_i
+      data['connections_current']      = mongoStats['connections']['current'].to_i
+      data['mem_resident']             = mongoStats['mem']['resident'].to_i
+      data['mem_virtual']              = mongoStats['mem']['virtual'].to_i
+      data['mem_mapped']               = mongoStats['mem']['mapped'].to_i
+      data['mem_pagefaults']           = mongoStats['extra_info']['page_faults']
+      data['globalLock_ratio']         = (mongoStats['globalLock']['lockTime'] / mongoStats['globalLock']['totalTime'] * 100).to_f
+      data['globalLock_currentQueue']  = mongoStats['globalLock']['currentQueue']['total'].to_i
+      data['globalLock_activeClients'] = mongoStats['globalLock']['activeClients']['total'].to_i
+      data['uptime']                   = mongoStats['uptime'].to_i
+
       data
     end
+
+    private
+
+    def _connect(db, options={})
+      options = {'host' => 'localhost', 'port' => 27017, 'user' => nil, 'password' => nil}.merge(options)
+      begin
+        connection = Mongo::MongoClient.new(options['host'], options['port'], {:op_timeout=>2, :slave_ok=>true})
+      rescue Exception => e
+        Bipbip.logger.error "Unable to connect to Mongo at #{options['host']}:#{options['port']} - #{e.message}"
+        return nil
+      end
+
+      mongo = connection.db(db)
+      begin
+        mongo.authenticate(options['user'], options['password']) unless options['password'].nil?
+      rescue Exception => e
+        Bipbip.logger.error "Error connecting to mongodb #{db}, on #{options['host']}:#{options['port']} - #{e.message}"
+        return nil
+      end
+      return mongo
+    end
+
   end
 end
