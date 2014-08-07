@@ -41,6 +41,12 @@ services:
     username: root
     password: root
   -
+    plugin: mongodb
+    hostname: localhost
+    port: 27017
+    username:
+    password:
+  -
     plugin: redis
     hostname: localhost
     port: 6379
