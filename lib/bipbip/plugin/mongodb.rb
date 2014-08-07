@@ -42,14 +42,14 @@ module Bipbip
 
     def monitor
       options = {
-          'host' => 'localhost',
+          'hostname' => 'localhost',
           'port' => 27017,
-          'user' => nil,
+          'username' => nil,
           'password' => nil
       }.merge(config)
-      connection = Mongo::MongoClient.new(options['host'], options['port'], {:op_timeout => 2, :slave_ok => true})
+      connection = Mongo::MongoClient.new(options['hostname'], options['port'], {:op_timeout => 2, :slave_ok => true})
       mongo = connection.db('admin')
-      mongo.authenticate(options['user'], options['password']) unless options['password'].nil?
+      mongo.authenticate(options['username'], options['password']) unless options['password'].nil?
       mongoStats = mongo.command('serverStatus' => 1)
 
       {
