@@ -2,7 +2,7 @@ require 'bipbip'
 require 'bipbip/plugin/mongodb'
 
 describe Bipbip::Plugin::Mongodb do
-  let(:plugin) { Bipbip::Plugin::Mongodb.new('mongodb', {'host' => 'localhost', 'port' => 27017}, 10) }
+  let(:plugin) { Bipbip::Plugin::Mongodb.new('mongodb', {'hostname' => 'localhost', 'port' => 27017}, 10) }
 
   it 'should collect data' do
     data = plugin.monitor
