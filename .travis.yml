@@ -9,6 +9,3 @@ services:
   - mysql
   - redis-server
   - mongodb
-
-before_install:
-  - gem update --system 2.1.11 #  todo: workaround for https://github.com/rubygems/rubygems/pull/763
