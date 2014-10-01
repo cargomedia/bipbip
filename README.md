@@ -93,6 +93,34 @@ services:
     plugin: fastcgi-php-opcache
     host: localhost
     port: 9000
+  -
+    plugin: log-parser
+    sources: {
+      active_oom_killer: { 
+        uri : 'file://localhost/var/log/syslog', 
+        regexp: ^oom_killer$,
+        file_options: {
+          regexp_timestamp: 'Y-m-d H:i:s', 
+          age_max: 1800
+        }
+      },
+      active_root_auth: { 
+        uri : 'file://localhost/var/log/auth', 
+        regexp_text: ^root$,
+        file_options: {
+          regexp_timestamp: 'Y-m-d H:i:s', 
+          age_max: 1800
+        }
+      },
+      inactive_some_service: { 
+        uri : 'http://greylog-api:8090', 
+        regexp_text: ^down$
+        http_options: {
+          http_type: post, 
+          post_data: 'query: find-server-by-name-with-log-and-data',
+        }
+      },
+    }
 ```
 
 Include configuration
