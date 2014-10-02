@@ -5,7 +5,7 @@ describe Bipbip::Plugin::LogParser do
 
   let(:plugin) { Bipbip::Plugin::LogParser.new('log-parser', {
       'sources' => {
-          'active_oom_killer' => {
+          'inactive_oom_killer' => {
               'uri' => 'file://localhost' + File.expand_path('../../../testdata/logger/sample.log', __FILE__),
               'regexp_text' => 'oom_killer',
               'file_options' => {
@@ -13,7 +13,7 @@ describe Bipbip::Plugin::LogParser do
                 'age_max' => 3600
               }
           },
-          'active_root' => {
+          'inactive_root_auth' => {
               'uri' => 'file://localhost' + File.expand_path('../../../testdata/logger/sample.log', __FILE__),
               'regexp_text' => 'root login',
               'file_options' => {
@@ -31,10 +31,10 @@ describe Bipbip::Plugin::LogParser do
     data['All_Logs_ok'].should be_instance_of(Fixnum)
     data['All_Logs_ok'].should eq(0)
 
-    data['active_oom_killer'].should be_instance_of(Fixnum)
-    data['active_oom_killer'].should eq(0)
+    data['inactive_oom_killer'].should be_instance_of(Fixnum)
+    data['inactive_oom_killer'].should eq(0)
 
-    data['active_root'].should be_instance_of(Fixnum)
-    data['active_root'].should eq(1)
+    data['inactive_root_auth'].should be_instance_of(Fixnum)
+    data['inactive_root_auth'].should eq(1)
   end
 end

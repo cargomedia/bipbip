@@ -96,30 +96,30 @@ services:
   -
     plugin: log-parser
     sources: {
-      active_oom_killer: { 
+      inactive_oom_killer: { 
         uri : 'file://localhost/var/log/syslog', 
         regexp: '^oom_killer$',
         file_options: {
           regexp_timestamp: '^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b', 
-          age_max: 1800
+          age_max: 600
         }
       },
-      active_root_auth: { 
+      inactive_root_auth: { 
         uri : 'file://localhost/var/log/auth', 
         regexp_text: '^root$',
         file_options: {
           regexp_timestamp: '^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b', 
-          age_max: 1800
+          age_max: 7200
         }
       },
-      inactive_some_service: { 
+      active_balancer_service: { 
         uri : 'http://greylog-api:8090', 
         regexp_text: '^balancer$'
         http_options: {
           http_type: post,
           post_data: 'server: example.com',
-          regexp_timestamp: '^\d{2}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b', 
-          age_max: 1800
+          regexp_timestamp: '^\d{2}\:\d{2}\:\d{2}\b', 
+          age_max: 300
         }
       },
     }
