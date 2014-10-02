@@ -35,7 +35,7 @@ module Bipbip
     def source_check(config)
       output = 1
 
-      _get_lines(config, 1).each do |line|
+      _get_lines(config).each do |line|
         output *= ((line.match(Regexp.new(config['regexp_text']))).nil?) ? 1 : 0
       end
 
@@ -69,13 +69,13 @@ module Bipbip
       path
     end
 
-    def _get_lines(config, lines = 1)
+    def _get_lines(config)
       type = source_type(config)
       path = source_path(config)
       options = source_options(config)
 
-      line_list = _file_get_lines(path, lines, options) if type == 'file'
-      line_list = _http_get_lines(path, lines, options) if type == 'http'
+      line_list = _file_get_lines(path, options) if type == 'file'
+      line_list = _http_get_lines(path, options) if type == 'http'
 
       line_list
     end
@@ -87,9 +87,7 @@ module Bipbip
       uri
     end
 
-    def _file_get_lines(path, lines, options)
-      return [] if lines < 1
-
+    def _file_get_lines(path, options)
       raise 'File does not exist' unless File.exists?(path)
 
       if options.key?('regexp_timestamp') and options.key?('age_max')
@@ -112,7 +110,7 @@ module Bipbip
         file.seek(-buffer_size, File::SEEK_END)
         seek_position = buffer_size
 
-        while buffer_lines.length <= lines
+        while seek_position <= file.stat.size
           buffer = file.read(buffer_size)
           line_list = buffer.split("\n")
 
@@ -134,10 +132,10 @@ module Bipbip
         file.close
       end
 
-      buffer_lines.first(lines)
+      buffer_lines
     end
 
-    def _http_get_line(path, lines, options)
+    def _http_get_line(path, options)
       raise 'Unknown http request type' unless ['get', 'post'].include? options['http_type']
     end
   end
