@@ -158,10 +158,12 @@ Then set the `url`-configuration for the plugin to where the script is being ser
 
 #### log-parser
 Supports two sources of logs: `file` and `http`. For both types settings are valid:
+
 `age_max` should be defined in seconds.
 `regexp_timestamp` by default is set to `\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b` and applied only if `age_max` is set.
 
 If source is type of `http` there are additional options:
+
 `http_type` by default set to `get`
 `post_data` by default is empty. Applied only if `http_type` is set to `post`
 
