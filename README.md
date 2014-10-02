@@ -95,7 +95,7 @@ services:
     port: 9000
   -
     plugin: log-parser
-    name: inactive_oom_killer
+    name: oom_killer_activity
     uri : 'file://localhost/var/log/syslog'
     regexp_text: '^oom_killer$'
 ```
