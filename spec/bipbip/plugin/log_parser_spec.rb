@@ -6,7 +6,7 @@ describe Bipbip::Plugin::LogParser do
   let(:plugin) { Bipbip::Plugin::LogParser.new('log-parser', {
       'sources' => {
           'inactive_oom_killer' => {
-              'uri' => 'file://localhost' + File.expand_path('../../../testdata/logger/sample.log', __FILE__),
+              'uri' => 'file://localhost' + File.expand_path('../../../testdata/sample_logs/sample.log', __FILE__),
               'regexp_text' => 'oom_killer',
               'file_options' => {
                 'regexp_timestamp' => '^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b',
@@ -14,7 +14,7 @@ describe Bipbip::Plugin::LogParser do
               }
           },
           'inactive_root_auth' => {
-              'uri' => 'file://localhost' + File.expand_path('../../../testdata/logger/sample.log', __FILE__),
+              'uri' => 'file://localhost' + File.expand_path('../../../testdata/sample_logs/sample.log', __FILE__),
               'regexp_text' => 'root login',
               'file_options' => {
                   'regexp_timestamp' => '^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b',
