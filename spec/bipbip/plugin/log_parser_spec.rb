@@ -8,8 +8,8 @@ describe Bipbip::Plugin::LogParser do
               'uri' => 'file://localhost/tmp/bipbip.log',
               'regexp_text' => 'oom_killer',
               'file_options' => {
-                'regexp_timestamp' => 'oom_killer',
-                'age_max' => 1000
+                'regexp_timestamp' => '^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b',
+                'age_max' => 600
               }
           }
       }
@@ -18,8 +18,6 @@ describe Bipbip::Plugin::LogParser do
 
   it 'should collect data' do
     data = plugin.monitor
-
-    p data
 
     data['All_Logs_ok'].should be_instance_of(Fixnum)
   end
