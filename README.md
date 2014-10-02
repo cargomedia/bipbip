@@ -103,11 +103,11 @@ services:
       active_balancer_service: 
         uri : 'http://greylog-api:8090' 
         regexp_text: '^balancer$'
+        regexp_timestamp: '^\d{2}\:\d{2}\:\d{2}\b'
+        age_max: 300
         http_options:
           http_type: post
           post_data: 'server: example.com'
-          regexp_timestamp: '^\d{2}\:\d{2}\:\d{2}\b' 
-          age_max: 300
 ```
 
 Include configuration
@@ -155,6 +155,16 @@ Alias /apc-status /usr/local/bin/apc-status.php
 ```
 
 Then set the `url`-configuration for the plugin to where the script is being served, e.g. `http//localhost:80/apc-status`.
+
+#### log-parser
+Supports two sources of logs: `file` and `http`. For both types settings are valid:
+`age_max` should be defined in seconds.
+`regexp_timestamp` by default is set to `\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b` and applied only if `age_max` is set.
+
+If source is type of `http` there are additional options:
+`http_type` by default set to `get`
+`post_data` by default is empty. Applied only if `http_type` is set to `post`
+
 
 Custom external plugins
 -----------------------
