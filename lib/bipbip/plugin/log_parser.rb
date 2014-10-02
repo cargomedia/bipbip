@@ -23,8 +23,8 @@ module Bipbip
       data['All_Logs_ok'] = 1
 
       sources.each do |name, config|
-        data[name] = source_check(config) ? 1 : 0
-        data['All_Logs_ok'] = 0 if data[name] == 0 && data['All_Logs_ok'] == 1
+        data[name] = source_check(config)
+        data['All_Logs_ok'] *= data[name]
       end
 
       data
@@ -33,10 +33,10 @@ module Bipbip
     private
 
     def source_check(config)
-      output = true
+      output = 1
 
       _get_lines(config, 1).each do |line|
-        output &= (line.match(Regexp.new(config['regexp_text']))).nil?
+        output *= ((line.match(Regexp.new(config['regexp_text']))).nil?) ? 1 : 0
       end
 
       output
