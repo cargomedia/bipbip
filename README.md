@@ -148,7 +148,7 @@ Then set the `url`-configuration for the plugin to where the script is being ser
 
 #### log-parser
 
-The log file is being scanned for `regexp` from its end using followed logic:
+The log file is being scanned for `regexp` from its end using filtering by `regexp_timestamp` and following logic:
 
 * first run:
 
@@ -161,10 +161,10 @@ last_read_line_timestamp < log_line_timestamp < now()
 `regexp_timestamp` by default is set to `\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b`.
 
 Example timestamp formats:
-* apache
-* syslog
-* elasticsearch
-* nginx
+* apache:
+* syslog:
+* elasticsearch:
+* nginx:
 
 Custom external plugins
 -----------------------

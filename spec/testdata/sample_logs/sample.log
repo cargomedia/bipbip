@@ -1,6 +1,11 @@
-2014-09-01T13:32:01 root login
-2014-09-02T13:32:01 oom_killer
-4000-10-02T13:32:01 oom_killer
-4001-10-02T13:32:01 oom_killer
-4002-10-02T13:32:01 oom_killer
-4003-10-02T13:32:01 oom_killer
+2014-09-01T13:32:01 root auth login
+2014-09-02T13:32:01 oom_killer invoked bipbip
+2014-10-01T13:32:01 oom_killer invoked sshd
+4001-10-02T13:32:01 oom_killer invoked mongod
+4002-10-02T13:32:01 oom_killer invoked nginx
+4003-10-02T13:32:01 oom_killer invoked mysql
+4004-10-02T13:32:01 oom_killer invoked redis
+4005-10-02T13:32:01 oom_killer invoked memcached
+4006-10-02T13:32:01 oom_killer invoked gearman
+4007-10-02T13:32:01 oom_killer invoked apache2
+4008-10-02T13:32:01 root auth login
