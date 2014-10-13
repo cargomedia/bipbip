@@ -26,8 +26,7 @@ describe Bipbip::Plugin::LogParser do
     }, 10)
 
     @plugin3 = Bipbip::Plugin::LogParser.new('log-parser', {
-        'path' => File.expand_path('../../../testdata/sample_logs/syslog-sample.log', __FILE__),
-        'regexp_timestamp' => '\w+ \d{1,2} \d{2}\:\d{2}\:\d{2}',
+        'path' => File.expand_path('../../../testdata/sample_logs/syslog-rfc3339-sample.log', __FILE__),
         'matchers' => [
             {
                 'name' => 'segfaults',
@@ -51,7 +50,7 @@ describe Bipbip::Plugin::LogParser do
     data['root_activity'].should eq(1)
 
     data['segfaults'].should be_instance_of(Fixnum)
-    data['segfaults'].should eq(6)
+    data['segfaults'].should eq(4)
   end
 
   it 'should not match any log entries for second run' do
@@ -61,8 +60,6 @@ describe Bipbip::Plugin::LogParser do
 
     data = data1.merge(data2).merge(data3)
 
-
-    data = data1.merge(data2)
 
     data['oom_killer_activity'].should be_instance_of(Fixnum)
     data['oom_killer_activity'].should eq(0)
