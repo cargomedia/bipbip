@@ -36,51 +36,51 @@ module Bipbip
       @regexp_timestamp ||= Regexp.new(config.fetch('regexp_timestamp', TIMESTAMP_REGEXP))
     end
 
-    def lines
-      raise 'File does not exist' unless File.exists?(config['path'])
 
+
+    def lines
       [].tap do |b|
 
-        buffer_size = 1 << 16
+        buffer_size = 65536
 
         File.open(config['path']) do |file|
-          # resize buffer if file smaller than buffer
-          if file.stat.size < buffer_size
-            buffer_size = file.stat.size
-          end
+          file.seek(0, File::SEEK_END)
 
-          file.seek(-buffer_size, File::SEEK_END)
+          _time = log_time_min
+          while file.pos >= 0
+            if file.pos < buffer_size
+              buffer_size = file.pos
+            end
 
-          while file.pos > -1
-            buffer = file.read(buffer_size)
-            line_list = buffer.split("\n")
+            file.seek(-buffer_size, File::SEEK_CUR)
+
+            line_list = file.read(buffer_size).split("\n")
 
             # Remove first line as can be incomplete
             # due to seeking backward with
             # buffer_size steps
             first_line = line_list.shift
-            offset = first_line.length
+            file.seek(-buffer_size + first_line.length, File::SEEK_CUR)
 
-            line_count = b.length
-            line_list.each do |line|
+            a = line_list.select do |line|
               timestamp = line.match(regexp_timestamp)
               unless timestamp.nil?
                 time = DateTime.parse(timestamp[0]).to_time
-                if time > log_time_min
-                  self.log_time_min = time
-                  b.push line
+                if time >= log_time_min
+                  1 == 1
+                end
+                if time > _time
+                  _time = time
                 end
               end
             end
 
-            break if line_count == b.length
+            b.push(*line_list)
 
-            backward_step = 2 * -buffer_size + offset
-            break if file.pos + backward_step <= 0
-            file.seek(backward_step, File::SEEK_CUR)
+            break if line_list.empty?
           end
 
-          file.close
+          self.log_time_min = _time
         end
       end
     end
