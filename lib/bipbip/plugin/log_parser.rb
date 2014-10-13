@@ -7,7 +7,7 @@ module Bipbip
   class Plugin::LogParser < Plugin
 
     def initialize(name, config, frequency)
-      @start_timestamp = Time.now - frequency.to_i
+      @log_min_timestamp = Time.now - frequency.to_i
 
       super name, config, frequency
     end
@@ -60,18 +60,18 @@ module Bipbip
 
       [].tap do |b|
 
-        buffer_size =  1 << 6
-        start_timestamp = @start_timestamp.strftime("%FT%T")
+        buffer_size =  1 << 16
+        entry_min_timestamp = @log_min_timestamp.strftime("%FT%T")
 
         File.open(source_path) do |file|
+          # resize buffer if file smaller than buffer
           if file.stat.size < buffer_size
             buffer_size = file.stat.size
           end
 
-          seek_position = -buffer_size
-          file.seek(seek_position, File::SEEK_END)
+          file.seek(-buffer_size, File::SEEK_END)
 
-          while seek_position <= file.stat.size
+          while file.pos > -1
             buffer = file.read(buffer_size)
             line_list = buffer.split("\n")
 
@@ -83,19 +83,18 @@ module Bipbip
 
             line_count = b.length
             line_list.each do |line|
-              if (t = line.match(regexp_timestamp)) && (t[0] > start_timestamp)
+              if (t = line.match(regexp_timestamp)) && (t[0] > entry_min_timestamp)
                 line_timestamp = DateTime.parse(t[0])
-                @start_timestamp = line_timestamp if line_timestamp > @start_timestamp
+                @log_min_timestamp = line_timestamp if line_timestamp > @log_min_timestamp
                 b.push line
               end
             end
 
             break if line_count == b.length
 
-            seek_position = seek_position - buffer_size + offset
-            break if 0 > file.stat.size + seek_position
-
-            file.seek(2 * -buffer_size + offset, File::SEEK_CUR)
+            backward_step = 2 * -buffer_size + offset
+            break if file.pos + backward_step <= 0
+            file.seek(backward_step, File::SEEK_CUR)
           end
 
           file.close
