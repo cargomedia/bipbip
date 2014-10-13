@@ -152,19 +152,19 @@ The log file is being scanned for `regexp` from its end using filtering by `rege
 
 * first run:
 
-now() - `frequency` < log_line_timestamp < now()
+```
+entry_min_timestamp = now() - `frequency` 
+entry_min_timestamp < ENTRY_TIMESTAMP < now()
+```
 
 * next runs:
 
-last_read_line_timestamp < log_line_timestamp < now()
+```
+entry_min_timestamp = max_of_previous_run(ENTRY_TIMESTAMP)
+entry_min_timestamp < ENTRY_TIMESTAMP < now()
+```
 
-`regexp_timestamp` by default is set to `\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b`.
-
-Example timestamp formats:
-* apache:
-* syslog:
-* elasticsearch:
-* nginx:
+`regexp_timestamp` by default is set to `\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b`
 
 Custom external plugins
 -----------------------
