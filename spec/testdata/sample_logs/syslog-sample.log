@@ -1,0 +1,26 @@
+Dec 21 06:25:49 www3 kernel: [4580936.504985] php[27961]: segfault at ffffffffffffffff ip 00007f9c8613d7b8 sp 00007fffc3b4ca98 error 7 in libpthread-2.13.so[7f9c86133000+17000]
+Dec 21 06:25:53 www3 kernel: [4580939.817860] php[29108]: segfault at ffffffffffffffff ip 00007fb10e3037b8 sp 00007fff47f58368 error 7 in libpthread-2.13.so[7fb10e2f9000+17000]
+Dec 21 06:26:01 www3 puppet-agent[5605]: (/Stage[main]/Php5::Extension::Redis/Helper::Script[install php5-redis]/Exec[exec install php5-redis]/returns) executed successfully
+Dec 21 06:26:01 www3 puppet-agent[5605]: (/Stage[main]/Php5::Extension::Redis/Helper::Script[install php5-redis]/Exec[cleanup install php5-redis]) Triggered 'refresh' from 1 events
+Dec 21 06:26:01 www3 kernel: [4580948.111543] php[30910]: segfault at ffffffffffffffff ip 00007f6546e557b8 sp 00007fff13050278 error 7 in libpthread-2.13.so[7f6546e4b000+17000]
+Dec 21 06:26:02 www3 monit[24912]: 'sk-entertainment' failed to start
+Dec 21 06:26:09 www3 puppet-agent[5605]: (/Stage[main]/Php5::Extension::Apcu/Helper::Script[install php5::apcu]/Exec[exec install php5::apcu]/returns) executed successfully
+Dec 21 06:26:09 www3 puppet-agent[5605]: (/Stage[main]/Php5::Extension::Apcu/Helper::Script[install php5::apcu]/Exec[cleanup install php5::apcu]) Triggered 'refresh' from 1 events
+Dec 21 06:26:09 www3 puppet-agent[5605]: (/Stage[main]/Php5::Extension::Gearman/Helper::Script[install php5::extension::gearman]/Exec[cleanup install php5::extension::gearman]) Triggered 'refresh' from 1 events
+Dec 21 06:26:11 www3 puppet-agent[5605]: Finished catalog run in 113.44 seconds
+Dec 21 06:26:12 www3 monit[24912]: 'base' mem usage of 85.7% matches resource limit [mem usage>85.0%]
+Dec 21 06:26:12 www3 monit[24912]: 'sk-maintenance' process is not running
+Dec 21 06:26:12 www3 monit[24912]: 'sk-maintenance' trying to restart
+Dec 21 06:26:12 www3 monit[24912]: 'sk-maintenance' start: /etc/init.d/sk-maintenance
+Dec 21 06:26:12 www3 kernel: [4580959.250424] php[2766]: segfault at ffffffffffffffff ip 00007fdde24217b8 sp 00007ffff75ab318 error 7 in libpthread-2.13.so[7fdde2417000+17000]
+Dec 21 06:26:43 www3 kernel: [4580989.879455] php[2988]: segfault at ffffffffffffffff ip 00007f851e2377b8 sp 00007fff421ac998 error 7 in libpthread-2.13.so[7f851e22d000+17000]
+Dec 21 06:26:43 www3 monit[24912]: 'sk-maintenance' failed to start
+Dec 21 06:26:43 www3 monit[24912]: 'sk-entertainment' process is not running
+Dec 21 06:26:43 www3 monit[24912]: 'sk-entertainment' trying to restart
+Dec 21 06:26:43 www3 monit[24912]: 'sk-entertainment' start: /etc/init.d/sk-entertainment
+Dec 21 06:26:43 www3 kernel: [4580990.098865] php[2998]: segfault at ffffffffffffffff ip 00007f13de7ed7b8 sp 00007fff919fd548 error 7 in libpthread-2.13.so[7f13de7e3000+17000]
+Dec 21 06:27:14 www3 monit[24912]: 'sk-entertainment' failed to start
+Dec 21 06:27:24 www3 monit[24912]: 'base' mem usage of 86.0% matches resource limit [mem usage>85.0%]
+Dec 21 06:27:24 www3 monit[24912]: 'sk-maintenance' process is not running
+Dec 21 06:27:24 www3 monit[24912]: 'sk-maintenance' trying to restart
+Dec 21 06:27:24 www3 monit[24912]: 'sk-maintenance' start: /etc/init.d/sk-maintenance
