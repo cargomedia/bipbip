@@ -7,20 +7,12 @@ module Bipbip
   class Plugin::LogParser < Plugin
 
     def metrics_schema
-      [
-          {:name => config['name'], :type => 'gauge', :unit => 'Boolean'}
-      ]
+      config['matchers'].map do |matcher|
+        {:name => matcher['name'], :type => 'gauge', :unit => 'Boolean'}
+      end
     end
 
     def monitor
-      {
-          config['name'] => match_count
-      }
-    end
-
-    private
-
-    def match_count
       time_first = nil
 
       lines = lines_backwards.take_while do |line|
@@ -33,8 +25,15 @@ module Bipbip
 
       self.log_time_min = time_first unless time_first.nil?
 
-      lines.reject { |line| line.match(Regexp.new(config['regexp_text'])).nil? }.length
+      Hash[config['matchers'].map do |matcher|
+        name = matcher['name']
+        regexp = Regexp.new(matcher['regexp'])
+        value = lines.reject { |line| line.match(regexp).nil? }.length
+        [name, value]
+      end]
     end
+
+    private
 
     def log_time_min
       @log_time_min ||= Time.now - @frequency.to_i

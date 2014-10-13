@@ -95,9 +95,15 @@ services:
     port: 9000
   -
     plugin: log-parser
-    name: oom_killer_activity
     path: /var/log/syslog
-    regexp_text: oom_killer
+    regexp_timestamp: '^\w+ \d{1,2} \d{2}\:\d{2}\:\d{2}'
+    matchers:
+     -
+      name: oom_killer
+      regexp: 'invoked oom_killer'
+     -
+      name: segfault
+      regexp: segfault
 ```
 
 Include configuration
@@ -147,13 +153,12 @@ Alias /apc-status /usr/local/bin/apc-status.php
 Then set the `url`-configuration for the plugin to where the script is being served, e.g. `http//localhost:80/apc-status`.
 
 #### log-parser
-
-The log file is being scanned for `regexp` from its end. Each log entry should contain a timestamp which should
- match `regexp_timestamp` and will be parsed by `DateTime.parse`.
+The log file is being read backwards from the end.
+Each line should contain a timestamp which matches `regexp_timestamp` and can be parsed by `DateTime.parse`.
+Multiple `matchers` can be specified, each creates a metrics with the number of matched lines as a value.
  
-`regexp_timestamp` by default is set to `^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}`
-
-Example timestamp regexp:
+Example values for `regexp_timestamp`:
+* *default*: `^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}`
 * syslog: `^\w+ \d{1,2} \d{2}\:\d{2}\:\d{2}`
 
 Custom external plugins
