@@ -96,7 +96,7 @@ services:
   -
     plugin: log-parser
     name: oom_killer_activity
-    uri: 'file://localhost/var/log/syslog'
+    path: /var/log/syslog
     regexp_text: oom_killer
 ```
 

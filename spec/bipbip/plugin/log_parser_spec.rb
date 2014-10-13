@@ -6,14 +6,14 @@ describe Bipbip::Plugin::LogParser do
   before(:all) do
     @plugin1 = Bipbip::Plugin::LogParser.new('log-parser', {
       'name' => 'oom_killer_activity',
-      'uri' => 'file://localhost' + File.expand_path('../../../testdata/sample_logs/sample.log', __FILE__),
+      'path' => File.expand_path('../../../testdata/sample_logs/sample.log', __FILE__),
       'regexp_text' => 'oom_killer',
       'regexp_timestamp' => '^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b'
     }, 10)
 
     @plugin2 = Bipbip::Plugin::LogParser.new('log-parser', {
       'name' => 'root_activity',
-      'uri' => 'file://localhost' + File.expand_path('../../../testdata/sample_logs/sample.log', __FILE__),
+      'path' => File.expand_path('../../../testdata/sample_logs/sample.log', __FILE__),
       'regexp_text' => 'root.*login$'
     }, 10)
   end
