@@ -2,7 +2,7 @@ require 'uri'
 
 module Bipbip
 
-  TIMESTAMP_REGEXP = '^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b'
+  TIMESTAMP_REGEXP = '^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}'
 
   class Plugin::LogParser < Plugin
 

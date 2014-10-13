@@ -96,8 +96,8 @@ services:
   -
     plugin: log-parser
     name: oom_killer_activity
-    uri : 'file://localhost/var/log/syslog'
-    regexp_text: '^oom_killer$'
+    uri: 'file://localhost/var/log/syslog'
+    regexp_text: oom_killer
 ```
 
 Include configuration
@@ -148,23 +148,13 @@ Then set the `url`-configuration for the plugin to where the script is being ser
 
 #### log-parser
 
-The log file is being scanned for `regexp` from its end using filtering by `regexp_timestamp` and following logic:
+The log file is being scanned for `regexp` from its end. Each log entry should contain a timestamp which should
+ match `regexp_timestamp` and will be parsed by `DateTime.parse`.
+ 
+`regexp_timestamp` by default is set to `^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}`
 
-* first run:
-
-```
-entry_min_timestamp = now() - `frequency` 
-entry_min_timestamp < ENTRY_TIMESTAMP < now()
-```
-
-* next runs:
-
-```
-entry_min_timestamp = max_of_previous_run(ENTRY_TIMESTAMP)
-entry_min_timestamp < ENTRY_TIMESTAMP < now()
-```
-
-`regexp_timestamp` by default is set to `\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b`
+Example timestamp regexp:
+* syslog: `^\w+ \d{1,2} \d{2}\:\d{2}\:\d{2}`
 
 Custom external plugins
 -----------------------
