@@ -159,7 +159,7 @@ Multiple `matchers` can be specified, each creates a metrics with the number of 
  
 Example values for `regexp_timestamp`:
 * *default*: `^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}`
-* syslog: `^\w+ \d{1,2} \d{2}\:\d{2}\:\d{2}`
+* syslog traditional: `^\w+ \d{1,2} \d{2}\:\d{2}\:\d{2}` (not recommended because year is missing)
 
 Custom external plugins
 -----------------------
