@@ -32,10 +32,12 @@ module Bipbip
       @log_time_min = time
     end
 
+    def regexp_timestamp
+      @regexp_timestamp ||= Regexp.new(config.fetch('regexp_timestamp', TIMESTAMP_REGEXP))
+    end
+
     def lines
       raise 'File does not exist' unless File.exists?(config['path'])
-
-      regexp_timestamp = config.key?('regexp_timestamp') ? Regexp.new(config['regexp_timestamp']) : TIMESTAMP_REGEXP
 
       [].tap do |b|
 
