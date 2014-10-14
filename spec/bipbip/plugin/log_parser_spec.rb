@@ -30,7 +30,7 @@ describe Bipbip::Plugin::LogParser do
         'matchers' => [
             {
                 'name' => 'segfaults',
-                'regexp' => '.*segfault+.*'
+                'regexp' => 'segfault'
             },
         ]
     }, 10)

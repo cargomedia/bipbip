@@ -7,7 +7,7 @@ module Bipbip
   class Plugin::LogParser < Plugin
 
     def metrics_schema
-      config['matchers'].each do |matcher|
+      config['matchers'].map do |matcher|
         {:name => matcher['name'], :type => 'gauge', :unit => 'Boolean'}
       end
     end
