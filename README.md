@@ -93,6 +93,17 @@ services:
     plugin: fastcgi-php-opcache
     host: localhost
     port: 9000
+  -
+    plugin: log-parser
+    path: /var/log/syslog
+    regexp_timestamp: '^\w+ \d{1,2} \d{2}\:\d{2}\:\d{2}'
+    matchers:
+     -
+      name: oom_killer
+      regexp: 'invoked oom_killer'
+     -
+      name: segfault
+      regexp: segfault
 ```
 
 Include configuration
@@ -140,6 +151,15 @@ Alias /apc-status /usr/local/bin/apc-status.php
 ```
 
 Then set the `url`-configuration for the plugin to where the script is being served, e.g. `http//localhost:80/apc-status`.
+
+#### log-parser
+The log file is being read backwards from the end.
+Each line should contain a timestamp which matches `regexp_timestamp` and can be parsed by `DateTime.parse`.
+Multiple `matchers` can be specified, each creates a metrics with the number of matched lines as a value.
+ 
+Example values for `regexp_timestamp`:
+* *default*: `^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}`
+* syslog traditional: `^\w+ \d{1,2} \d{2}\:\d{2}\:\d{2}` (not recommended because year is missing)
 
 Custom external plugins
 -----------------------

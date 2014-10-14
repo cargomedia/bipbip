@@ -1,5 +1,5 @@
 Vagrant.configure('2') do |config|
-  config.vm.box = 'debian-7-amd64-default'
+  config.vm.box = 'cargomedia/debian-7-amd64-default'
 
   config.vm.provision 'shell', inline: [
     'cd /vagrant',
