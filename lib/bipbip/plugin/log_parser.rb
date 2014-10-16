@@ -3,6 +3,7 @@ require 'date'
 module Bipbip
 
   TIMESTAMP_REGEXP = '^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}'
+  REGEXP_IGNORE_LINE = '^\s*$'
 
   class Plugin::LogParser < Plugin
 
@@ -16,11 +17,15 @@ module Bipbip
       time_first = nil
 
       lines = lines_backwards.take_while do |line|
-        timestamp_match = line.match(regexp_timestamp)
-        raise "Line doesn't match `#{regexp_timestamp}`: `#{line}`" if timestamp_match.nil?
-        time = DateTime.parse(timestamp_match[0]).to_time
-        time_first ||= time
-        (time > log_time_min)
+        if line.match(REGEXP_IGNORE_LINE)
+          true
+        elsif timestamp_match = line.match(regexp_timestamp)
+          time = DateTime.parse(timestamp_match[0]).to_time
+          time_first ||= time
+          (time > log_time_min)
+        else
+          Bipbip::logger.warn("Log parser: Unparseable line `#{line.chomp}` in `#{config['path']}`")
+        end
       end
 
       self.log_time_min = time_first unless time_first.nil?
