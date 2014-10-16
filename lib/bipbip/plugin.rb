@@ -5,16 +5,18 @@ module Bipbip
 
     attr_accessor :name
     attr_accessor :config
+    attr_accessor :metric_group
 
-    def self.factory(name, config, frequency)
+    def self.factory(name, config, frequency, metric_group = nil)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
-      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency)
+      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency, metric_group)
     end
 
-    def initialize(name, config, frequency)
+    def initialize(name, config, frequency, metric_group = nil)
       @name = name.to_s
       @config = config.to_hash
       @frequency = frequency.to_i
+      @metric_group = (metric_group || name).to_s
     end
 
     def run(storages)

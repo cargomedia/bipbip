@@ -106,6 +106,10 @@ services:
       regexp: segfault
 ```
 
+Optional configuration common to all plugins:
+- `frequency`: Override global frequency per plugin
+- `metric_group`: Use metric group name different from plugin name. Useful when using the same plugin twice.
+
 Include configuration
 ---------------------
 In your configuration you can specify a directory to include service configurations from:
@@ -120,8 +124,6 @@ plugin: memcached
 hostname: localhost
 port: 11211
 ```
-
-You can also set an override frequency per service in the main config or in these included configs.
 
 Plugins
 -------
