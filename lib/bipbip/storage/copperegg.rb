@@ -40,7 +40,7 @@ module Bipbip
     end
 
     def store_sample(plugin, time, data)
-      CopperEgg::MetricSample.save(plugin.name, plugin.metric_identifier, time.to_i, data)
+      CopperEgg::MetricSample.save(plugin.name, plugin.source_identifier, time.to_i, data)
     end
 
     def _load_metric_groups

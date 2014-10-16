@@ -31,9 +31,9 @@ module Bipbip
             time = Time.now
             data = monitor
             if data.empty?
-              raise "#{name} #{metric_identifier}: Empty data"
+              raise "#{name} #{source_identifier}: Empty data"
             end
-            Bipbip.logger.debug "#{name} #{metric_identifier}: Data: #{data}"
+            Bipbip.logger.debug "#{name} #{source_identifier}: Data: #{data}"
             storages.each do |storage|
               storage.store_sample(self, time, data)
             end
@@ -41,7 +41,7 @@ module Bipbip
             interruptible_sleep (frequency - (Time.now - time))
           end
         rescue => e
-          Bipbip.logger.error "#{name} #{metric_identifier}: Error getting data: #{e.message}"
+          Bipbip.logger.error "#{name} #{source_identifier}: Error getting data: #{e.message}"
           interruptible_sleep retry_delay
           retry_delay += frequency if retry_delay < frequency * 10
           retry
@@ -63,7 +63,7 @@ module Bipbip
       @frequency
     end
 
-    def metric_identifier
+    def source_identifier
       identifier = Bipbip.fqdn
       unless config.empty?
         identifier += '::' + config.values.first.to_s
