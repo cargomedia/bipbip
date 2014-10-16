@@ -16,10 +16,10 @@ module Bipbip
         exit 1
       end
 
-      metric_group = @metric_groups.detect { |m| m.name == plugin.name }
+      metric_group = @metric_groups.detect { |m| m.name == plugin.metric_group }
       if metric_group.nil? || !metric_group.is_a?(CopperEgg::MetricGroup)
-        Bipbip.logger.info "Creating copperegg metric group `#{plugin.name}`"
-        metric_group = CopperEgg::MetricGroup.new(:name => plugin.name, :label => plugin.name, :frequency => plugin.frequency)
+        Bipbip.logger.info "Creating copperegg metric group `#{plugin.metric_group}`"
+        metric_group = CopperEgg::MetricGroup.new(:name => plugin.metric_group, :label => plugin.metric_group, :frequency => plugin.frequency)
       end
       metric_group.frequency = plugin.frequency
       metric_group.metrics = plugin.metrics_schema.map do |sample|
@@ -31,16 +31,16 @@ module Bipbip
       end
       metric_group.save
 
-      dashboard = @dashboards.detect { |d| d.name == plugin.name }
+      dashboard = @dashboards.detect { |d| d.name == plugin.metric_group }
       if dashboard.nil?
-        Bipbip.logger.info "Creating copperegg dashboard `#{plugin.name}`"
+        Bipbip.logger.info "Creating copperegg dashboard `#{plugin.metric_group}`"
         metrics = metric_group.metrics || []
-        CopperEgg::CustomDashboard.create(metric_group, :name => plugin.name, :identifiers => nil, :metrics => metrics)
+        CopperEgg::CustomDashboard.create(metric_group, :name => plugin.metric_group, :identifiers => nil, :metrics => metrics)
       end
     end
 
     def store_sample(plugin, time, data)
-      CopperEgg::MetricSample.save(plugin.name, plugin.source_identifier, time.to_i, data)
+      CopperEgg::MetricSample.save(plugin.metric_group, plugin.source_identifier, time.to_i, data)
     end
 
     def _load_metric_groups
