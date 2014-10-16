@@ -5,16 +5,18 @@ module Bipbip
 
     attr_accessor :name
     attr_accessor :config
+    attr_accessor :metric_group
 
-    def self.factory(name, config, frequency)
+    def self.factory(name, config, frequency, metric_group = nil)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
-      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency)
+      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency, metric_group)
     end
 
-    def initialize(name, config, frequency)
+    def initialize(name, config, frequency, metric_group = nil)
       @name = name.to_s
       @config = config.to_hash
       @frequency = frequency.to_i
+      @metric_group = (metric_group || name).to_s
     end
 
     def run(storages)
@@ -29,9 +31,9 @@ module Bipbip
             time = Time.now
             data = monitor
             if data.empty?
-              raise "#{name} #{metric_identifier}: Empty data"
+              raise "#{name} #{source_identifier}: Empty data"
             end
-            Bipbip.logger.debug "#{name} #{metric_identifier}: Data: #{data}"
+            Bipbip.logger.debug "#{name} #{source_identifier}: Data: #{data}"
             storages.each do |storage|
               storage.store_sample(self, time, data)
             end
@@ -39,7 +41,7 @@ module Bipbip
             interruptible_sleep (frequency - (Time.now - time))
           end
         rescue => e
-          Bipbip.logger.error "#{name} #{metric_identifier}: Error getting data: #{e.message}"
+          Bipbip.logger.error "#{name} #{source_identifier}: Error getting data: #{e.message}"
           interruptible_sleep retry_delay
           retry_delay += frequency if retry_delay < frequency * 10
           retry
@@ -61,7 +63,7 @@ module Bipbip
       @frequency
     end
 
-    def metric_identifier
+    def source_identifier
       identifier = Bipbip.fqdn
       unless config.empty?
         identifier += '::' + config.values.first.to_s
