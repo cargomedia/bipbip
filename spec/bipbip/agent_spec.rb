@@ -6,17 +6,13 @@ describe Bipbip::Agent do
   let(:agent) { Bipbip::Agent.new }
   let(:plugin) { Bipbip::Plugin::Memcached.new('memcached', {'hostname' => 'localhost', 'port' => 123}, 10) }
 
-  it 'should run and warn' do
+  it 'should fail without services' do
     Bipbip.logger = double('logger')
 
     Bipbip.logger.should_receive(:info).with('Startup...')
-    Bipbip.logger.should_receive(:warn).with('No services configured')
     Bipbip.logger.should_receive(:warn).with('No storages configured')
 
-    thread = Thread.new { agent.run }
-    sleep 0.5
-
-    thread.alive?.should eq(true)
+    expect { agent.run }.to raise_error('No services configured')
 
     Bipbip.logger = nil
   end

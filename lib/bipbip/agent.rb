@@ -15,8 +15,11 @@ module Bipbip
 
     def run
       Bipbip.logger.info 'Startup...'
-      Bipbip.logger.warn 'No services configured' if @plugins.empty?
       Bipbip.logger.warn 'No storages configured' if @storages.empty?
+
+      if @plugins.empty?
+        raise 'No services configured'
+      end
 
       @storages.each do |storage|
         @plugins.each do |plugin|
