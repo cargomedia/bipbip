@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'monit', '~> 0.3'
   s.add_runtime_dependency 'mongo', '~> 1.10'
   s.add_runtime_dependency 'bson_ext', '~> 1.10'
+  s.add_runtime_dependency 'process_exists', '~> 0.1.3'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 2.0'

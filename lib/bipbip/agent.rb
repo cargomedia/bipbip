@@ -2,21 +2,25 @@ module Bipbip
 
   class Agent
 
+    PLUGIN_RESPAWN_DELAY = 5
+
     attr_accessor :plugins
     attr_accessor :storages
 
     def initialize(config_file = nil)
       @plugins = []
       @storages = []
-      @plugin_pids = []
 
       load_config(config_file) if config_file
     end
 
     def run
       Bipbip.logger.info 'Startup...'
-      Bipbip.logger.warn 'No services configured' if @plugins.empty?
       Bipbip.logger.warn 'No storages configured' if @storages.empty?
+
+      if @plugins.empty?
+        raise 'No services configured'
+      end
 
       @storages.each do |storage|
         @plugins.each do |plugin|
@@ -26,16 +30,24 @@ module Bipbip
       end
 
       ['INT', 'TERM'].each { |sig| trap(sig) {
-        Thread.new { interrupt }
+        Thread.new do
+          interrupt
+          exit
+        end
       } }
 
       @plugins.each do |plugin|
         Bipbip.logger.info "Starting plugin #{plugin.name} with config #{plugin.config}"
-        @plugin_pids.push plugin.run(@storages)
+        plugin.run(@storages)
       end
 
-      while true
-        sleep 1
+      @interrupted = false
+      until @interrupted
+        pid = Process.wait(-1)
+        plugin = plugin_by_pid(pid)
+        Bipbip.logger.error "Plugin #{plugin.name} with config #{plugin.config} died. Respawning..."
+        sleep(PLUGIN_RESPAWN_DELAY)
+        plugin.run(@storages)
       end
     end
 
@@ -78,14 +90,25 @@ module Bipbip
     end
 
     def interrupt
+      @interrupted = true
+
       Bipbip.logger.info 'Interrupt, killing plugin processes...'
-      @plugin_pids.each { |pid| Process.kill('TERM', pid) }
+      @plugins.each do |plugin|
+        Process.kill('TERM', plugin.pid) if Process.exists?(plugin.pid)
+      end
 
       Bipbip.logger.info 'Waiting for all plugin processes to exit...'
       Process.waitall
+    end
 
-      Bipbip.logger.info 'Exiting'
-      exit
+    private
+
+    def plugin_by_pid(pid)
+      plugin = @plugins.find { |plugin| plugin.pid == pid }
+      if plugin.nil?
+        raise "Cannot find plugin with pid #{pid}"
+      end
+      plugin
     end
   end
 end

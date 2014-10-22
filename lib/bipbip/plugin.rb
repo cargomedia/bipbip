@@ -6,6 +6,7 @@ module Bipbip
     attr_accessor :name
     attr_accessor :config
     attr_accessor :metric_group
+    attr_accessor :pid
 
     def self.factory(name, config, frequency, metric_group = nil)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
@@ -15,12 +16,12 @@ module Bipbip
     def initialize(name, config, frequency, metric_group = nil)
       @name = name.to_s
       @config = config.to_hash
-      @frequency = frequency.to_i
+      @frequency = frequency.to_f
       @metric_group = (metric_group || name).to_s
     end
 
     def run(storages)
-      child_pid = fork do
+      @pid = fork do
         ['INT', 'TERM'].each { |sig| trap(sig) {
           Thread.new { interrupt } if !@interrupted
         } }
@@ -41,10 +42,13 @@ module Bipbip
             interruptible_sleep (frequency - (Time.now - time))
           end
         rescue => e
-          Bipbip.logger.error "#{name} #{source_identifier}: Error getting data: #{e.message}"
+          Bipbip.logger.error "#{name} #{source_identifier}: Error: #{e.message}"
           interruptible_sleep retry_delay
           retry_delay += frequency if retry_delay < frequency * 10
           retry
+        rescue Exception => e
+          Bipbip.logger.error "#{name} #{source_identifier}: Fatal error: #{e.message}"
+          raise e
         end
       end
     end
