@@ -35,14 +35,14 @@ describe Bipbip::Agent do
     Bipbip.logger = nil
   end
 
-  it 'should expect plugin errors' do
+  it 'should log plugin errors and retry' do
     logger_file = Tempfile.new('bipbip-mock-logger')
     Bipbip.logger = Logger.new(logger_file.path)
 
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
     plugin.stub(:metrics_schema) { [] }
     plugin.stub(:source_identifier) { 'my-source' }
-    plugin.stub(:monitor) { raise 'my error' }
+    plugin.stub(:monitor) { raise 'my-error' }
 
     agent.plugins = [plugin]
 
@@ -51,8 +51,33 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    lines.select { |l| l.include?('my-plugin my-source: Error getting data: my error') }.should have_at_least(2).items
+    lines.select { |l| l.include?('my-plugin my-source: Error: my-error') }.should have_at_least(2).items
 
     Bipbip.logger = nil
   end
+
+  it 'should log plugin exceptions' do
+    logger_file = Tempfile.new('bipbip-mock-logger')
+    Bipbip.logger = Logger.new(logger_file.path)
+
+    plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
+    plugin.stub(:metrics_schema) { [] }
+    plugin.stub(:source_identifier) { 'my-source' }
+    plugin.stub(:monitor) { raise Exception.new('my-exception') }
+
+    agent.plugins = [plugin]
+
+    thread = Thread.new do
+      $stderr = StringIO.new
+      agent.run
+    end
+    sleep 0.5
+
+    thread.alive?.should eq(true)
+    lines = logger_file.read.lines
+    lines.select { |l| l.include?('my-plugin my-source: Fatal error: my-exception') }.should have(1).items
+
+    Bipbip.logger = nil
+  end
+
 end

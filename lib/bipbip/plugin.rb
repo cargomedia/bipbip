@@ -41,10 +41,13 @@ module Bipbip
             interruptible_sleep (frequency - (Time.now - time))
           end
         rescue => e
-          Bipbip.logger.error "#{name} #{source_identifier}: Error getting data: #{e.message}"
+          Bipbip.logger.error "#{name} #{source_identifier}: Error: #{e.message}"
           interruptible_sleep retry_delay
           retry_delay += frequency if retry_delay < frequency * 10
           retry
+        rescue Exception => e
+          Bipbip.logger.error "#{name} #{source_identifier}: Fatal error: #{e.message}"
+          raise e
         end
       end
     end
