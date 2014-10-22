@@ -2,6 +2,8 @@ module Bipbip
 
   class Agent
 
+    PLUGIN_RESPAWN_DELAY = 5
+
     attr_accessor :plugins
     attr_accessor :storages
 
@@ -44,6 +46,7 @@ module Bipbip
         pid = Process.wait(-1)
         plugin = plugin_by_pid(pid)
         Bipbip.logger.error "Plugin #{plugin.name} with config #{plugin.config} died. Respawning..."
+        sleep(PLUGIN_RESPAWN_DELAY)
         plugin.run(@storages)
       end
     end
