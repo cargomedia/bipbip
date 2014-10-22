@@ -15,7 +15,7 @@ module Bipbip
     def initialize(name, config, frequency, metric_group = nil)
       @name = name.to_s
       @config = config.to_hash
-      @frequency = frequency.to_i
+      @frequency = frequency.to_f
       @metric_group = (metric_group || name).to_s
     end
 
