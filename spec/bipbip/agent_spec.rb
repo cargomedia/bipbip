@@ -34,6 +34,8 @@ describe Bipbip::Agent do
     lines = logger_file.read.lines
     lines.select { |l| l.include?('my-plugin my-source: Data: {:foo=>12}') }.should have_at_least(2).items
 
+    thread.exit
+    agent.interrupt
     Bipbip.logger = nil
   end
 
@@ -55,6 +57,8 @@ describe Bipbip::Agent do
     lines = logger_file.read.lines
     lines.select { |l| l.include?('my-plugin my-source: Error: my-error') }.should have_at_least(2).items
 
+    thread.exit
+    agent.interrupt
     Bipbip.logger = nil
   end
 
@@ -77,8 +81,33 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    lines.select { |l| l.include?('my-plugin my-source: Fatal error: my-exception') }.should have(1).items
+    lines.select { |l| l.include?('my-plugin my-source: Fatal error: my-exception') }.should have_at_least(1).items
 
+    thread.exit
+    agent.interrupt
+    Bipbip.logger = nil
+  end
+
+  it 'should respawn dying plugins' do
+    logger_file = Tempfile.new('bipbip-mock-logger')
+    Bipbip.logger = Logger.new(logger_file.path)
+
+    plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
+    plugin.stub(:metrics_schema) { [] }
+    plugin.stub(:source_identifier) { 'my-source' }
+    plugin.stub(:monitor) { Process.kill('KILL', Process.pid) }
+
+    agent.plugins = [plugin]
+
+    thread = Thread.new { agent.run }
+    sleep 0.5
+
+    thread.alive?.should eq(true)
+    lines = logger_file.read.lines
+    lines.select { |l| l.include?('Plugin my-plugin with config {} died. Respawning...') }.should have_at_least(1).items
+
+    thread.exit
+    agent.interrupt
     Bipbip.logger = nil
   end
 

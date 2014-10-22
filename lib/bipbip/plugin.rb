@@ -6,6 +6,7 @@ module Bipbip
     attr_accessor :name
     attr_accessor :config
     attr_accessor :metric_group
+    attr_accessor :pid
 
     def self.factory(name, config, frequency, metric_group = nil)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
@@ -20,7 +21,7 @@ module Bipbip
     end
 
     def run(storages)
-      child_pid = fork do
+      @pid = fork do
         ['INT', 'TERM'].each { |sig| trap(sig) {
           Thread.new { interrupt } if !@interrupted
         } }

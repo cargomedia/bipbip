@@ -9,6 +9,7 @@ module Bipbip
   require 'shellwords'
 
   require 'interruptible_sleep'
+  require 'process_exists'
 
   require 'bipbip/version'
   require 'bipbip/helper'
