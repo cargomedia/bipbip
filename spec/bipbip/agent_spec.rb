@@ -55,7 +55,7 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    lines.select { |l| l.include?('my-plugin my-source: Error: my-error') }.should have_at_least(2).items
+    lines.select { |l| l.include?('my-plugin my-source: my-error') }.should have_at_least(2).items
 
     thread.exit
     agent.interrupt
@@ -81,7 +81,7 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    lines.select { |l| l.include?('my-plugin my-source: Fatal error: my-exception') }.should have_at_least(1).items
+    lines.select { |l| l.include?('my-plugin my-source: my-exception') }.should have_at_least(1).items
 
     thread.exit
     agent.interrupt
