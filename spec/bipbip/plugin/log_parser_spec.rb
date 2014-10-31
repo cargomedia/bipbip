@@ -1,73 +1,100 @@
 require 'bipbip'
 require 'bipbip/plugin/log_parser'
+require 'tempfile'
 
 describe Bipbip::Plugin::LogParser do
 
-  before(:all) do
-    @plugin1 = Bipbip::Plugin::LogParser.new('log-parser', {
-        'path' => File.expand_path('../../../testdata/sample_logs/sample.log', __FILE__),
-        'regexp_timestamp' => '^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\b',
-        'matchers' => [
-            {
-                'name' => 'oom_killer_activity',
-                'regexp' => 'oom_killer'
-            },
-        ]
-    }, 10)
-
-    @plugin2 = Bipbip::Plugin::LogParser.new('log-parser', {
-        'path' => File.expand_path('../../../testdata/sample_logs/sample.log', __FILE__),
-        'matchers' => [
-            {
-                'name' => 'root_activity',
-                'regexp' => 'root.*login$'
-            },
-        ]
-    }, 10)
-
-    @plugin3 = Bipbip::Plugin::LogParser.new('log-parser', {
-        'path' => File.expand_path('../../../testdata/sample_logs/syslog-rfc3339-sample.log', __FILE__),
-        'matchers' => [
-            {
-                'name' => 'segfaults',
-                'regexp' => 'segfault'
-            },
-        ]
-    }, 10)
+  let (:file) do
+    Tempfile.new('bipbip-logparser-spec')
   end
 
-  it 'should match log entries for first run' do
-    data1 = @plugin1.monitor
-    data2 = @plugin2.monitor
-    data3 = @plugin3.monitor
-
-    data = data1.merge(data2).merge(data3)
-
-    data['oom_killer_activity'].should be_instance_of(Fixnum)
-    data['oom_killer_activity'].should eq(7)
-
-    data['root_activity'].should be_instance_of(Fixnum)
-    data['root_activity'].should eq(1)
-
-    data['segfaults'].should be_instance_of(Fixnum)
-    data['segfaults'].should eq(4)
+  let(:plugin) do
+    config = {
+        'path' => file.path,
+        'matchers' => [
+            {
+                'name' => 'test',
+                'regexp' => 'te+st'
+            },
+        ]
+    }
+    Bipbip::Plugin::LogParser.new('log-parser', config, 10)
   end
 
-  it 'should not match any log entries for second run' do
-    data1 = @plugin1.monitor
-    data2 = @plugin2.monitor
-    data3 = @plugin3.monitor
 
-    data = data1.merge(data2).merge(data3)
-
-
-    data['oom_killer_activity'].should be_instance_of(Fixnum)
-    data['oom_killer_activity'].should eq(0)
-
-    data['root_activity'].should be_instance_of(Fixnum)
-    data['root_activity'].should eq(0)
-
-    data['segfaults'].should be_instance_of(Fixnum)
-    data['segfaults'].should eq(0)
+  it 'should match appended content' do
+    plugin.monitor
+    File.open(file.path, 'a') do |f|
+      f.puts 'my test'
+      f.puts 'my second test'
+      f.puts 'mega'
+    end
+    plugin.monitor.should eq({'test' => 2})
   end
+
+
+  it 'should match written content' do
+    plugin.monitor
+
+    File.open(file.path, 'w') do |f|
+      f.puts 'my test'
+      f.puts 'my second test'
+      f.puts 'my third test'
+    end
+    plugin.monitor.should eq({'test' => 3})
+
+    File.open(file.path, 'w') do |f|
+      f.puts 'my test'
+    end
+    plugin.monitor.should eq({'test' => 0})
+
+    File.open(file.path, 'w') do |f|
+      f.puts 'my test'
+      f.puts 'my second test'
+    end
+    plugin.monitor.should eq({'test' => 1})
+  end
+
+
+  it 'should re-watch the file after deletion' do
+    plugin.monitor
+
+    path = file.path
+    file.close
+    file.unlink
+
+    expect { plugin.monitor }.to raise_error
+
+    File.open(path, 'w') do |f|
+      f.write('')
+    end
+    plugin.monitor.should eq({'test' => 0})
+
+    File.open(path, 'a') do |f|
+      f.puts 'my test'
+    end
+    plugin.monitor.should eq({'test' => 1})
+  end
+
+
+  it 'should re-watch the file after moving' do
+    plugin.monitor
+
+    path_new = Tempfile.new('bipbip-logparser-spec').path
+    path = file.path
+    File.rename(path, path_new)
+
+    plugin.monitor.should eq({'test' => 0})
+
+    File.open(path, 'w') do |f|
+      f.write('')
+    end
+    plugin.monitor.should eq({'test' => 0})
+
+    File.open(path, 'a') do |f|
+      f.puts 'my test'
+    end
+    plugin.monitor.should eq({'test' => 1})
+  end
+
 end
