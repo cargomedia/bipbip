@@ -61,13 +61,14 @@ describe Bipbip::Plugin::LogParser do
 
     path = file.path
     file.close
-    file.unlink
+    File.unlink(path)
 
-    plugin.monitor
+    plugin.monitor.should eq({'test' => 0})
 
     File.open(path, 'w') do |f|
       f.write('')
     end
+
     plugin.monitor.should eq({'test' => 0})
 
     File.open(path, 'a') do |f|
@@ -80,15 +81,16 @@ describe Bipbip::Plugin::LogParser do
   it 'should re-watch the file after moving' do
     plugin.monitor
 
-    path_new = Tempfile.new('bipbip-logparser-spec').path
     path = file.path
+    path_new = Tempfile.new('bipbip-logparser-spec').path
     File.rename(path, path_new)
 
-    plugin.monitor
+    plugin.monitor.should eq({'test' => 0})
 
     File.open(path, 'w') do |f|
       f.write('')
     end
+
     plugin.monitor.should eq({'test' => 0})
 
     File.open(path, 'a') do |f|

@@ -44,7 +44,8 @@ module Bipbip
     end
 
     def create_notifier
-      events = [:modify, :delete_self, :move_self, :unmount]
+      # Including the "attrib" event, because on some systems "unlink" triggers "attrib", but then the inode's deletion doesn't trigger "delete_self"
+      events = [:modify, :delete_self, :move_self, :unmount, :attrib]
       notifier = INotify::Notifier.new
       notifier.watch(config['path'], *events) do |event|
         if event.flags.include?(:modify)
