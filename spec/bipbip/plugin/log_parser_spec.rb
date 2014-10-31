@@ -63,7 +63,7 @@ describe Bipbip::Plugin::LogParser do
     file.close
     file.unlink
 
-    expect { plugin.monitor }.to raise_error
+    plugin.monitor
 
     File.open(path, 'w') do |f|
       f.write('')
@@ -84,7 +84,7 @@ describe Bipbip::Plugin::LogParser do
     path = file.path
     File.rename(path, path_new)
 
-    plugin.monitor.should eq({'test' => 0})
+    plugin.monitor
 
     File.open(path, 'w') do |f|
       f.write('')
