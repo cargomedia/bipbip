@@ -44,6 +44,7 @@ module Bipbip
         if event.flags.include?(:modify)
           roll_file
         else
+          log(Logger::WARN, "File event `#{event.flags.join(',')}` detected, resetting notifier")
           reset_notifier
         end
       end
