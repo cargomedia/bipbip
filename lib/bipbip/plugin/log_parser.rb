@@ -12,7 +12,12 @@ module Bipbip
 
     def monitor
       unless IO.select([notifier.to_io], [], [], 0).nil?
-        notifier.process
+        begin
+          notifier.process
+        rescue NoMethodError => e
+          # Ignore errors from closed notifier - see https://github.com/nex3/rb-inotify/issues/41
+          raise e unless notifier.watchers.empty?
+        end
       end
 
       lines = @lines.entries
