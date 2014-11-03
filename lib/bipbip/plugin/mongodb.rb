@@ -67,7 +67,7 @@ module Bipbip
         data['mem_pagefaults'] = mongoStats['extra_info']['page_faults'].to_i
       end
       if mongoStats['globalLock'] && mongoStats['globalLock']['currentQueue']
-        data.store['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
+        data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
       end
 
     end

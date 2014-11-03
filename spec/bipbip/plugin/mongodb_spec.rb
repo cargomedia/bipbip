@@ -8,7 +8,9 @@ describe Bipbip::Plugin::Mongodb do
     data = plugin.monitor
 
     plugin.metrics_schema.each do |metric|
+      p '****************'
       p metric[:name]
+      p metric[:name].class
       data[metric[:name]].should be_instance_of(Fixnum)
     end
   end
