@@ -8,11 +8,8 @@ describe Bipbip::Plugin::Mongodb do
     data = plugin.monitor
 
     plugin.metrics_schema.each do |metric|
-      if metric[:name] == 'globalLock_ratio' then
-        data[metric[:name]].should be_instance_of(Float)
-      else
-        data[metric[:name]].should be_instance_of(Fixnum)
-      end
+      p metric[:name]
+      data[metric[:name]].should be_instance_of(Fixnum)
     end
   end
 end
