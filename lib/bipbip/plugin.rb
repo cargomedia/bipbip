@@ -34,7 +34,7 @@ module Bipbip
             if data.empty?
               raise "#{name} #{source_identifier}: Empty data"
             end
-            Bipbip.logger.debug "#{name} #{source_identifier}: Data: #{data}"
+            log(Logger::DEBUG, "Data: #{data}")
             storages.each do |storage|
               storage.store_sample(self, time, data)
             end
@@ -42,19 +42,19 @@ module Bipbip
             interruptible_sleep (frequency - (Time.now - time))
           end
         rescue => e
-          Bipbip.logger.error "#{name} #{source_identifier}: Error: #{e.message}"
+          log(Logger::ERROR, e.message)
           interruptible_sleep retry_delay
           retry_delay += frequency if retry_delay < frequency * 10
           retry
         rescue Exception => e
-          Bipbip.logger.error "#{name} #{source_identifier}: Fatal error: #{e.message}"
+          log(Logger::FATAL, e.message)
           raise e
         end
       end
     end
 
     def interrupt
-      Bipbip.logger.info "Interrupting plugin process #{Process.pid}"
+      log(Logger::INFO, "Interrupting plugin process #{Process.pid}")
       @interrupted = true
       interrupt_sleep
     end
@@ -76,7 +76,7 @@ module Bipbip
     end
 
     def metrics_names
-      metrics_schema.map {|metric| metric[:name] }
+      metrics_schema.map { |metric| metric[:name] }
     end
 
     def metrics_schema
@@ -85,6 +85,12 @@ module Bipbip
 
     def monitor
       raise 'Missing method monitor'
+    end
+
+    private
+
+    def log(severity, message)
+      Bipbip.logger.add(severity, message, "#{name} #{source_identifier}")
     end
   end
 end
