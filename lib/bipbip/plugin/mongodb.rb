@@ -37,38 +37,37 @@ module Bipbip
       data = {}
 
       if mongoStats['indexCounters']
-        data.merge!({'btree_misses' => mongoStats['indexCounters']['misses'].to_i})
+        data.store('btree_misses', mongoStats['indexCounters']['misses'].to_i)
       end
       if mongoStats['backgroundFlushing']
-        data.merge!({'flushing_last_ms' => mongoStats['backgroundFlushing']['last_ms'].to_i})
+        data.store('flushing_last_ms', mongoStats['backgroundFlushing']['last_ms'].to_i)
       end
       if mongoStats['opcounters']
-        data.merge!({
-                        'op_inserts' => mongoStats['opcounters']['insert'].to_i,
-                        'op_queries' => mongoStats['opcounters']['query'].to_i,
-                        'op_updates' => mongoStats['opcounters']['update'].to_i,
-                        'op_deletes' => mongoStats['opcounters']['delete'].to_i,
-                        'op_getmores' => mongoStats['opcounters']['getmore'].to_i,
-                        'op_commands' => mongoStats['opcounters']['command'].to_i,
-
-                    })
+        {'op_inserts' => mongoStats['opcounters']['insert'].to_i,
+         'op_queries' => mongoStats['opcounters']['query'].to_i,
+         'op_updates' => mongoStats['opcounters']['update'].to_i,
+         'op_deletes' => mongoStats['opcounters']['delete'].to_i,
+         'op_getmores' => mongoStats['opcounters']['getmore'].to_i,
+         'op_commands' => mongoStats['opcounters']['command'].to_i,
+        }.each do |key, value|
+          data.store(key, value)
+        end
       end
       if mongoStats['connections']
-        data.merge!({'connections_current' => mongoStats['connections']['current'].to_i})
+        data.store('connections_current', mongoStats['connections']['current'].to_i)
       end
       if mongoStats['mem']
-        data.merge!({
-                        'mem_resident' => mongoStats['mem']['resident'].to_i,
-                        'mem_mapped' => mongoStats['mem']['mapped'].to_i,
-                    })
+        {'mem_resident' => mongoStats['mem']['resident'].to_i,
+         'mem_mapped' => mongoStats['mem']['mapped'].to_i
+        }.each do |key, value|
+          data.store(key, value)
+        end
       end
       if mongoStats['extra_info']
-        data.merge!({'mem_pagefaults' => mongoStats['extra_info']['page_faults'].to_i, })
+        data.store('mem_pagefaults', mongoStats['extra_info']['page_faults'].to_i)
       end
-      if mongoStats['globalLock']
-        data.merge!({
-                        'globalLock_currentQueue' => mongoStats['globalLock']['currentQueue']['total'].to_i
-                    }) if mongoStats['globalLock']['currentQueue']
+      if mongoStats['globalLock'] && mongoStats['globalLock']['currentQueue']
+        data.store('globalLock_currentQueue', mongoStats['globalLock']['currentQueue']['total'].to_i)
       end
 
     end
