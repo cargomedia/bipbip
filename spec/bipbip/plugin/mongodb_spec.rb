@@ -1,5 +1,6 @@
 require 'bipbip'
 require 'bipbip/plugin/mongodb'
+require 'pp'
 
 describe Bipbip::Plugin::Mongodb do
   let(:plugin) { Bipbip::Plugin::Mongodb.new('mongodb', {'hostname' => 'localhost', 'port' => 27017}, 10) }
@@ -7,8 +8,9 @@ describe Bipbip::Plugin::Mongodb do
   it 'should collect data' do
     data = plugin.monitor
 
+    pp plugin.metrics_schema
     plugin.metrics_schema.each do |metric|
-      data[metric[:name]].should be_instance_of(Fixnum) if data[metric[:name]] != nil.to_s
+      data[metric[:name]].should be_instance_of(Fixnum)
     end
   end
 end
