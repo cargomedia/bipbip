@@ -70,7 +70,7 @@ module Bipbip
       if mongoStats['globalLock'] && mongoStats['globalLock']['currentQueue']
         data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
       end
-
+      data
     end
   end
 end
