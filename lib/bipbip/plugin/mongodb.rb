@@ -35,7 +35,6 @@ module Bipbip
       mongoStats = mongo.command('serverStatus' => 1)
 
       data = {}
-      metrics_schema.each { |i| data[i[:name]] = 0 }
 
       if mongoStats['indexCounters']
         data['btree_misses'] = mongoStats['indexCounters']['misses'].to_i
