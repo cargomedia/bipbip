@@ -43,25 +43,19 @@ module Bipbip
         data['flushing_last_ms'] = mongoStats['backgroundFlushing']['last_ms'].to_i
       end
       if mongoStats['opcounters']
-        {'op_inserts' => mongoStats['opcounters']['insert'].to_i,
-         'op_queries' => mongoStats['opcounters']['query'].to_i,
-         'op_updates' => mongoStats['opcounters']['update'].to_i,
-         'op_deletes' => mongoStats['opcounters']['delete'].to_i,
-         'op_getmores' => mongoStats['opcounters']['getmore'].to_i,
-         'op_commands' => mongoStats['opcounters']['command'].to_i,
-        }.each do |key, value|
-          data[key] = value
-        end
+        data['op_inserts'] = mongoStats['opcounters']['insert'].to_i
+        data['op_queries'] = mongoStats['opcounters']['query'].to_i
+        data['op_updates'] = mongoStats['opcounters']['update'].to_i
+        data['op_deletes'] = mongoStats['opcounters']['delete'].to_i
+        data['op_getmores'] = mongoStats['opcounters']['getmore'].to_i
+        data['op_commands'] = mongoStats['opcounters']['command'].to_i
       end
       if mongoStats['connections']
         data['connections_current'] = mongoStats['connections']['current'].to_i
       end
       if mongoStats['mem']
-        {'mem_resident' => mongoStats['mem']['resident'].to_i,
-         'mem_mapped' => mongoStats['mem']['mapped'].to_i
-        }.each do |key, value|
-          data[key] = value
-        end
+        data['mem_resident'] = mongoStats['mem']['resident'].to_i
+        data['mem_mapped'] = mongoStats['mem']['mapped'].to_i
       end
       if mongoStats['extra_info']
         data['mem_pagefaults'] = mongoStats['extra_info']['page_faults'].to_i
