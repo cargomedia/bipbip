@@ -34,21 +34,36 @@ module Bipbip
       mongo.authenticate(options['username'], options['password']) unless options['password'].nil?
       mongoStats = mongo.command('serverStatus' => 1)
 
-      {
-          'btree_misses' => mongoStats['indexCounters']['misses'].to_i,
-          'flushing_last_ms' => mongoStats['backgroundFlushing']['last_ms'].to_i,
-          'op_inserts' => mongoStats['opcounters']['insert'].to_i,
-          'op_queries' => mongoStats['opcounters']['query'].to_i,
-          'op_updates' => mongoStats['opcounters']['update'].to_i,
-          'op_deletes' => mongoStats['opcounters']['delete'].to_i,
-          'op_getmores' => mongoStats['opcounters']['getmore'].to_i,
-          'op_commands' => mongoStats['opcounters']['command'].to_i,
-          'connections_current' => mongoStats['connections']['current'].to_i,
-          'mem_resident' => mongoStats['mem']['resident'].to_i,
-          'mem_mapped' => mongoStats['mem']['mapped'].to_i,
-          'mem_pagefaults' => mongoStats['extra_info']['page_faults'],
-          'globalLock_currentQueue' => mongoStats['globalLock']['currentQueue']['total'].to_i,
-      }
+      data = {}
+
+      if mongoStats['indexCounters']
+        data['btree_misses'] = mongoStats['indexCounters']['misses'].to_i
+      end
+      if mongoStats['backgroundFlushing']
+        data['flushing_last_ms'] = mongoStats['backgroundFlushing']['last_ms'].to_i
+      end
+      if mongoStats['opcounters']
+        data['op_inserts'] = mongoStats['opcounters']['insert'].to_i
+        data['op_queries'] = mongoStats['opcounters']['query'].to_i
+        data['op_updates'] = mongoStats['opcounters']['update'].to_i
+        data['op_deletes'] = mongoStats['opcounters']['delete'].to_i
+        data['op_getmores'] = mongoStats['opcounters']['getmore'].to_i
+        data['op_commands'] = mongoStats['opcounters']['command'].to_i
+      end
+      if mongoStats['connections']
+        data['connections_current'] = mongoStats['connections']['current'].to_i
+      end
+      if mongoStats['mem']
+        data['mem_resident'] = mongoStats['mem']['resident'].to_i
+        data['mem_mapped'] = mongoStats['mem']['mapped'].to_i
+      end
+      if mongoStats['extra_info']
+        data['mem_pagefaults'] = mongoStats['extra_info']['page_faults'].to_i
+      end
+      if mongoStats['globalLock'] && mongoStats['globalLock']['currentQueue']
+        data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
+      end
+      data
     end
   end
 end

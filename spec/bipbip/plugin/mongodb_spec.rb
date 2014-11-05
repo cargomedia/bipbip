@@ -6,14 +6,8 @@ describe Bipbip::Plugin::Mongodb do
 
   it 'should collect data' do
     data = plugin.monitor
-
-    plugin.metrics_schema.each do |metric|
-      if metric[:name] == 'globalLock_ratio' then
-        data[metric[:name]].should be_instance_of(Float)
-      else
-        data[metric[:name]].should be_instance_of(Fixnum)
-      end
-    end
+    data['connections_current'].should be_instance_of(Fixnum)
+    data['mem_resident'].should be_instance_of(Fixnum)
   end
 end
 
