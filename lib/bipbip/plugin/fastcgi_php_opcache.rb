@@ -8,9 +8,9 @@ module Bipbip
           {:name => 'current_wasted_percentage', :type => 'gauge', :unit => '%'},
           {:name => 'num_cached_keys', :type => 'gauge', :unit => 'Keys'},
           {:name => 'opcache_hit_rate', :type => 'gauge', :unit => '%'},
-          {:name => 'misses', :type => 'gauge', :unit => 'Misses'},
-          {:name => 'hits', :type => 'gauge', :unit => 'Hits'},
-          {:name => 'oom_restarts', :type => 'gauge', :unit => 'Restarts'},
+          {:name => 'misses', :type => 'counter', :unit => 'Misses'},
+          {:name => 'hits', :type => 'counter', :unit => 'Hits'},
+          {:name => 'oom_restarts', :type => 'counter', :unit => 'Restarts'},
       ]
     end
 
