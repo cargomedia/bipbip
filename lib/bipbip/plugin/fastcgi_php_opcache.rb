@@ -2,8 +2,6 @@ module Bipbip
 
   class Plugin::FastcgiPhpOpcache < Plugin
 
-    attr_accessor :data_previous
-
     def metrics_schema
       [
           {:name => 'free_memory', :type => 'gauge', :unit => 'b'},
@@ -30,14 +28,18 @@ module Bipbip
       body = response.split(/\r?\n\r?\n/)[1]
       raise "FastCGI response has no body: #{response}" unless body
       stats = JSON.parse(body)
+      @data_previous ||= stats
 
       stats_memory = stats['memory_usage']
       stats_statistics = stats['opcache_statistics']
+      hit_rate = hit_rate(stats)
+
+      @data_previous = stats
       {
           :free_memory => stats_memory['free_memory'].to_i,
           :current_wasted_percentage => stats_memory['current_wasted_percentage'].to_i,
           :num_cached_keys => stats_statistics['num_cached_keys'].to_i,
-          :hit_rate => _hit_rate(stats),
+          :hit_rate => hit_rate,
           :misses => stats_statistics['misses'].to_i,
           :hits => stats_statistics['hits'].to_i,
           :oom_restarts => stats_statistics['oom_restarts'].to_i,
@@ -46,15 +48,12 @@ module Bipbip
 
     private
 
-    def _hit_rate(stats)
-      @data_previous ||= stats
-
+    def hit_rate(stats)
       current_stats = stats['opcache_statistics']
       previous_stats = @data_previous['opcache_statistics']
 
       delta_hits = current_stats['hits'].to_f - previous_stats['hits'].to_f
       delta_misses = current_stats['misses'].to_f - previous_stats['misses'].to_f
-      @data_previous = stats
 
       delta_hits_misses = delta_hits + delta_misses
       hit_rate = delta_hits_misses == 0 ? 0 : (delta_hits / delta_hits_misses) * 100
