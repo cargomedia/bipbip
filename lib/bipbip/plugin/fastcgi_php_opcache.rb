@@ -2,12 +2,14 @@ module Bipbip
 
   class Plugin::FastcgiPhpOpcache < Plugin
 
+    attr_accessor :data_previous
+
     def metrics_schema
       [
           {:name => 'free_memory', :type => 'gauge', :unit => 'b'},
           {:name => 'current_wasted_percentage', :type => 'gauge', :unit => '%'},
           {:name => 'num_cached_keys', :type => 'gauge', :unit => 'Keys'},
-          {:name => 'opcache_hit_rate', :type => 'gauge', :unit => '%'},
+          {:name => 'hit_rate', :type => 'gauge', :unit => '%'},
           {:name => 'misses', :type => 'counter', :unit => 'Misses'},
           {:name => 'hits', :type => 'counter', :unit => 'Hits'},
           {:name => 'oom_restarts', :type => 'counter', :unit => 'Restarts'},
@@ -35,11 +37,28 @@ module Bipbip
           :free_memory => stats_memory['free_memory'].to_i,
           :current_wasted_percentage => stats_memory['current_wasted_percentage'].to_i,
           :num_cached_keys => stats_statistics['num_cached_keys'].to_i,
-          :opcache_hit_rate => stats_statistics['opcache_hit_rate'].to_i,
+          :hit_rate => _hit_rate(stats),
           :misses => stats_statistics['misses'].to_i,
           :hits => stats_statistics['hits'].to_i,
           :oom_restarts => stats_statistics['oom_restarts'].to_i,
       }
+    end
+
+    private
+
+    def _hit_rate(stats)
+      @data_previous ||= stats
+
+      current_stats = stats['opcache_statistics']
+      previous_stats = @data_previous['opcache_statistics']
+
+      delta_hits = current_stats['hits'].to_f - previous_stats['hits'].to_f
+      delta_misses = current_stats['misses'].to_f - previous_stats['misses'].to_f
+      @data_previous = stats
+
+      delta_hits_misses = delta_hits + delta_misses
+      hit_rate = delta_hits_misses == 0 ? 0 : (delta_hits / delta_hits_misses) * 100
+      hit_rate.round(2)
     end
   end
 end
