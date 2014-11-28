@@ -74,8 +74,8 @@ module Bipbip
 
     def replication_lag(replica_status)
       member_list = replica_status['members']
-      primary = member_list.select {|member| member['state'] == 1}.first
-      secondary = member_list.select {|member| member['state'] == 2 and member['self'] == true}.first
+      primary = member_list.select { |member| member['state'] == 1 }.first
+      secondary = member_list.select { |member| member['state'] == 2 and member['self'] == true }.first
 
       raise "No primary member in replica `#{replica_status['set']}`" if primary.nil?
       raise "Cannot find itself as secondary member in replica `#{replica_status['set']}`" if secondary.nil?
