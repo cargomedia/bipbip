@@ -34,7 +34,6 @@ module Bipbip
       mongo = connection.db('admin')
       mongo.authenticate(options['username'], options['password']) unless options['password'].nil?
       mongoStats = mongo.command('serverStatus' => 1)
-      replicaStats = mongo.command('replSetGetStatus' => 1)
 
       data = {}
 
@@ -69,7 +68,7 @@ module Bipbip
         data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
       end
       if mongoStats['repl'] && mongoStats['repl']['secondary'] == true
-        data['replication_lag'] = replication_lag(replicaStats)
+        data['replication_lag'] = replication_lag(mongo.command('replSetGetStatus' => 1))
       end
       data
     end
