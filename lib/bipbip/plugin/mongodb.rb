@@ -24,16 +24,7 @@ module Bipbip
     end
 
     def monitor
-      options = {
-          'hostname' => 'localhost',
-          'port' => 27017,
-          'username' => nil,
-          'password' => nil
-      }.merge(config)
-      connection = Mongo::MongoClient.new(options['hostname'], options['port'], {:op_timeout => 2, :slave_ok => true})
-      mongo = connection.db('admin')
-      mongo.authenticate(options['username'], options['password']) unless options['password'].nil?
-      mongoStats = mongo.command('serverStatus' => 1)
+      mongoStats = server_status
 
       data = {}
 
@@ -65,14 +56,35 @@ module Bipbip
         data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
       end
       if mongoStats['repl'] && mongoStats['repl']['secondary'] == true
-        data['replication_lag'] = replication_lag(mongo.command('replSetGetStatus' => 1))
+        data['replication_lag'] = replication_lag
       end
       data
     end
 
     private
 
-    def replication_lag(replica_status)
+    def admin_database
+      options = {
+          'hostname' => 'localhost',
+          'port' => 27017,
+          'username' => nil,
+          'password' => nil
+      }.merge(config)
+      connection = Mongo::MongoClient.new(options['hostname'], options['port'], {:op_timeout => 2, :slave_ok => true})
+      mongo = connection.db('admin')
+      mongo.authenticate(options['username'], options['password']) unless options['password'].nil?
+      mongo
+    end
+
+    def server_status
+      admin_database.command('serverStatus' => 1)
+    end
+
+    def replica_status
+      admin_database.command('replSetGetStatus' => 1)
+    end
+
+    def replication_lag
       member_list = replica_status['members']
       primary = member_list.select { |member| member['stateStr'] == 'PRIMARY' }.first
       secondary = member_list.select { |member| member['stateStr'] == 'SECONDARY' and member['self'] == true }.first
