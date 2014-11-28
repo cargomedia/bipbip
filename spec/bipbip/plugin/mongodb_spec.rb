@@ -11,13 +11,13 @@ describe Bipbip::Plugin::Mongodb do
                 'current' => 100
             },
             'mem' => {
-                'mem_resident' => 1024
+                'resident' => 1024
             }
         })
 
     data = plugin.monitor
-    data['connections_current'].should be_instance_of(Fixnum)
-    data['mem_resident'].should be_instance_of(Fixnum)
+    data['connections_current'].should eq(100)
+    data['mem_resident'].should eq(1024)
   end
 
   it 'should collect replication lag' do
