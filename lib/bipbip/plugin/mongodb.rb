@@ -19,6 +19,7 @@ module Bipbip
           {:name => 'mem_mapped', :type => 'gauge', :unit => 'MB'},
           {:name => 'mem_pagefaults', :type => 'gauge', :unit => 'faults'},
           {:name => 'globalLock_currentQueue', :type => 'gauge'},
+          {:name => 'replication_lag', :type => 'gauge', :unit => 'Seconds'},
       ]
     end
 
@@ -33,6 +34,7 @@ module Bipbip
       mongo = connection.db('admin')
       mongo.authenticate(options['username'], options['password']) unless options['password'].nil?
       mongoStats = mongo.command('serverStatus' => 1)
+      replicaStats = mongo.command('replSetGetStatus' => 1)
 
       data = {}
 
@@ -63,7 +65,26 @@ module Bipbip
       if mongoStats['globalLock'] && mongoStats['globalLock']['currentQueue']
         data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
       end
+      if mongoStats['globalLock'] && mongoStats['globalLock']['currentQueue']
+        data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
+      end
+      if mongoStats['repl'] && mongoStats['repl']['secondary'] == true
+        data['replication_lag'] = replication_lag(replicaStats)
+      end
       data
+    end
+
+    private
+
+    def replication_lag(replica_status)
+      member_list = replica_status['members']
+      primary = member_list.select {|member| member['state'] == 1}.first
+      secondary = member_list.select {|member| member['state'] == 2 and member['self'] == true}.first
+
+      raise "No primary member in replica `#{replica_status['set']}`" if primary.nil?
+      raise "Cannot find itself as secondary member in replica `#{replica_status['set']}`" if secondary.nil?
+
+      (primary['optime'].seconds - secondary['optime'].seconds)
     end
   end
 end
