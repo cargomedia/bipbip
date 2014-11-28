@@ -18,3 +18,29 @@ describe Bipbip::Plugin::Mongodb do
     expect { plugin.monitor }.to raise_error
   end
 end
+
+describe Bipbip::Plugin::Mongodb do
+  let(:plugin) { Bipbip::Plugin::Mongodb.new('mongodb', {'hostname' => 'localhost', 'port' => 27017}, 10) }
+
+  it 'should collect replication lag' do
+
+    plugin.stub(:server_status).and_return(
+        {
+            'repl' => {
+                'secondary' => true
+            }
+        })
+
+    plugin.stub(:replica_status).and_return(
+        {
+            'set' => 'rep1',
+            'members' => [
+                {'stateStr' => 'PRIMARY', 'optime' => BSON::Timestamp.new(1001, 1)},
+                {'stateStr' => 'SECONDARY', 'optime' => BSON::Timestamp.new(1000, 1), 'self' => true},
+            ]
+        })
+
+    data = plugin.monitor
+    data['replication_lag'].should eq(1)
+  end
+end
