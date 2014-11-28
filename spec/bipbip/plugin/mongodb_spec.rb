@@ -32,12 +32,12 @@ describe Bipbip::Plugin::Mongodb do
         {
             'set' => 'rep1',
             'members' => [
-                {'stateStr' => 'PRIMARY', 'optime' => BSON::Timestamp.new(1001, 1)},
+                {'stateStr' => 'PRIMARY', 'optime' => BSON::Timestamp.new(1003, 1)},
                 {'stateStr' => 'SECONDARY', 'optime' => BSON::Timestamp.new(1000, 1), 'self' => true},
             ]
         })
 
     data = plugin.monitor
-    data['replication_lag'].should eq(1)
+    data['replication_lag'].should eq(3)
   end
 end
