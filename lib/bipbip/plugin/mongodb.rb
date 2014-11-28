@@ -64,9 +64,6 @@ module Bipbip
       if mongoStats['globalLock'] && mongoStats['globalLock']['currentQueue']
         data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
       end
-      if mongoStats['globalLock'] && mongoStats['globalLock']['currentQueue']
-        data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
-      end
       if mongoStats['repl'] && mongoStats['repl']['secondary'] == true
         data['replication_lag'] = replication_lag(mongo.command('replSetGetStatus' => 1))
       end
