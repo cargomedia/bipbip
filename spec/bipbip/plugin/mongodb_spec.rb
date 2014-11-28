@@ -5,17 +5,22 @@ describe Bipbip::Plugin::Mongodb do
   let(:plugin) { Bipbip::Plugin::Mongodb.new('mongodb', {'hostname' => 'localhost', 'port' => 27017}, 10) }
 
   it 'should collect data' do
+    plugin.stub(:server_status).and_return(
+        {
+            'connections' => {
+                'current' => 100
+            },
+            'mem' => {
+                'mem_resident' => 1024
+            }
+        })
+
     data = plugin.monitor
     data['connections_current'].should be_instance_of(Fixnum)
     data['mem_resident'].should be_instance_of(Fixnum)
   end
-end
-
-describe Bipbip::Plugin::Mongodb do
-  let(:plugin) { Bipbip::Plugin::Mongodb.new('mongodb', {'hostname' => 'localhost', 'port' => 27017}, 10) }
 
   it 'should collect replication lag' do
-
     plugin.stub(:server_status).and_return(
         {
             'repl' => {
