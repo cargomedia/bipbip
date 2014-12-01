@@ -32,8 +32,8 @@ describe Bipbip::Plugin::Mongodb do
         {
             'set' => 'rep1',
             'members' => [
-                {'stateStr' => 'PRIMARY', 'optime' => BSON::Timestamp.new(1003, 1)},
-                {'stateStr' => 'SECONDARY', 'optime' => BSON::Timestamp.new(1000, 1), 'self' => true},
+                {'stateStr' => 'PRIMARY', 'optime' => BSON::Timestamp.new(1000, 1)},
+                {'stateStr' => 'SECONDARY', 'optime' => BSON::Timestamp.new(1003, 1), 'self' => true},
             ]
         })
 
