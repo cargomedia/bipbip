@@ -38,4 +38,11 @@ EOS
     data['mails_queued_total'].should eq(7)
   end
 
+  it 'should return zero' do
+    plugin.stub(:postqueue).and_return('Mail queue is empty')
+
+    data = plugin.monitor
+    data['mails_queued_total'].should eq(0)
+  end
+
 end
