@@ -4,7 +4,7 @@ require 'bipbip/plugin/postfix'
 describe Bipbip::Plugin::Postfix do
   let(:plugin) { Bipbip::Plugin::Postfix.new('postfix', {}, 10) }
 
-  it 'should collect queue size' do
+  it 'should collect more than one mails in queue' do
 
     postqueue = <<EOS
 -Queue ID- --Size-- ----Arrival Time---- -Sender/Recipient-------
@@ -36,6 +36,22 @@ EOS
 
     data = plugin.monitor
     data['mails_queued_total'].should eq(7)
+  end
+
+  it 'should collect one mail in queue' do
+
+    postqueue = <<EOS
+-Queue ID- --Size-- ----Arrival Time---- -Sender/Recipient-------
+6E49C3823C9*    7577 Mon Dec  1 10:05:14  noreply@example.com
+                                         aromj.12@hispeed.ch
+
+-- 14 Kbytes in 1 Request.
+EOS
+
+    plugin.stub(:postqueue).and_return(postqueue)
+
+    data = plugin.monitor
+    data['mails_queued_total'].should eq(1)
   end
 
   it 'should return zero' do
