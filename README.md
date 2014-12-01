@@ -103,6 +103,8 @@ services:
      -
       name: segfault
       regexp: segfault
+  -
+    plugin: postfix
 ```
 
 Optional configuration common to all plugins:
