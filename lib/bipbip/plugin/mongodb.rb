@@ -92,7 +92,7 @@ module Bipbip
       raise "No primary member in replica `#{replica_status['set']}`" if primary.nil?
       raise "Cannot find itself as secondary member in replica `#{replica_status['set']}`" if secondary.nil?
 
-      (primary['optime'].seconds - secondary['optime'].seconds)
+      (secondary['optime'].seconds - primary['optime'].seconds)
     end
   end
 end
