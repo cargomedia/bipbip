@@ -11,7 +11,7 @@ module Bipbip
     def monitor
       queue_counter = /^-- (.*) in (\d+) Requests.$/.match(postqueue)
       {
-          'mails_queued_total' => queue_counter[2].to_i
+          'mails_queued_total' => queue_counter.nil? ? 0 : queue_counter[2].to_i
       }
     end
 
