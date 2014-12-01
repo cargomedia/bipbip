@@ -19,20 +19,12 @@ module Bipbip
           {:name => 'mem_mapped', :type => 'gauge', :unit => 'MB'},
           {:name => 'mem_pagefaults', :type => 'gauge', :unit => 'faults'},
           {:name => 'globalLock_currentQueue', :type => 'gauge'},
+          {:name => 'replication_lag', :type => 'gauge', :unit => 'Seconds'},
       ]
     end
 
     def monitor
-      options = {
-          'hostname' => 'localhost',
-          'port' => 27017,
-          'username' => nil,
-          'password' => nil
-      }.merge(config)
-      connection = Mongo::MongoClient.new(options['hostname'], options['port'], {:op_timeout => 2, :slave_ok => true})
-      mongo = connection.db('admin')
-      mongo.authenticate(options['username'], options['password']) unless options['password'].nil?
-      mongoStats = mongo.command('serverStatus' => 1)
+      mongoStats = server_status
 
       data = {}
 
@@ -63,7 +55,44 @@ module Bipbip
       if mongoStats['globalLock'] && mongoStats['globalLock']['currentQueue']
         data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
       end
+      if mongoStats['repl'] && mongoStats['repl']['secondary'] == true
+        data['replication_lag'] = replication_lag
+      end
       data
+    end
+
+    private
+
+    def admin_database
+      options = {
+          'hostname' => 'localhost',
+          'port' => 27017,
+          'username' => nil,
+          'password' => nil
+      }.merge(config)
+      connection = Mongo::MongoClient.new(options['hostname'], options['port'], {:op_timeout => 2, :slave_ok => true})
+      mongo = connection.db('admin')
+      mongo.authenticate(options['username'], options['password']) unless options['password'].nil?
+      mongo
+    end
+
+    def server_status
+      admin_database.command('serverStatus' => 1)
+    end
+
+    def replica_status
+      admin_database.command('replSetGetStatus' => 1)
+    end
+
+    def replication_lag
+      member_list = replica_status['members']
+      primary = member_list.select { |member| member['stateStr'] == 'PRIMARY' }.first
+      secondary = member_list.select { |member| member['stateStr'] == 'SECONDARY' and member['self'] == true }.first
+
+      raise "No primary member in replica `#{replica_status['set']}`" if primary.nil?
+      raise "Cannot find itself as secondary member in replica `#{replica_status['set']}`" if secondary.nil?
+
+      (primary['optime'].seconds - secondary['optime'].seconds)
     end
   end
 end

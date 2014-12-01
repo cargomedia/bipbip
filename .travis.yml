@@ -8,4 +8,3 @@ services:
   - memcached
   - mysql
   - redis-server
-  - mongodb
