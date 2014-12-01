@@ -8,26 +8,26 @@ describe Bipbip::Plugin::Postfix do
 
     postqueue = <<EOS
 -Queue ID- --Size-- ----Arrival Time---- -Sender/Recipient-------
-6E49C3823C9*    7577 Mon Dec  1 10:05:14  noreply@fuckbook.com
-                                         aromj.lanz@hispeed.ch
+6E49C3823C9*    7577 Mon Dec  1 10:05:14  noreply@example.com
+                                         aromj.12@hispeed.ch
 
-9B29D383452*    7660 Mon Dec  1 10:05:14  noreply@fuckbook.com
-                                         arthur_note_92@hotmail.com
+9B29D383452*    7660 Mon Dec  1 10:05:14  noreply@example.com
+                                         arth12_note_92@hotmail.com
 
-E0233383459*    8404 Mon Dec  1 10:05:14  noreply@fuckbook.com
-                                         564610248@qq.com
+E0233383459*    8404 Mon Dec  1 10:05:14  noreply@example.com
+                                         234324234234@qq.com
 
-07B703833CF*    7520 Mon Dec  1 10:05:14  noreply@fuckbook.com
-                                         premlals@yahoo.com
+07B703833CF*    7520 Mon Dec  1 10:05:14  noreply@example.com
+                                         prem23lals@yahoo.com
 
-E54C738334B*    7504 Mon Dec  1 10:05:13  noreply@fuckbook.com
-                                         martinkrcmar82@seznam.cz
+E54C738334B*    7504 Mon Dec  1 10:05:13  noreply@example.com
+                                         mtinkrcmar82@seznam.cz
 
-4E0E8383430*    7480 Mon Dec  1 10:05:14  noreply@fuckbook.com
-                                         rikkku@op.pl
+4E0E8383430*    7480 Mon Dec  1 10:05:14  noreply@example.com
+                                         riu@op.pl
 
-728D7383449*    7557 Mon Dec  1 10:05:14  noreply@fuckbook.com
-                                         mmitrovic1@hotmail.com
+728D7383449*    7557 Mon Dec  1 10:05:14  noreply@example.com
+                                         mmvic1@hotmail.com
 
 -- 54 Kbytes in 7 Requests.
 EOS
