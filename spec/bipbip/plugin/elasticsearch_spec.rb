@@ -2,11 +2,11 @@ require 'bipbip'
 require 'bipbip/plugin/elasticsearch'
 
 describe Bipbip::Plugin::Elasticsearch do
-  let(:plugin) { Bipbip::Plugin::Elasticsearch.new('elasticsearch', {'hosts' => ['localhost:9200']}, 10) }
+  let(:plugin) { Bipbip::Plugin::Elasticsearch.new('elasticsearch', {'hostname' => 'localhost', 'port' => '9200'}, 10) }
 
   it 'should collect data for 2 nodes cluster' do
 
-    plugin.stub(:nodes_status).and_return(
+    plugin.stub(:nodes_stats).and_return(
         {
             'nodes' => {
                 'node-1' => {
