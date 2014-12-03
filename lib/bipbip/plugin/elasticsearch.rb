@@ -70,13 +70,10 @@ module Bipbip
     end
 
     def stats_sum(keys)
-      @stats ||= nodes_stats
-
       sum = 0
-      nodes_stats['nodes'].each do |node, status|
+      (@stats ||= nodes_stats)['nodes'].each do |node, status|
         sum += keys.inject(status) { |h, k| (h.is_a?(Hash) and !h[k].nil?) ? h[k] : 0 }
       end
-
       sum
     end
 
