@@ -26,8 +26,8 @@ module Bipbip
           {:name => 'indexing_delete_time', :type => 'counter', :unit => 'Seconds'},
 
           {:name => 'cache_filter_size', :type => 'gauge', :unit => 'b'},
-          {:name => 'cache_field_size', :type => 'gauge', :unit => 'b'},
           {:name => 'cache_filter_evictions', :type => 'gauge', :unit => 'b'},
+          {:name => 'cache_field_size', :type => 'gauge', :unit => 'b'},
           {:name => 'cache_field_evictions', :type => 'gauge', :unit => 'b'},
       ]
     end
@@ -75,10 +75,12 @@ module Bipbip
     def total_indices_search_stats
       stats = {:query_total => 0, :query_time => 0, :fetch_total => 0, :fetch_time => 0}
       nodes_status['nodes'].each do |node, status|
-        stats[:query_total] += status['indices']['search']['query_total'].to_i
-        stats[:query_time] += status['indices']['search']['query_time_in_millis'].to_i
-        stats[:fetch_total] += status['indices']['search']['fetch_total'].to_i
-        stats[:fetch_time] += status['indices']['search']['fetch_time_in_millis'].to_i
+        unless status['indices']['search'].nil?
+          stats[:query_total] += status['indices']['search']['query_total'].to_i
+          stats[:query_time] += status['indices']['search']['query_time_in_millis'].to_i
+          stats[:fetch_total] += status['indices']['search']['fetch_total'].to_i
+          stats[:fetch_time] += status['indices']['search']['fetch_time_in_millis'].to_i
+        end
       end
       stats
     end
@@ -86,10 +88,12 @@ module Bipbip
     def total_indices_indexing_stats
       stats = {:index_total => 0, :index_time => 0, :delete_total => 0, :delete_time => 0}
       nodes_status['nodes'].each do |node, status|
-        stats[:index_total] += status['indices']['indexing']['index_total'].to_i
-        stats[:index_time] += status['indices']['indexing']['index_time_in_millis'].to_i
-        stats[:delete_total] += status['indices']['indexing']['delete_total'].to_i
-        stats[:delete_time] += status['indices']['indexing']['delete_time_in_millis'].to_i
+        unless status['indices']['indexing'].nil?
+          stats[:index_total] += status['indices']['indexing']['index_total'].to_i
+          stats[:index_time] += status['indices']['indexing']['index_time_in_millis'].to_i
+          stats[:delete_total] += status['indices']['indexing']['delete_total'].to_i
+          stats[:delete_time] += status['indices']['indexing']['delete_time_in_millis'].to_i
+        end
       end
       stats
     end
@@ -97,10 +101,12 @@ module Bipbip
     def total_indices_cache_stats
       stats = {:filter_size => 0, :filter_evictions => 0, :field_size => 0, :field_evictions => 0}
       nodes_status['nodes'].each do |node, status|
-        stats[:filter_size] += status['indices']['filter_cache']['memory_size_in_bytes'].to_i
-        stats[:filter_evictions] += status['indices']['filter_cache']['evictions'].to_i
-        stats[:field_size] += status['indices']['fielddata']['memory_size_in_bytes'].to_i
-        stats[:field_evictions] += status['indices']['fielddata']['evictions'].to_i
+        unless status['indices']['filter_cache'].nil?
+          stats[:filter_size] += status['indices']['filter_cache']['memory_size_in_bytes'].to_i
+          stats[:filter_evictions] += status['indices']['filter_cache']['evictions'].to_i
+          stats[:field_size] += status['indices']['fielddata']['memory_size_in_bytes'].to_i
+          stats[:field_evictions] += status['indices']['fielddata']['evictions'].to_i
+        end
       end
       stats
     end
@@ -108,12 +114,14 @@ module Bipbip
     def total_indices_get_stats
       stats = {:total => 0, :time => 0, :exists_total => 0, :exists_time => 0, :missing_total => 0, :missing_time => 0}
       nodes_status['nodes'].each do |node, status|
-        stats[:total] += status['indices']['get']['total'].to_i
-        stats[:time] += status['indices']['get']['time_in_millis'].to_i
-        stats[:exists_total] += status['indices']['get']['exists_total'].to_i
-        stats[:exists_time] += status['indices']['get']['exists_time_in_millis'].to_i
-        stats[:missing_total] += status['indices']['get']['missing_total'].to_i
-        stats[:missing_time] += status['indices']['get']['missing_time_in_millis'].to_i
+        unless status['indices']['get'].nil?
+          stats[:total] += status['indices']['get']['total'].to_i
+          stats[:time] += status['indices']['get']['time_in_millis'].to_i
+          stats[:exists_total] += status['indices']['get']['exists_total'].to_i
+          stats[:exists_time] += status['indices']['get']['exists_time_in_millis'].to_i
+          stats[:missing_total] += status['indices']['get']['missing_total'].to_i
+          stats[:missing_time] += status['indices']['get']['missing_time_in_millis'].to_i
+        end
       end
       stats
     end
