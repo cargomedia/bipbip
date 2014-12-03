@@ -33,29 +33,29 @@ module Bipbip
     end
 
     def monitor
-      stats = total_indices_stats
+      @stats = nil
       {
-          'search_query_total' => stats[:search][:query_total],
-          'search_query_time' => stats[:search][:query_time]/1000,
-          'search_fetch_total' => stats[:search][:fetch_total],
-          'search_fetch_time' => stats[:search][:fetch_time]/1000,
+          'search_query_total' => stats_sum(['indices', 'search', 'query_total']),
+          'search_query_time' => stats_sum(['indices', 'search', 'query_time_in_millis'])/1000,
+          'search_fetch_total' => stats_sum(['indices', 'search', 'fetch_total']),
+          'search_fetch_time' => stats_sum(['indices', 'search', 'fetch_time_in_millis'])/1000,
 
-          'get_total' => stats[:get][:total],
-          'get_time' => stats[:get][:time]/1000,
-          'get_exists_total' => stats[:get][:exists_total],
-          'get_exists_time' => stats[:get][:exists_time]/1000,
-          'get_missing_total' => stats[:get][:missing_total],
-          'get_missing_time' => stats[:get][:missing_time]/1000,
+          'get_total' => stats_sum(['indices', 'get', 'total']),
+          'get_time' => stats_sum(['indices', 'get', 'time_in_millis'])/1000,
+          'get_exists_total' => stats_sum(['indices', 'get', 'exists_total']),
+          'get_exists_time' => stats_sum(['indices', 'get', 'exists_time_in_millis'])/1000,
+          'get_missing_total' => stats_sum(['indices', 'get', 'missing_total']),
+          'get_missing_time' => stats_sum(['indices', 'get', 'missing_time_in_millis'])/1000,
 
-          'indexing_index_total' => stats[:indexing][:index_total],
-          'indexing_index_time' => stats[:indexing][:index_time]/1000,
-          'indexing_delete_total' => stats[:indexing][:delete_total],
-          'indexing_delete_time' => stats[:indexing][:delete_time]/1000,
+          'indexing_index_total' => stats_sum(['indices', 'indexing', 'index_total']),
+          'indexing_index_time' => stats_sum(['indices', 'indexing', 'index_time_in_millis'])/1000,
+          'indexing_delete_total' => stats_sum(['indices', 'indexing', 'delete_total']),
+          'indexing_delete_time' => stats_sum(['indices', 'indexing', 'delete_time_in_millis'])/1000,
 
-          'cache_filter_size' => stats[:cache][:filter_size],
-          'cache_filter_evictions' => stats[:cache][:filter_evictions],
-          'cache_field_size' => stats[:cache][:field_size],
-          'cache_field_evictions' => stats[:cache][:field_evictions],
+          'cache_filter_size' => stats_sum(['indices', 'filter_cache', 'memory_size_in_bytes']),
+          'cache_filter_evictions' => stats_sum(['indices', 'filter_cache', 'evictions']),
+          'cache_field_size' => stats_sum(['indices', 'fielddata', 'memory_size_in_bytes']),
+          'cache_field_evictions' => stats_sum(['indices', 'fielddata', 'evictions']),
       }
     end
 
@@ -69,56 +69,15 @@ module Bipbip
       connection.nodes.stats
     end
 
-    def total_indices_stats
-      stats = {
-          :search => {
-            :query_total => 0, :query_time => 0, :fetch_total => 0, :fetch_time => 0,
-          },
-          :indexing => {
-              :index_total => 0, :index_time => 0, :delete_total => 0, :delete_time => 0
-          },
-          :cache => {
-              :filter_size => 0, :filter_evictions => 0, :field_size => 0, :field_evictions => 0
-          },
-          :get => {
-              :total => 0, :time => 0, :exists_total => 0, :exists_time => 0, :missing_total => 0, :missing_time => 0
-          }
-      }
+    def stats_sum(keys)
+      @stats ||= nodes_stats
+
+      sum = 0
       nodes_stats['nodes'].each do |node, status|
-        unless status['indices']['search'].nil?
-          stats[:search][:query_total] += status['indices']['search']['query_total'].to_i
-          stats[:search][:query_time] += status['indices']['search']['query_time_in_millis'].to_i
-          stats[:search][:fetch_total] += status['indices']['search']['fetch_total'].to_i
-          stats[:search][:fetch_time] += status['indices']['search']['fetch_time_in_millis'].to_i
-        end
-
-        unless status['indices']['indexing'].nil?
-          stats[:indexing][:index_total] += status['indices']['indexing']['index_total'].to_i
-          stats[:indexing][:index_time] += status['indices']['indexing']['index_time_in_millis'].to_i
-          stats[:indexing][:delete_total] += status['indices']['indexing']['delete_total'].to_i
-          stats[:indexing][:delete_time] += status['indices']['indexing']['delete_time_in_millis'].to_i
-        end
-
-        unless status['indices']['filter_cache'].nil?
-          stats[:cache][:filter_size] += status['indices']['filter_cache']['memory_size_in_bytes'].to_i
-          stats[:cache][:filter_evictions] += status['indices']['filter_cache']['evictions'].to_i
-        end
-
-        unless status['indices']['fielddata'].nil?
-          stats[:cache][:field_size] += status['indices']['fielddata']['memory_size_in_bytes'].to_i
-          stats[:cache][:field_evictions] += status['indices']['fielddata']['evictions'].to_i
-        end
-
-        unless status['indices']['get'].nil?
-          stats[:get][:total] += status['indices']['get']['total'].to_i
-          stats[:get][:time] += status['indices']['get']['time_in_millis'].to_i
-          stats[:get][:exists_total] += status['indices']['get']['exists_total'].to_i
-          stats[:get][:exists_time] += status['indices']['get']['exists_time_in_millis'].to_i
-          stats[:get][:missing_total] += status['indices']['get']['missing_total'].to_i
-          stats[:get][:missing_time] += status['indices']['get']['missing_time_in_millis'].to_i
-        end
+        sum += keys.inject(status) { |h, k| h.is_a?(Hash) ? h[k] : 0 }
       end
-      stats
+
+      sum
     end
 
   end
