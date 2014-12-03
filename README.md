@@ -109,9 +109,6 @@ services:
     plugin: elasticsearch
       hosts:
         - 'localhost:9200'
-      indices:
-        - photo
-        - video
 ```
 
 Optional configuration common to all plugins:
