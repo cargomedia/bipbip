@@ -36,21 +36,21 @@ module Bipbip
       stats = total_indices_stats
       {
           'search_query_total' => stats[:search][:query_total],
-          'search_query_time' => stats[:search][:query_time],
+          'search_query_time' => stats[:search][:query_time]/1000,
           'search_fetch_total' => stats[:search][:fetch_total],
-          'search_fetch_time' => stats[:search][:fetch_time],
+          'search_fetch_time' => stats[:search][:fetch_time]/1000,
 
           'get_total' => stats[:get][:total],
-          'get_time' => stats[:get][:time],
+          'get_time' => stats[:get][:time]/1000,
           'get_exists_total' => stats[:get][:exists_total],
-          'get_exists_time' => stats[:get][:exists_time],
+          'get_exists_time' => stats[:get][:exists_time]/1000,
           'get_missing_total' => stats[:get][:missing_total],
-          'get_missing_time' => stats[:get][:missing_time],
+          'get_missing_time' => stats[:get][:missing_time]/1000,
 
           'indexing_index_total' => stats[:indexing][:index_total],
-          'indexing_index_time' => stats[:indexing][:index_time],
+          'indexing_index_time' => stats[:indexing][:index_time]/1000,
           'indexing_delete_total' => stats[:indexing][:delete_total],
-          'indexing_delete_time' => stats[:indexing][:delete_time],
+          'indexing_delete_time' => stats[:indexing][:delete_time]/1000,
 
           'cache_filter_size' => stats[:cache][:filter_size],
           'cache_filter_evictions' => stats[:cache][:filter_evictions],

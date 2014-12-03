@@ -13,9 +13,9 @@ describe Bipbip::Plugin::Elasticsearch do
                     'indices' => {
                         'search' => {
                             'query_total' => 5,
-                            'query_time_in_millis' => 5,
+                            'query_time_in_millis' => 5000,
                             'fetch_total' => 10,
-                            'fetch_time_in_millis' => 10,
+                            'fetch_time_in_millis' => 10000,
                         },
                         'filter_cache' => {
                             'memory_size_in_bytes' => 1000,
@@ -31,9 +31,9 @@ describe Bipbip::Plugin::Elasticsearch do
                     'indices' => {
                         'search' => {
                             'query_total' => 15,
-                            'query_time_in_millis' => 15,
+                            'query_time_in_millis' => 15000,
                             'fetch_total' => 40,
-                            'fetch_time_in_millis' => 40,
+                            'fetch_time_in_millis' => 40000,
                         },
                         'filter_cache' => {
                             'memory_size_in_bytes' => 9000,
