@@ -107,8 +107,8 @@ services:
     plugin: postfix
   -
     plugin: elasticsearch
-      hosts:
-        - 'localhost:9200'
+      hostname: localhost
+      port: 9200
 ```
 
 Optional configuration common to all plugins:

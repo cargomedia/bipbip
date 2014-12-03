@@ -65,7 +65,7 @@ module Bipbip
     private
 
     def connection
-      ElasticsearchClient.new({:hosts => config['hosts']})
+      ElasticsearchClient.new({:host => [config['hostname'], config['port']].join(':')})
     end
 
     def nodes_status
