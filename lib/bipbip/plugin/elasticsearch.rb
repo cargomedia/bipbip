@@ -8,6 +8,11 @@ module Bipbip
 
     def metrics_schema
       [
+          {:name => 'store_size', :type => 'gauge', :unit => 'b'},
+          {:name => 'docs_count', :type => 'gauge', :unit => 'Docs'},
+          {:name => 'docs_deleted', :type => 'counter', :unit => 'Deleted'},
+          {:name => 'segments_count', :type => 'gauge', :unit => 'Segments'},
+
           {:name => 'search_query_total', :type => 'counter', :unit => 'Queries'},
           {:name => 'search_query_time', :type => 'counter', :unit => 'Seconds'},
           {:name => 'search_fetch_total', :type => 'counter', :unit => 'Fetches'},
@@ -35,6 +40,11 @@ module Bipbip
     def monitor
       @stats = nil
       {
+          'store_size' => stats_sum(['indices', 'store', 'size_in_bytes']),
+          'docs_count' => stats_sum(['indices', 'docs', 'count']),
+          'docs_deleted' => stats_sum(['indices', 'docs', 'deleted']),
+          'segments_count' => stats_sum(['indices', 'segments', 'count']),
+
           'search_query_total' => stats_sum(['indices', 'search', 'query_total']),
           'search_query_time' => stats_sum(['indices', 'search', 'query_time_in_millis'])/1000,
           'search_fetch_total' => stats_sum(['indices', 'search', 'fetch_total']),
@@ -66,7 +76,7 @@ module Bipbip
     end
 
     def nodes_stats
-      connection.nodes.stats
+      connection.nodes.stats({:node_id => '_local'})
     end
 
     def stats_sum(keys)
