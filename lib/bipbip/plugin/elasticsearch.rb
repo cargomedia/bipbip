@@ -10,8 +10,8 @@ module Bipbip
       [
           {:name => 'search_query_total', :type => 'counter', :unit => 'Queries'},
           {:name => 'search_query_time', :type => 'counter', :unit => 'Seconds'},
-          {:name => 'search_fetch_total', :type => 'gauge', :unit => 'Fetches'},
-          {:name => 'search_fetch_time', :type => 'gauge', :unit => 'Seconds'},
+          {:name => 'search_fetch_total', :type => 'counter', :unit => 'Fetches'},
+          {:name => 'search_fetch_time', :type => 'counter', :unit => 'Seconds'},
 
           {:name => 'get_total', :type => 'counter', :unit => 'Gets'},
           {:name => 'get_time', :type => 'counter', :unit => 'Seconds'},
