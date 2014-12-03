@@ -105,6 +105,10 @@ services:
       regexp: segfault
   -
     plugin: postfix
+  -
+    plugin: elasticsearch
+      hostname: localhost
+      port: 9200
 ```
 
 Optional configuration common to all plugins:
