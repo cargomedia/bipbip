@@ -17,7 +17,7 @@ module Bipbip
           {:name => 'connections_current', :type => 'gauge'},
           {:name => 'mem_resident', :type => 'gauge', :unit => 'MB'},
           {:name => 'mem_mapped', :type => 'gauge', :unit => 'MB'},
-          {:name => 'mem_pagefaults', :type => 'gauge', :unit => 'faults'},
+          {:name => 'mem_pagefaults', :type => 'counter', :unit => 'faults'},
           {:name => 'globalLock_currentQueue', :type => 'gauge'},
           {:name => 'replication_lag', :type => 'gauge', :unit => 'Seconds'},
       ]
