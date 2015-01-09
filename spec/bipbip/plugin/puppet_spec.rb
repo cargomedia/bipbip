@@ -40,7 +40,7 @@ describe Bipbip::Plugin::Puppet do
         service: 1.022823853
         ssh_authorized_key: 0.0012527
         sshkey: 0.007716162
-        total: 15.986238385
+        total: 99.999999
         user: 0.001077532
         last_run: 1420794191
     changes:
@@ -55,7 +55,9 @@ YAML
 
     data = plugin.monitor
 
+    data['last_run_total_time'].should eq(99.999999)
     data['last_run_age'].should be_instance_of(Fixnum)
+
     data['has_events'].should eq(true)
     data['has_resources'].should eq(true)
     data['has_changes'].should eq(true)
