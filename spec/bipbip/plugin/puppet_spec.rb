@@ -55,7 +55,7 @@ YAML
 
     data = plugin.monitor
 
-    data['last_run_total_time'].should eq(99.999999)
+    data['last_run_total_time'].should eq(99)
     data['last_run_age'].should be_instance_of(Fixnum)
 
     data['has_events'].should eq(true)

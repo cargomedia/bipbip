@@ -30,7 +30,7 @@ module Bipbip
       has_resources = puppet_report.has_key?('resources')
       has_changes = puppet_report.has_key?('changes')
       {
-          'last_run_total_time' => puppet_report['time']['total'].to_f,
+          'last_run_total_time' => puppet_report['time']['total'].to_i,
           'last_run_age' => report_age,
           'has_events' => has_events,
           'has_resources' => has_resources,
