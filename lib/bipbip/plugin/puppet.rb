@@ -22,7 +22,7 @@ module Bipbip
     end
 
     def monitor
-      puppet_report = puppet_last_run_summary
+      puppet_report = last_run_summary
 
       report_age = Time.new.to_i - puppet_report['time']['last_run'].to_i
       has_events = puppet_report.has_key?('events')
@@ -45,7 +45,7 @@ module Bipbip
 
     private
 
-    def puppet_last_run_summary
+    def last_run_summary
       YAML.load_file(Pathname.new('/var/lib/puppet/state/last_run_summary.yaml'))
     end
   end
