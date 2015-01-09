@@ -60,8 +60,8 @@ YAML
     data['has_resources'].should eq(true)
     data['has_changes'].should eq(true)
 
-    data['events_total_count'].should be_instance_of(Fixnum)
-    data['resources_total_count'].should be_instance_of(Fixnum)
-    data['changes_total_count'].should be_instance_of(Fixnum)
+    data['events_total_count'].should eq(108)
+    data['resources_total_count'].should eq(999)
+    data['changes_total_count'].should eq(199)
   end
 end
