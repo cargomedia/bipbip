@@ -7,7 +7,7 @@ module Bipbip
 
     def metrics_schema
       [
-          {:name => 'last_run_age_in_sec', :type => 'gauge', :unit => 'Seconds'},
+          {:name => 'last_run_age', :type => 'gauge', :unit => 'Seconds'},
           {:name => 'has_event', :type => 'gauge', :unit => 'Boolean'},
           {:name => 'has_resources', :type => 'gauge', :unit => 'Boolean'},
           {:name => 'has_changes', :type => 'gauge', :unit => 'Boolean'},
@@ -29,7 +29,7 @@ module Bipbip
       has_resources = puppet_report.has_key?('resources')
       has_changes = puppet_report.has_key?('changes')
       {
-          'last_run_age_in_sec' => report_age,
+          'last_run_age' => report_age,
           'has_events' => has_events,
           'has_resources' => has_resources,
           'has_changes' => has_resources,
