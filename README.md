@@ -109,6 +109,8 @@ services:
     plugin: elasticsearch
       hostname: localhost
       port: 9200
+  -
+    plugin: puppet
 ```
 
 Optional configuration common to all plugins:
