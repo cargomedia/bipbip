@@ -2,7 +2,6 @@ bipbip [![Build Status](https://travis-ci.org/cargomedia/bipbip.png)](https://tr
 ======
 Agent to collect server metrics and send them to the [CopperEgg RevealMetrics](http://copperegg.com/) platform.
 Plugins for different metrics available.
-Will spawn a child process for every plugin and server you tell it to monitor.
 
 Installation
 ------------
@@ -10,14 +9,15 @@ Installation
 gem install bipbip
 ```
 
-Configuration
--------------
+There's a [puppet module for Debian](https://github.com/cargomedia/puppet-packages/tree/master/modules/bipbip) available to install *bipbip* as a system daemon.
+
+### Configuration
 Pass the path to your configuration file to `bipbip` using the `-c` command line argument.
 ```sh
 bipbip -c /etc/bipbip/config.yml
 ```
 
-The configuration file should list the services you want to collect data for:
+Example with CopperEgg as a storage and service plugins for *memcached* and *mysql* configured:
 ```yml
 logfile: /var/log/bipbip.log
 loglevel: INFO
@@ -27,7 +27,7 @@ include: services.d/
 storages:
   -
     name: copperegg
-    api_key: YOUR_APIKEY
+    api_key: <YOUR_APIKEY>
 
 services:
   -
@@ -38,132 +38,73 @@ services:
     plugin: mysql
     hostname: localhost
     port: 3306
-    username: root
-    password: root
-  -
-    plugin: mongodb
-    hostname: localhost
-    port: 27017
-    username:
-    password:
-  -
-    plugin: redis
-    hostname: localhost
-    port: 6379
-  - 
-    plugin: resque
-    hostname: localhost
-    port: 6379
-    database: 10
-    namespace: resque-prefix
-    frequency: 60
-  -
-    plugin: gearman
-    hostname: localhost
-    port: 4730
-  -
-    plugin: apache2
-    url: http://localhost:80/server-status?auto
-  -
-    plugin: nginx
-    url: http://localhost:80/server-status
-  -
-    plugin: network
-  -
-    plugin: monit
-    hostname: localhost
-    port: 2888
-    ssl:  true
-    auth: true
-    username: foo
-    password: bar
-  -
-    plugin: php-apc
-    url: http://localhost:80/apc-status
-  -
-    plugin: fastcgi-php-fpm
-    host: localhost
-    port: 9000
-    path: /fpm-status
-  -
-    plugin: fastcgi-php-apc
-    host: localhost
-    port: 9000
-  -
-    plugin: fastcgi-php-opcache
-    host: localhost
-    port: 9000
-  -
-    plugin: log-parser
-    path: /var/log/syslog
-    matchers:
-     -
-      name: oom_killer
-      regexp: 'invoked oom_killer'
-     -
-      name: segfault
-      regexp: segfault
-  -
-    plugin: postfix
-  -
-    plugin: elasticsearch
-      hostname: localhost
-      port: 9200
-  -
-    plugin: puppet
 ```
 
-Optional configuration common to all plugins:
-- `frequency`: Override global frequency per plugin
-- `metric_group`: Use metric group name different from plugin name. Useful when using the same plugin twice.
+Configuration options:
+- **logfile** (optional): Path to log file. If not provided will log to `STDOUT`.
+- **loglevel** (optional): One of [Logger's levels](http://www.ruby-doc.org/stdlib-2.1.0/libdoc/logger/rdoc/Logger.html). Defaults to `INFO`.
+- **frequency** (optional): How often to measure metrics (in seconds). Defaults to `60`.
+- **include** (optional): Optional directory where to look for *service plugin configurations* (relative to config file).
+- **storage**: List of storages to send data to.
+- **services**: List of service plugins from which to gather metrics.
 
-Include configuration
----------------------
-In your configuration you can specify a directory to include service configurations from:
+The `include` directive allows to set a directory from which to load additional *service plugin* configurations. The above example could also be structured with multiple files:
 ```
-include: services.d/
+.
+|-- config.yml
+`-- services.d
+    |-- memcached.yml
+    `-- mysql.yml
 ```
-This will include files from `/etc/bipbip/services.d/` and load them into the `services` configuration.
-
-You could then add a file `/etc/bipbip/services.d/memcached.yml`:
+Where `memcached.yml` would contain:
 ```yml
 plugin: memcached
 hostname: localhost
 port: 11211
 ```
 
-Plugins
--------
-#### fastcgi-php-fpm
-Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
+The configuration for each *service plugin* is described further down.
+The following options are available for all plugins:
+- `frequency`: Override the global measurement frequency.
+- `metric_group`: Use a metric group name different from the plugin's name. Useful when using the same plugin twice.
 
-#### fastcgi-php-apc
-Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
+Storages
+--------
+Currently *bipbip* has only one storage available, but more could be added.
 
-#### fastcgi-php-opcache
-Requires the `cgi-fcgi` program (debian package: `libfcgi0ldbl`).
+### copperegg
+Send metrics to [CopperEgg](http://copperegg.com/)'s custom metrics API (*RevealMetrics*).
 
-#### php-apc
-To collect `APC` stats of your apache process, please install the following script.
+Configuration options:
+- **api_key**: Your API key
 
-Create file `/usr/local/bin/apc-status.php` with content of `data/apc-status.php`.
+Service Plugins
+---------------
+These service plugins ship with bipbip:
+- memcached
+- mysql
+- mongodb
+- redis
+- resque
+- gearman
+- apache2
+- nginx
+- network
+- monit
+- php-apc
+- fastcgi-php-fpm
+- fastcgi-php-apc
+- fastcgi-php-opcache
+- log-parser
+- postfix
+- elasticsearch
+- puppet
 
-Create apache config `/etc/apache2/conf.d/apc-status` with content:
-```
-Alias /apc-status /usr/local/bin/apc-status.php
+Please refer to [/docu/services.md](/docu/services.md) for information about the individual plugins and their configuration options.
 
-<Files "/usr/local/bin/apc-status.php">
-	Order deny,allow
-	Deny from all
-	Allow from 127.0.0.1
-</Files>
-```
-
-Then set the `url`-configuration for the plugin to where the script is being served, e.g. `http//localhost:80/apc-status`.
-
-Custom external plugins
------------------------
-Additional plugins can be created as independent gems.
+Custom Service Plugins
+----------------------
+Additional service plugins can be created as independent gems.
 They should include a class `Plugin::MyPlugin` in the `BipBip` module extending `Plugin`.
 On that class the functions `metrics_schema` and `monitor` should be implemented.
 
