@@ -7,11 +7,9 @@ module Bipbip
 
     def metrics_schema
       [
+          {:name => 'all_optimal', :type => 'gauge', :unit => 'Boolean'},
           {:name => 'last_run_total_time', :type => 'gauge', :unit => 'Seconds'},
           {:name => 'last_run_age', :type => 'gauge', :unit => 'Seconds'},
-          {:name => 'has_events', :type => 'gauge', :unit => 'Boolean'},
-          {:name => 'has_resources', :type => 'gauge', :unit => 'Boolean'},
-          {:name => 'has_changes', :type => 'gauge', :unit => 'Boolean'},
           {:name => 'events_failure_count', :type => 'gauge', :unit => 'Events'},
           {:name => 'events_success_count', :type => 'gauge', :unit => 'Events'},
           {:name => 'events_total_count', :type => 'gauge', :unit => 'Events'},
@@ -30,11 +28,9 @@ module Bipbip
       has_resources = puppet_report.has_key?('resources')
       has_changes = puppet_report.has_key?('changes')
       {
+          'all_optimal' => ((has_events and has_changes and has_resources) ? 1 : 0),
           'last_run_total_time' => puppet_report['time']['total'].to_i,
           'last_run_age' => report_age,
-          'has_events' => (has_events ? 1 : 0),
-          'has_resources' => (has_resources ? 1 : 0),
-          'has_changes' => (has_resources ? 1 : 0),
           'events_failure_count' => (has_events ? puppet_report['events']['failure'].to_i : 0),
           'events_success_count' => (has_events ? puppet_report['events']['success'].to_i : 0),
           'events_total_count' => (has_events ? puppet_report['events']['total'].to_i : 0),
