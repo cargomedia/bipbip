@@ -55,7 +55,7 @@ YAML
 
     data = plugin.monitor
 
-    data['all_optimal'].should eq(1)
+    data['report_ok'].should eq(1)
     data['last_run_total_time'].should eq(99)
     data['last_run_age'].should be_instance_of(Fixnum)
 
