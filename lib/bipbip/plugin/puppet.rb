@@ -9,7 +9,7 @@ module Bipbip
       [
           {:name => 'last_run_total_time', :type => 'gauge', :unit => 'Seconds'},
           {:name => 'last_run_age', :type => 'gauge', :unit => 'Seconds'},
-          {:name => 'has_event', :type => 'gauge', :unit => 'Boolean'},
+          {:name => 'has_events', :type => 'gauge', :unit => 'Boolean'},
           {:name => 'has_resources', :type => 'gauge', :unit => 'Boolean'},
           {:name => 'has_changes', :type => 'gauge', :unit => 'Boolean'},
           {:name => 'events_failure_count', :type => 'gauge', :unit => 'Events'},
@@ -32,9 +32,9 @@ module Bipbip
       {
           'last_run_total_time' => puppet_report['time']['total'].to_i,
           'last_run_age' => report_age,
-          'has_events' => has_events,
-          'has_resources' => has_resources,
-          'has_changes' => has_resources,
+          'has_events' => (has_events ? 1 : 0),
+          'has_resources' => (has_resources ? 1 : 0),
+          'has_changes' => (has_resources ? 1 : 0),
           'events_failure_count' => (has_events ? puppet_report['events']['failure'].to_i : 0),
           'events_success_count' => (has_events ? puppet_report['events']['success'].to_i : 0),
           'events_total_count' => (has_events ? puppet_report['events']['total'].to_i : 0),
