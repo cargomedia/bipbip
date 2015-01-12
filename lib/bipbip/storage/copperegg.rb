@@ -40,7 +40,10 @@ module Bipbip
     end
 
     def store_sample(plugin, time, data)
-      CopperEgg::MetricSample.save(plugin.metric_group, plugin.source_identifier, time.to_i, data)
+      response = CopperEgg::MetricSample.save(plugin.metric_group, plugin.source_identifier, time.to_i, data)
+      if response.code != '200'
+        raise("Cannot store copperegg data `#{data}`. Response code `#{response.code}`, message `#{response.message}`, body `#{response.body}`")
+      end
     end
 
     def _load_metric_groups
