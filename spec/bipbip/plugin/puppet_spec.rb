@@ -55,12 +55,9 @@ YAML
 
     data = plugin.monitor
 
+    data['report_ok'].should eq(1)
     data['last_run_total_time'].should eq(99)
     data['last_run_age'].should be_instance_of(Fixnum)
-
-    data['has_events'].should eq(true)
-    data['has_resources'].should eq(true)
-    data['has_changes'].should eq(true)
 
     data['events_total_count'].should eq(108)
     data['resources_total_count'].should eq(999)

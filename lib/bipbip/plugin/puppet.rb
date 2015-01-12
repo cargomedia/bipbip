@@ -7,11 +7,9 @@ module Bipbip
 
     def metrics_schema
       [
+          {:name => 'report_ok', :type => 'gauge', :unit => 'Boolean'},
           {:name => 'last_run_total_time', :type => 'gauge', :unit => 'Seconds'},
           {:name => 'last_run_age', :type => 'gauge', :unit => 'Seconds'},
-          {:name => 'has_event', :type => 'gauge', :unit => 'Boolean'},
-          {:name => 'has_resources', :type => 'gauge', :unit => 'Boolean'},
-          {:name => 'has_changes', :type => 'gauge', :unit => 'Boolean'},
           {:name => 'events_failure_count', :type => 'gauge', :unit => 'Events'},
           {:name => 'events_success_count', :type => 'gauge', :unit => 'Events'},
           {:name => 'events_total_count', :type => 'gauge', :unit => 'Events'},
@@ -29,20 +27,30 @@ module Bipbip
       has_events = puppet_report.has_key?('events')
       has_resources = puppet_report.has_key?('resources')
       has_changes = puppet_report.has_key?('changes')
-      {
+
+      metrics = {
+          'report_ok' => ((has_events and has_changes and has_resources) ? 1 : 0),
           'last_run_total_time' => puppet_report['time']['total'].to_i,
           'last_run_age' => report_age,
-          'has_events' => has_events,
-          'has_resources' => has_resources,
-          'has_changes' => has_resources,
-          'events_failure_count' => (has_events ? puppet_report['events']['failure'].to_i : 0),
-          'events_success_count' => (has_events ? puppet_report['events']['success'].to_i : 0),
-          'events_total_count' => (has_events ? puppet_report['events']['total'].to_i : 0),
-          'resources_failed_count' => (has_resources ? puppet_report['resources']['failed'].to_i : 0),
-          'resources_skipped_count' => (has_resources ? puppet_report['resources']['skipped'].to_i : 0),
-          'resources_total_count' => (has_resources ? puppet_report['resources']['total'].to_i : 0),
-          'changes_total_count' => (has_changes ? puppet_report['changes']['total'].to_i : 0),
       }
+
+      if has_events
+        metrics['events_failure_count'] = puppet_report['events']['failure'].to_i
+        metrics['events_success_count'] = puppet_report['events']['success'].to_i
+        metrics['events_total_count'] = puppet_report['events']['total'].to_i
+      end
+
+      if has_resources
+        metrics['resources_failed_count'] = puppet_report['resources']['failed'].to_i
+        metrics['resources_skipped_count'] = puppet_report['resources']['skipped'].to_i
+        metrics['resources_total_count'] = puppet_report['resources']['total'].to_i
+      end
+
+      if has_changes
+        metrics['changes_total_count'] = puppet_report['changes']['total'].to_i
+      end
+
+      metrics
     end
 
     private
