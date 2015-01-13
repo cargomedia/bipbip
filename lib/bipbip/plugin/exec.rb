@@ -1,4 +1,5 @@
 require 'json'
+
 module Bipbip
 
   class Plugin::Exec < Plugin

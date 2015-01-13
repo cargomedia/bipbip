@@ -132,3 +132,9 @@ Configuration options:
 
 ### puppet
 No configuration necessary.
+
+### exec
+Configuration options:
+- **command**
+- **type**
+- **unit**
