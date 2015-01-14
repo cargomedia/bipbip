@@ -2,7 +2,7 @@ require 'json'
 
 module Bipbip
 
-  class Plugin::Exec < Plugin
+  class Plugin::Command < Plugin
 
     attr_accessor :schema
 

@@ -1,8 +1,8 @@
 require 'bipbip'
-require 'bipbip/plugin/exec'
+require 'bipbip/plugin/command'
 
-describe Bipbip::Plugin::Exec do
-  let(:plugin) { Bipbip::Plugin::Exec.new(
+describe Bipbip::Plugin::Command do
+  let(:plugin) { Bipbip::Plugin::Command.new(
       'exec', {'command' => 'pulsar -c /Users/cargomedia/Projects/pulsar-conf-cargomedia sk production mongo:health:check -s json_print=true -l 0', 'type' => 'gauge', 'unit' => 'Boolean'}, 10) }
 
   it 'should collect data' do

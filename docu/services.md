@@ -133,8 +133,7 @@ Configuration options:
 ### puppet
 No configuration necessary.
 
-### exec
+### command
 Configuration options:
 - **command**
-- **type**
-- **unit**
+- **mode**
