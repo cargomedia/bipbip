@@ -135,5 +135,32 @@ No configuration necessary.
 
 ### command
 Configuration options:
-- **command**
-- **mode**
+
+- **command** Command to execute. Needs to return JSON parsable string e.g. `ruby -e 'puts "{\"home_dir_file_count\":#{`ls ~/ | wc -l`}}"'`
+- **mode** There are `single` and `advanced` mode for metrics. Defaults to `single`
+
+First run of plugin will execute command and parse reults to learn the schema. Every next run will operate normally.
+
+#### Single mode
+In single mode the plugin expects data in format like below
+
+```
+{
+  "metric1": "value"
+  "metric2": "value"
+}
+```
+
+Metric type will be set to `gauge` by default. `unit` type is ignored in this mode.
+
+#### Advanced mode
+In advanced mode the plugins expects data with type and unit defined in JSON returned by command.
+
+```
+{
+  "metric1": {"value": "some-value", "type" => "gauge/counter", "unit" => "sec/integer/custom"}
+  "metric2": {"value": "some-value", "type" => "gauge/counter", "unit" => "sec/integer/custom"}
+}
+```
+
+Boolean values `true`, `false` will be replaced with `1`, `0` for both modes.
