@@ -99,7 +99,7 @@ These service plugins ship with bipbip:
 - postfix
 - elasticsearch
 - puppet
-- exec
+- command
 
 Please refer to [/docu/services.md](/docu/services.md) for information about the individual plugins and their configuration options.
 
