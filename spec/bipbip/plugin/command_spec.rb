@@ -2,12 +2,12 @@ require 'bipbip'
 require 'bipbip/plugin/command'
 
 describe Bipbip::Plugin::Command do
-  let(:plugin) { Bipbip::Plugin::Command.new(
-      'exec', {'command' => 'pulsar -c /Users/cargomedia/Projects/pulsar-conf-cargomedia sk production mongo:health:check -s json_print=true -l 0', 'type' => 'gauge', 'unit' => 'Boolean'}, 10) }
+  let(:plugin1) { Bipbip::Plugin::Command.new('command', {'command' => 'command', 'mode' => 'simple'}, 10) }
+  let(:plugin2) { Bipbip::Plugin::Command.new('command', {'command' => 'command', 'mode' => 'advanced'}, 10) }
 
-  it 'should collect data' do
+  it 'should collect data for simple mode' do
 
-    plugin.stub(:exec_command).and_return(
+    plugin1.stub(:exec_command).and_return(
 <<DATA
 {
   "common_ok": true,
@@ -20,10 +20,34 @@ describe Bipbip::Plugin::Command do
 DATA
     )
 
-    data = plugin.monitor
+    data = plugin1.monitor
 
     data['common_ok'].should eq(1)
     data['router_ok'].should eq(0)
     data['cluster_ok'].should eq(0)
   end
+
+  it 'should collect data for advanced mode' do
+
+    plugin2.stub(:exec_command).and_return(
+        <<DATA
+{
+  "common_ok": {"value": false, "type": "gauge", "unit": "Boolean"},
+  "report_ok": {"value": "true", "type": "gauge", "unit": "Boolean"},
+  "router_count":  {"value": 4, "type": "gauge", "unit": "Members"},
+  "puppet_runtime":  {"value": 123, "type": "gauge", "unit": "Seconds"},
+  "run_errors":  {"value": 199, "type": "counter", "unit": "Integer"}
+}
+DATA
+    )
+
+    data = plugin2.monitor
+
+    data['common_ok'].should eq(0)
+    data['report_ok'].should eq(1)
+    data['router_count'].should eq(4)
+    data['puppet_runtime'].should eq(123)
+    data['run_errors'].should eq(199)
+  end
+
 end

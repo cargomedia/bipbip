@@ -12,18 +12,29 @@ module Bipbip
     end
 
     def monitor
-      Hash[data.map { |k, v| [k, (v ? 1 : 0)] }]
+      Hash[data.map { |k, v| [k, metric_value(v)] }]
     end
 
     private
 
+    def metric_value(v)
+      v = v['value'] if config['mode'] == 'advanced'
+      v = 1 if v == 'true' or v == true
+      v = 0 if v == 'false' or v == false
+      v
+    end
+
     def find_schema
       metrics = []
       data.each do |metric, value|
-        type = config['type'].to_s
-        unit = config['unit'].to_s
-        metrics.push({:name => "#{metric}", :type => type, :unit => unit})
+        case config['mode']
+          when 'simple'
+            metrics.push({:name => "#{metric}", :type => 'gauge'})
+          when 'advanced'
+            metrics.push({:name => "#{metric}", :type => value['type'], :unit => value['unit']})
+        end
       end
+
       metrics
     end
 
