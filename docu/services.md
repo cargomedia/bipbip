@@ -144,7 +144,7 @@ Every next run will operate normally.
 #### Simple mode schema
 In simple mode the plugin expects data in format like below
 
-```
+```json
 {
   "metric1": "value"
   "metric2": "value"
@@ -156,7 +156,7 @@ Metric type will be set to `gauge` by default. `unit` type is ignored in this mo
 #### Advanced mode schema
 In advanced mode the plugins expects data with metric `type` and `unit` defined in JSON returned by command.
 
-```
+```json
 {
   "metric1": {"value": "some-value", "type" => "gauge/counter", "unit" => "sec/integer/custom"}
   "metric2": {"value": "some-value", "type" => "gauge/counter", "unit" => "sec/integer/custom"}
