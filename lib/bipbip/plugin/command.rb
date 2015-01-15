@@ -15,6 +15,10 @@ module Bipbip
       Hash[command_output.map { |metric, value| [metric, metric_value(value)] }]
     end
 
+    def source_identifier
+      Bipbip.fqdn + '::' + @metric_group + '::' + config.values.first.to_s.gsub(/[^\w]/, '_')[0..20]
+    end
+
     private
 
     def metric_value(value)
