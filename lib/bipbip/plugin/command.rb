@@ -6,6 +6,7 @@ module Bipbip
   class Plugin::Command < Plugin
 
     attr_accessor :schema
+    attr_accessor :mode
 
     def metrics_schema
       @schema ||= find_schema
@@ -18,7 +19,7 @@ module Bipbip
     private
 
     def metric_value(v)
-      v = v['value'] if config['mode'] == 'advanced'
+      v = v['value'] if @mode == 'advanced'
       v = 1 if v == 'true' or v == true
       v = 0 if v == 'false' or v == false
       v
@@ -27,15 +28,18 @@ module Bipbip
     def find_schema
       metrics = []
       data.each do |metric, value|
-        case config['mode']
+        case @mode ||= detect_mode(value)
           when 'simple'
             metrics.push({:name => "#{metric}", :type => 'gauge'})
           when 'advanced'
             metrics.push({:name => "#{metric}", :type => value['type'], :unit => value['unit']})
         end
       end
-
       metrics
+    end
+
+    def detect_mode(v)
+      {true => 'advanced', false => 'simple'}.fetch(v.is_a?(Hash))
     end
 
     def data
