@@ -13,16 +13,16 @@ module Bipbip
     end
 
     def monitor
-      Hash[command_output.map { |k, v| [k, metric_value(v)] }]
+      Hash[command_output.map { |metric, value| [metric, metric_value(value)] }]
     end
 
     private
 
-    def metric_value(v)
-      v = v['value'] if @operation_mode == 'advanced'
-      v = 1 if v == 'true' or v == true
-      v = 0 if v == 'false' or v == false
-      v
+    def metric_value(value)
+      value = value['value'] if @operation_mode == 'advanced'
+      value = 1 if value == 'true' or value == true
+      value = 0 if value == 'false' or value == false
+      value
     end
 
     def find_schema
@@ -36,8 +36,8 @@ module Bipbip
       end
     end
 
-    def detect_operation_mode(v)
-      {true => 'advanced', false => 'simple'}.fetch(v.is_a?(Hash))
+    def detect_operation_mode(value)
+      {true => 'advanced', false => 'simple'}.fetch(value.is_a?(Hash))
     end
 
     def command_output
