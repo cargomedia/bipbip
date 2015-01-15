@@ -70,7 +70,7 @@ module Bipbip
     def source_identifier
       identifier = Bipbip.fqdn
       unless config.empty?
-        identifier += '::' + config.values.first.to_s
+        identifier += '::' + @metric_group + '::' + config.values.first.to_s.gsub(/[^\w]/, '_')[0..20]
       end
       identifier
     end
