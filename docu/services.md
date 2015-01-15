@@ -137,12 +137,12 @@ No configuration necessary.
 Configuration options:
 
 - **command** Command to execute. Needs to return JSON parsable string e.g. `ruby -e 'puts "{\"file_count\": 5}"'`
-- **mode** There are `single` and `advanced` mode for metrics. Defaults to `single`.
 
-First run of plugin will execute command and parse results to learn the schema. Every next run will operate normally.
+First run of plugin will execute command and parse results to learn the schema and operation mode. There are two operation modes: `simple` and `advanced` (see details below).
+Every next run will operate normally.
 
-#### Single mode
-In single mode the plugin expects data in format like below
+#### Simple mode schema
+In simple mode the plugin expects data in format like below
 
 ```
 {
@@ -153,7 +153,7 @@ In single mode the plugin expects data in format like below
 
 Metric type will be set to `gauge` by default. `unit` type is ignored in this mode.
 
-#### Advanced mode
+#### Advanced mode schema
 In advanced mode the plugins expects data with metric `type` and `unit` defined in JSON returned by command.
 
 ```
