@@ -20,7 +20,6 @@ describe Bipbip::Plugin::Command do
 DATA
     )
 
-    plugin1.metrics_schema
     data = plugin1.monitor
 
     data['common_ok'].should eq(1)
@@ -42,7 +41,6 @@ DATA
 DATA
     )
 
-    plugin1.metrics_schema
     data = plugin1.monitor
 
     data['common_ok'].should eq(0)
