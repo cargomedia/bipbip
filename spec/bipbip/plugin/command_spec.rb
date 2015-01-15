@@ -2,8 +2,8 @@ require 'bipbip'
 require 'bipbip/plugin/command'
 
 describe Bipbip::Plugin::Command do
-  let(:plugin1) { Bipbip::Plugin::Command.new('command', {'command' => 'command', 'mode' => 'simple'}, 10) }
-  let(:plugin2) { Bipbip::Plugin::Command.new('command', {'command' => 'command', 'mode' => 'advanced'}, 10) }
+  let(:plugin1) { Bipbip::Plugin::Command.new('command', {'command' => 'command'}, 10) }
+  let(:plugin2) { Bipbip::Plugin::Command.new('command', {'command' => 'command'}, 10) }
 
   it 'should collect data for simple mode' do
 
@@ -20,6 +20,7 @@ describe Bipbip::Plugin::Command do
 DATA
     )
 
+    plugin1.metrics_schema
     data = plugin1.monitor
 
     data['common_ok'].should eq(1)
@@ -41,6 +42,7 @@ DATA
 DATA
     )
 
+    plugin2.metrics_schema
     data = plugin2.monitor
 
     data['common_ok'].should eq(0)
