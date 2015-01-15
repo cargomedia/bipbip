@@ -162,7 +162,7 @@ There is also possibility to mix metric entries of type `simple` and `advanced`
 {
   "metric1": {"value": 18, "type": "[gauge|counter]", "unit": "<unit>"},
   "metric2": 12,
-  "metric3": {"value": false, "type": "[gauge|counter]", "unit": "<unit>"}
+  "metric3": {"value": false, "type": "[gauge|counter]", "unit": "<unit>"},
   "metric4": true
 }
 ```
