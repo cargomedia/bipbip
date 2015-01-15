@@ -6,20 +6,20 @@ module Bipbip
   class Plugin::Command < Plugin
 
     attr_accessor :schema
-    attr_accessor :mode
+    attr_accessor :operation_mode
 
     def metrics_schema
       @schema ||= find_schema
     end
 
     def monitor
-      Hash[data.map { |k, v| [k, metric_value(v)] }]
+      Hash[command_output.map { |k, v| [k, metric_value(v)] }]
     end
 
     private
 
     def metric_value(v)
-      v = v['value'] if @mode == 'advanced'
+      v = v['value'] if @operation_mode == 'advanced'
       v = 1 if v == 'true' or v == true
       v = 0 if v == 'false' or v == false
       v
@@ -27,8 +27,8 @@ module Bipbip
 
     def find_schema
       metrics = []
-      data.each do |metric, value|
-        case @mode ||= detect_mode(value)
+      command_output.each do |metric, value|
+        case @operation_mode ||= detect_operation_mode(value)
           when 'simple'
             metrics.push({:name => "#{metric}", :type => 'gauge'})
           when 'advanced'
@@ -38,11 +38,11 @@ module Bipbip
       metrics
     end
 
-    def detect_mode(v)
+    def detect_operation_mode(v)
       {true => 'advanced', false => 'simple'}.fetch(v.is_a?(Hash))
     end
 
-    def data
+    def command_output
       JSON.parse(exec_command)
     end
 
