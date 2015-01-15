@@ -135,19 +135,16 @@ No configuration necessary.
 
 ### command
 Configuration options:
-
-- **command** Command to execute. Needs to return JSON parsable string e.g. `ruby -e 'puts "{\"file_count\": 5}"'`
+- **command** Command to execute. Needs to return JSON parsable string (e.g. `ruby -e 'puts "{\"file_count\": 5}"'`)
 
 First run of plugin will execute command and parse results to learn the schema and operation mode. There are two operation modes: `simple` and `advanced` (see details below).
-Every next run will operate normally.
 
 #### Simple mode schema
 In simple mode the plugin expects data in format like below
-
 ```json
 {
-  "metric1": "integer/boolean",
-  "metric2": "integer/boolean"
+  "metric1": 12,
+  "metric2": true
 }
 ```
 
@@ -155,11 +152,10 @@ Metric type will be set to `gauge` by default.
 
 #### Advanced mode schema
 In advanced mode the plugin expects data with metric `type` and `unit` defined in JSON which is returned by command.
-
 ```json
 {
-  "metric1": {"value": "integer/boolean", "type": "gauge/counter", "unit": "sec/integer/custom"},
-  "metric2": {"value": "integer/boolean", "type": "gauge/counter", "unit": "sec/integer/custom"}
+  "metric1": {"value": 18, "type": "[gauge|counter]", "unit": "<unit>"},
+  "metric2": {"value": false, "type": "[gauge|counter]", "unit": "<unit>"}
 }
 ```
 
