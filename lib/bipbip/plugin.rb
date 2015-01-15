@@ -68,9 +68,9 @@ module Bipbip
     end
 
     def source_identifier
-      identifier = Bipbip.fqdn
+      identifier = Bipbip.fqdn + '::' + metric_group
       unless config.empty?
-        identifier += '::' + @metric_group + '::' + config.values.first.to_s.gsub(/[^\w]/, '_')[0..20]
+        identifier += '::' + config.values.first.to_s.gsub(/[^\w]/, '_')
       end
       identifier
     end
