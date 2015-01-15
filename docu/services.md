@@ -146,8 +146,8 @@ In simple mode the plugin expects data in format like below
 
 ```json
 {
-  "metric1": 8
-  "metric2": 4
+  "metric1": "integer/boolean"
+  "metric2": "integer/boolean"
 }
 ```
 
@@ -158,8 +158,8 @@ In advanced mode the plugins expects data with metric `type` and `unit` defined 
 
 ```json
 {
-  "metric1": {"value": 4, "type" => "gauge/counter", "unit" => "sec/integer/custom"}
-  "metric2": {"value": 2, "type" => "gauge/counter", "unit" => "sec/integer/custom"}
+  "metric1": {"value": "integer/boolean", "type" => "gauge/counter", "unit" => "sec/integer/custom"}
+  "metric2": {"value": "integer/boolean", "type" => "gauge/counter", "unit" => "sec/integer/custom"}
 }
 ```
 
