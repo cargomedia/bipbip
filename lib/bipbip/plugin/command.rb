@@ -26,16 +26,14 @@ module Bipbip
     end
 
     def find_schema
-      metrics = []
-      command_output.each do |metric, value|
+      command_output.map do |metric, value|
         case @operation_mode ||= detect_operation_mode(value)
           when 'simple'
-            metrics.push({:name => "#{metric}", :type => 'gauge'})
+            {:name => "#{metric}", :type => 'gauge'}
           when 'advanced'
-            metrics.push({:name => "#{metric}", :type => value['type'], :unit => value['unit']})
+            {:name => "#{metric}", :type => value['type'], :unit => value['unit']}
         end
       end
-      metrics
     end
 
     def detect_operation_mode(v)
