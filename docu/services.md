@@ -151,7 +151,7 @@ In simple mode the plugin expects data in format like below
 }
 ```
 
-Metric type will be set to `gauge` by default. `unit` type is ignored in this mode.
+Metric type will be set to `gauge` by default.
 
 #### Advanced mode schema
 In advanced mode the plugins expects data with metric `type` and `unit` defined in JSON returned by command.
