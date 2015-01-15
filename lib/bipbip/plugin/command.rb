@@ -19,7 +19,7 @@ module Bipbip
     private
 
     def metric_value(value)
-      value = value['value'] if @operation_mode == 'advanced'
+      value = value['value'] if @operation_mode == :advanced
       value = 1 if value == 'true' or value == true
       value = 0 if value == 'false' or value == false
       value
@@ -28,16 +28,16 @@ module Bipbip
     def find_schema
       command_output.map do |metric, value|
         case @operation_mode ||= detect_operation_mode(value)
-          when 'simple'
+          when :simple
             {:name => "#{metric}", :type => 'gauge'}
-          when 'advanced'
+          when :advanced
             {:name => "#{metric}", :type => value['type'], :unit => value['unit']}
         end
       end
     end
 
     def detect_operation_mode(value)
-      {true => 'advanced', false => 'simple'}.fetch(value.is_a?(Hash))
+      {true => :advanced, false => :simple}.fetch(value.is_a?(Hash))
     end
 
     def command_output
