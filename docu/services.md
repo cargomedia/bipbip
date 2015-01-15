@@ -137,25 +137,33 @@ No configuration necessary.
 Configuration options:
 - **command** Command to execute. Needs to return JSON parsable string (e.g. `ruby -e 'puts "{\"file_count\": 5}"'`)
 
-First run of plugin will execute command and parse results to learn the schema and operation mode. There are two operation modes: `simple` and `advanced` (see details below).
+First run of plugin will execute command and parse results to learn the schema. There are two basic types of metric entry: `simple`, `advanced` (see details below).
 
-#### Simple mode schema
-In simple mode the plugin expects data in format like below
+#### Schema examples
+In `simple` metric entry mode the plugin expects data in format like below
 ```json
 {
   "metric1": 12,
   "metric2": true
 }
 ```
-
 Metric type will be set to `gauge` by default.
 
-#### Advanced mode schema
-In advanced mode the plugin expects data with metric `type` and `unit` defined in JSON which is returned by command.
+In `advanced` metric entry mode the plugin expects data as `hash` with metric `type` and `unit` defined.
 ```json
 {
   "metric1": {"value": 18, "type": "[gauge|counter]", "unit": "<unit>"},
   "metric2": {"value": false, "type": "[gauge|counter]", "unit": "<unit>"}
+}
+```
+
+There is also possibility to mix metric entries of type `simple` and `advanced`
+```json
+{
+  "metric1": {"value": 18, "type": "[gauge|counter]", "unit": "<unit>"},
+  "metric2": 12,
+  "metric3": {"value": false, "type": "[gauge|counter]", "unit": "<unit>"}
+  "metric4": true
 }
 ```
 
