@@ -69,7 +69,7 @@ module Bipbip
     private
 
     def slow_query_threshold
-      config['slow_query_threshold'] || 100
+      config['slow_query_threshold'] || 0
     end
 
     # @return [Mongo::MongoClient]
