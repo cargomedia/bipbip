@@ -20,6 +20,7 @@ module Bipbip
           {:name => 'mem_pagefaults', :type => 'counter', :unit => 'faults'},
           {:name => 'globalLock_currentQueue', :type => 'gauge'},
           {:name => 'replication_lag', :type => 'gauge', :unit => 'Seconds'},
+          {:name => 'slow_queries', :type => 'gauge', :unit => 'Queries'},
       ]
     end
 
