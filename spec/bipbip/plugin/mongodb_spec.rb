@@ -5,7 +5,7 @@ describe Bipbip::Plugin::Mongodb do
   let(:plugin) { Bipbip::Plugin::Mongodb.new('mongodb', {'hostname' => 'localhost', 'port' => 27017}, 10) }
 
   it 'should collect data' do
-    plugin.stub(:server_status).and_return(
+    plugin.stub(:fetch_server_status).and_return(
         {
             'connections' => {
                 'current' => 100
@@ -21,14 +21,14 @@ describe Bipbip::Plugin::Mongodb do
   end
 
   it 'should collect replication lag' do
-    plugin.stub(:server_status).and_return(
+    plugin.stub(:fetch_server_status).and_return(
         {
             'repl' => {
                 'secondary' => true
             }
         })
 
-    plugin.stub(:replica_status).and_return(
+    plugin.stub(:fetch_replica_status).and_return(
         {
             'set' => 'rep1',
             'members' => [
