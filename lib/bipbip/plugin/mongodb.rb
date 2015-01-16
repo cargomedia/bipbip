@@ -24,73 +24,100 @@ module Bipbip
     end
 
     def monitor
-      mongoStats = server_status
+      @mongodb_client = nil
+
+      status = fetch_server_status
 
       data = {}
 
-      if mongoStats['indexCounters']
-        data['btree_misses'] = mongoStats['indexCounters']['misses'].to_i
+      if status['indexCounters']
+        data['btree_misses'] = status['indexCounters']['misses'].to_i
       end
-      if mongoStats['backgroundFlushing']
-        data['flushing_last_ms'] = mongoStats['backgroundFlushing']['last_ms'].to_i
+      if status['backgroundFlushing']
+        data['flushing_last_ms'] = status['backgroundFlushing']['last_ms'].to_i
       end
-      if mongoStats['opcounters']
-        data['op_inserts'] = mongoStats['opcounters']['insert'].to_i
-        data['op_queries'] = mongoStats['opcounters']['query'].to_i
-        data['op_updates'] = mongoStats['opcounters']['update'].to_i
-        data['op_deletes'] = mongoStats['opcounters']['delete'].to_i
-        data['op_getmores'] = mongoStats['opcounters']['getmore'].to_i
-        data['op_commands'] = mongoStats['opcounters']['command'].to_i
+      if status['opcounters']
+        data['op_inserts'] = status['opcounters']['insert'].to_i
+        data['op_queries'] = status['opcounters']['query'].to_i
+        data['op_updates'] = status['opcounters']['update'].to_i
+        data['op_deletes'] = status['opcounters']['delete'].to_i
+        data['op_getmores'] = status['opcounters']['getmore'].to_i
+        data['op_commands'] = status['opcounters']['command'].to_i
       end
-      if mongoStats['connections']
-        data['connections_current'] = mongoStats['connections']['current'].to_i
+      if status['connections']
+        data['connections_current'] = status['connections']['current'].to_i
       end
-      if mongoStats['mem']
-        data['mem_resident'] = mongoStats['mem']['resident'].to_i
-        data['mem_mapped'] = mongoStats['mem']['mapped'].to_i
+      if status['mem']
+        data['mem_resident'] = status['mem']['resident'].to_i
+        data['mem_mapped'] = status['mem']['mapped'].to_i
       end
-      if mongoStats['extra_info']
-        data['mem_pagefaults'] = mongoStats['extra_info']['page_faults'].to_i
+      if status['extra_info']
+        data['mem_pagefaults'] = status['extra_info']['page_faults'].to_i
       end
-      if mongoStats['globalLock'] && mongoStats['globalLock']['currentQueue']
-        data['globalLock_currentQueue'] = mongoStats['globalLock']['currentQueue']['total'].to_i
+      if status['globalLock'] && status['globalLock']['currentQueue']
+        data['globalLock_currentQueue'] = status['globalLock']['currentQueue']['total'].to_i
       end
-      if mongoStats['repl'] && mongoStats['repl']['secondary'] == true
+      if status['repl'] && status['repl']['secondary'] == true
         data['replication_lag'] = replication_lag
       end
+
+      data['slow_queries_count'] = fetch_slow_queries_count
+
       data
     end
 
     private
 
-    def admin_database
+    def slow_query_threshold
+      config['slow_query_threshold'] || 0
+    end
+
+    # @return [Mongo::MongoClient]
+    def mongodb_client
       options = {
           'hostname' => 'localhost',
           'port' => 27017,
-          'username' => nil,
-          'password' => nil
       }.merge(config)
-      connection = Mongo::MongoClient.new(options['hostname'], options['port'], {:op_timeout => 2, :slave_ok => true})
-      mongo = connection.db('admin')
-      mongo.authenticate(options['username'], options['password']) unless options['password'].nil?
-      mongo
+      @mongodb_client ||= Mongo::MongoClient.new(options['hostname'], options['port'], {:op_timeout => 2, :slave_ok => true})
     end
 
-    def server_status
-      admin_database.command('serverStatus' => 1)
+    # @return [Mongo::DB]
+    def mongodb_database(db_name)
+      db = mongodb_client.db(db_name)
+      db.authenticate(config['username'], config['password']) unless config['password'].nil?
+      db
     end
 
-    def replica_status
-      admin_database.command('replSetGetStatus' => 1)
+    def fetch_server_status
+      mongodb_database('admin').command('serverStatus' => 1)
+    end
+
+    def fetch_replica_status
+      mongodb_database('admin').command('replSetGetStatus' => 1)
+    end
+
+    def slow_query_last_check
+      old = (@slow_query_last_check || Time.now)
+      @slow_query_last_check = Time.now
+      old
+    end
+
+    def fetch_slow_queries_count
+      query = {'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gte' => slow_query_last_check}}
+      database_names_ignore = ['admin', 'system']
+
+      database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
+      database_list.reduce(0) { |memo, database| memo + database.collection('system.profile').count({:query => query}) }
     end
 
     def replication_lag
-      member_list = replica_status['members']
+      status = fetch_replica_status
+      member_list = status['members']
       primary = member_list.select { |member| member['stateStr'] == 'PRIMARY' }.first
       secondary = member_list.select { |member| member['stateStr'] == 'SECONDARY' and member['self'] == true }.first
 
-      raise "No primary member in replica `#{replica_status['set']}`" if primary.nil?
-      raise "Cannot find itself as secondary member in replica `#{replica_status['set']}`" if secondary.nil?
+      raise "No primary member in replica `#{status['set']}`" if primary.nil?
+      raise "Cannot find itself as secondary member in replica `#{status['set']}`" if secondary.nil?
 
       (secondary['optime'].seconds - primary['optime'].seconds)
     end
