@@ -24,7 +24,7 @@ module Bipbip
     end
 
     def monitor
-      @mongodb_connection = nil
+      @mongodb_client = nil
 
       status = fetch_server_status
 
@@ -60,23 +60,31 @@ module Bipbip
       if status['repl'] && status['repl']['secondary'] == true
         data['replication_lag'] = replication_lag
       end
+
+      data['slow_queries_count'] = fetch_slow_queries_count
+
       data
     end
 
     private
 
-    def mongodb_database(db_name)
+    def slow_query_threshold
+      config['slow_query_threshold'] || 100
+    end
+
+    # @return [Mongo::MongoClient]
+    def mongodb_client
       options = {
           'hostname' => 'localhost',
           'port' => 27017,
-          'username' => nil,
-          'password' => nil
       }.merge(config)
+      @mongodb_client ||= Mongo::MongoClient.new(options['hostname'], options['port'], {:op_timeout => 2, :slave_ok => true})
+    end
 
-      @mongodb_connection ||= Mongo::MongoClient.new(options['hostname'], options['port'], {:op_timeout => 2, :slave_ok => true})
-
-      db = @mongodb_connection.db(db_name)
-      db.authenticate(options['username'], options['password']) unless options['password'].nil?
+    # @return [Mongo::DB]
+    def mongodb_database(db_name)
+      db = mongodb_client.db(db_name)
+      db.authenticate(config['username'], config['password']) unless config['password'].nil?
       db
     end
 
@@ -86,6 +94,20 @@ module Bipbip
 
     def fetch_replica_status
       mongodb_database('admin').command('replSetGetStatus' => 1)
+    end
+
+    def slow_query_last_check
+      old = (@slow_query_last_check || Time.now)
+      @slow_query_last_check = Time.now
+      old
+    end
+
+    def fetch_slow_queries_count
+      query = {'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gte' => slow_query_last_check}}
+      database_names_ignore = ['admin', 'system']
+
+      database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
+      database_list.reduce(0) { |memo, database| memo + database.collection('system.profile').count({:query => query}) }
     end
 
     def replication_lag
