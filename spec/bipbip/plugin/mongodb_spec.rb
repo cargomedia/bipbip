@@ -15,9 +15,12 @@ describe Bipbip::Plugin::Mongodb do
             }
         })
 
+    plugin.stub(:fetch_slow_queries_count).and_return(12)
+
     data = plugin.monitor
     data['connections_current'].should eq(100)
     data['mem_resident'].should eq(1024)
+    data['slow_queries_count'].should eq(12)
   end
 
   it 'should collect replication lag' do
@@ -36,6 +39,8 @@ describe Bipbip::Plugin::Mongodb do
                 {'stateStr' => 'SECONDARY', 'optime' => BSON::Timestamp.new(1003, 1), 'self' => true},
             ]
         })
+
+    plugin.stub(:fetch_slow_queries_count).and_return(0)
 
     data = plugin.monitor
     data['replication_lag'].should eq(3)
