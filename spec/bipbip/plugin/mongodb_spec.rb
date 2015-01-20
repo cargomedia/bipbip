@@ -50,6 +50,9 @@ describe Bipbip::Plugin::Mongodb do
     plugin.stub(:find_slow_queries_count).and_return(100)
     plugin.stub(:slow_query_last_check).and_return(Time.now - 5, Time.now)
 
+    plugin.stub(:fetch_server_status).and_return({})
+    plugin.stub(:fetch_replica_status).and_return({})
+
     data = plugin.monitor
     data['slow_queries'].should be < 20
 
