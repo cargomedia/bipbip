@@ -15,12 +15,12 @@ describe Bipbip::Plugin::Mongodb do
             }
         })
 
-    plugin.stub(:find_slow_queries_count).and_return(88)
+    plugin.stub(:fetch_slow_queries).and_return(12)
 
     data = plugin.monitor
     data['connections_current'].should eq(100)
     data['mem_resident'].should eq(1024)
-    data['slow_queries'].should eq(88)
+    data['slow_queries'].should eq(12)
   end
 
   it 'should collect replication lag' do
@@ -51,6 +51,6 @@ describe Bipbip::Plugin::Mongodb do
     plugin.stub(:slow_query_last_check).and_return(Time.now - 5)
 
     data = plugin.monitor
-    data['slow_queries'].should be < 50
+    data['slow_queries'].should be < 20
   end
 end

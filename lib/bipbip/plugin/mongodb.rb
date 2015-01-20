@@ -108,8 +108,7 @@ module Bipbip
 
       slow_queries = find_slow_queries_count({'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gte' => timestamp_last_check}})
 
-      measure_period = (Time.now - timestamp_last_check)
-      (slow_queries/(measure_period <= 1 ? 1 : measure_period)).to_i
+      (slow_queries/(Time.now - timestamp_last_check)).to_i
     end
 
     def find_slow_queries_count(query)
