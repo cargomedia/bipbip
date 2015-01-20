@@ -62,7 +62,7 @@ module Bipbip
         data['replication_lag'] = replication_lag
       end
 
-      data['slow_queries'] = fetch_slow_queries
+      data['slow_queries'] = (fetch_slow_queries/config['frequency'])
 
       data
     end
