@@ -48,9 +48,12 @@ describe Bipbip::Plugin::Mongodb do
 
   it 'should collect slow queries per second' do
     plugin.stub(:find_slow_queries_count).and_return(100)
-    plugin.stub(:slow_query_last_check).and_return(Time.now - 5)
+    plugin.stub(:slow_query_last_check).and_return(Time.now - 5, Time.now)
 
     data = plugin.monitor
     data['slow_queries'].should be < 20
+
+    data = plugin.monitor
+    data['slow_queries'].should be > 100
   end
 end
