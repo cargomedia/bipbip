@@ -62,7 +62,7 @@ module Bipbip
         data['replication_lag'] = replication_lag
       end
 
-      data['slow_queries'] = fetch_slow_queries
+      data['slow_queries'] = calculate_slow_queries
 
       data
     end
@@ -103,15 +103,15 @@ module Bipbip
       old
     end
 
-    def fetch_slow_queries
+    def calculate_slow_queries
       timestamp_last_check = slow_query_last_check
 
-      slow_queries = find_slow_queries_count(slow_query_threshold, timestamp_last_check)
+      slow_queries = fetch_slow_queries_count(slow_query_threshold, timestamp_last_check)
 
       (slow_queries/(Time.now - timestamp_last_check)).to_i
     end
 
-    def find_slow_queries_count(millis_min, ts_min)
+    def fetch_slow_queries_count(millis_min, ts_min)
       query = {'millis' => {'$gte' => millis_min}, 'ts' => {'$gte' => ts_min}}
       database_names_ignore = ['admin', 'system']
 
