@@ -106,13 +106,15 @@ module Bipbip
     def fetch_slow_queries
       timestamp_last_check = slow_query_last_check
 
-      slow_queries = find_slow_queries_count({'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gte' => timestamp_last_check}})
+      slow_queries = find_slow_queries_count(slow_query_threshold, timestamp_last_check)
 
       (slow_queries/(Time.now - timestamp_last_check)).to_i
     end
 
-    def find_slow_queries_count(query)
+    def find_slow_queries_count(millis_min, ts_min)
+      query = {'millis' => {'$gte' => millis_min}, 'ts' => {'$gte' => ts_min}}
       database_names_ignore = ['admin', 'system']
+
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
       database_list.reduce(0) { |memo, database| memo + database.collection('system.profile').count({:query => query}) }
     end
