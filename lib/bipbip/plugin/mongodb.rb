@@ -114,22 +114,26 @@ module Bipbip
 
       timestamp_last_check = slow_query_last_check
 
-      query = {'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gte' => timestamp_last_check}}
       database_names_ignore = ['admin', 'system']
 
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
       database_list.each do |database|
-        results = database.collection('system.profile').find({:query => query})
-        results.each do |doc|
-          stats[:total_count] += 1
-          stats[:total_time] += doc['millis']/1000
+
+        results = database.collection('system.profile').aggregate(
+            [
+                {'$match' => {'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gt' => timestamp_last_check}}},
+                {'$group' => {'_id' => 'null', 'total_count' => {'$sum' => 1}, 'total_time' => {'$sum' => '$millis'}}}
+            ])
+
+        unless results.empty?
+          result = results.pop
+          stats[:total_count] += result['total_count']
+          stats[:total_time] += result['total_time'].to_f/1000
         end
       end
 
       time_period = Time.now - timestamp_last_check
-      stats.map { |metric, value| value/time_period }
-
-      stats
+      stats.each { |metric, value| stats[metric] = value/time_period }
     end
 
     def replication_lag
