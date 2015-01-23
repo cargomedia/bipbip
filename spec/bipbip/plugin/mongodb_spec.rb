@@ -46,7 +46,12 @@ describe Bipbip::Plugin::Mongodb do
             ]
         })
 
-    plugin.stub(:fetch_slow_queries_status).and_return(0)
+    plugin.stub(:fetch_slow_queries_status).and_return(
+        {
+            'total_count' => 0,
+            'total_time' => 0
+        }
+    )
 
     data = plugin.monitor
     data['replication_lag'].should eq(3)
