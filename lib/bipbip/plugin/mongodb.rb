@@ -107,17 +107,12 @@ module Bipbip
     end
 
     def fetch_slow_queries_status
-      stats = {
-          'total_count' => 0,
-          'total_time' => 0
-      }
-
       timestamp_last_check = slow_query_last_check
 
       database_names_ignore = ['admin', 'system']
-
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
-      database_list.each do |database|
+
+      stats = database_list.reduce({'total_count' => 0, 'total_time' => 0}) do |memo, database|
 
         results = database.collection('system.profile').aggregate(
             [
@@ -127,9 +122,11 @@ module Bipbip
 
         unless results.empty?
           result = results.pop
-          stats['total_count'] += result['total_count']
-          stats['total_time'] += result['total_time'].to_f/1000
+          memo['total_count'] += result['total_count']
+          memo['total_time'] += result['total_time'].to_f/1000
         end
+
+        memo
       end
 
       time_period = Time.now - timestamp_last_check
