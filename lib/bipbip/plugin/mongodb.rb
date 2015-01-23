@@ -20,7 +20,8 @@ module Bipbip
           {:name => 'mem_pagefaults', :type => 'counter', :unit => 'faults'},
           {:name => 'globalLock_currentQueue', :type => 'gauge'},
           {:name => 'replication_lag', :type => 'gauge', :unit => 'Seconds'},
-          {:name => 'slow_queries', :type => 'gauge', :unit => 'Queries'},
+          {:name => 'slow_queries_count', :type => 'gauge', :unit => 'Queries'},
+          {:name => 'slow_queries_time_total', :type => 'gauge', :unit => 'Seconds'},
       ]
     end
 
@@ -28,6 +29,7 @@ module Bipbip
       @mongodb_client = nil
 
       status = fetch_server_status
+      slow_queries_status = fetch_slow_queries_status
 
       data = {}
 
@@ -62,7 +64,8 @@ module Bipbip
         data['replication_lag'] = replication_lag
       end
 
-      data['slow_queries'] = calculate_slow_queries
+      data['slow_queries_count'] = slow_queries_status[:total_count]
+      data['slow_queries_time_total'] = slow_queries_status[:total_time]
 
       data
     end
@@ -103,20 +106,30 @@ module Bipbip
       old
     end
 
-    def calculate_slow_queries
+    def fetch_slow_queries_status
+      stats = {
+          :total_count => 0,
+          :total_time => 0
+      }
+
       timestamp_last_check = slow_query_last_check
 
-      slow_queries = fetch_slow_queries_count(slow_query_threshold, timestamp_last_check)
-
-      (slow_queries/(Time.now - timestamp_last_check)).to_i
-    end
-
-    def fetch_slow_queries_count(millis_min, ts_min)
-      query = {'millis' => {'$gte' => millis_min}, 'ts' => {'$gte' => ts_min}}
+      query = {'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gte' => timestamp_last_check}}
       database_names_ignore = ['admin', 'system']
 
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
-      database_list.reduce(0) { |memo, database| memo + database.collection('system.profile').count({:query => query}) }
+      database_list.each do |database|
+        results = database.collection('system.profile').find({:query => query})
+        results.each do |doc|
+          stats[:total_count] += 1
+          stats[:total_time] += doc['millis']/1000
+        end
+      end
+
+      time_period = Time.now - timestamp_last_check
+      stats.map { |metric, value| value/time_period }
+
+      stats
     end
 
     def replication_lag
