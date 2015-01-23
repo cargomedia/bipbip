@@ -64,8 +64,8 @@ module Bipbip
         data['replication_lag'] = replication_lag
       end
 
-      data['slow_queries_count'] = slow_queries_status[:total_count]
-      data['slow_queries_time_total'] = slow_queries_status[:total_time]
+      data['slow_queries_count'] = slow_queries_status['total_count']
+      data['slow_queries_time_total'] = slow_queries_status['total_time']
 
       data
     end
@@ -108,8 +108,8 @@ module Bipbip
 
     def fetch_slow_queries_status
       stats = {
-          :total_count => 0,
-          :total_time => 0
+          'total_count' => 0,
+          'total_time' => 0
       }
 
       timestamp_last_check = slow_query_last_check
@@ -127,8 +127,8 @@ module Bipbip
 
         unless results.empty?
           result = results.pop
-          stats[:total_count] += result['total_count']
-          stats[:total_time] += result['total_time'].to_f/1000
+          stats['total_count'] += result['total_count']
+          stats['total_time'] += result['total_time'].to_f/1000
         end
       end
 
