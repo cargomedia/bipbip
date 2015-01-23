@@ -17,16 +17,16 @@ describe Bipbip::Plugin::Mongodb do
 
     plugin.stub(:fetch_slow_queries_status).and_return(
         {
-            'total_count' => 12,
-            'total_time' => 11.55
+            'total_count' => 48.4,
+            'total_time' => 24.2
         }
     )
 
     data = plugin.monitor
     data['connections_current'].should eq(100)
     data['mem_resident'].should eq(1024)
-    data['slow_queries_count'].should eq(12)
-    data['slow_queries_time_total'].should eq(11.55)
+    data['slow_queries_count'].should eq(48.4)
+    data['slow_queries_time_avg'].should eq(0.5)
   end
 
   it 'should collect replication lag' do
