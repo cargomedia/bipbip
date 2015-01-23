@@ -108,6 +108,7 @@ module Bipbip
 
     def fetch_slow_queries_status
       timestamp_last_check = slow_query_last_check
+      time_period = Time.now - timestamp_last_check
 
       database_names_ignore = ['admin', 'system']
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
@@ -129,7 +130,6 @@ module Bipbip
         memo
       end
 
-      time_period = Time.now - timestamp_last_check
       stats.each { |metric, value| stats[metric] = value/time_period }
     end
 
