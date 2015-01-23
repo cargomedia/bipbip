@@ -21,7 +21,7 @@ module Bipbip
           {:name => 'globalLock_currentQueue', :type => 'gauge'},
           {:name => 'replication_lag', :type => 'gauge', :unit => 'Seconds'},
           {:name => 'slow_queries_count', :type => 'gauge', :unit => 'Queries'},
-          {:name => 'slow_queries_time_total', :type => 'gauge', :unit => 'Seconds'},
+          {:name => 'slow_queries_time_avg', :type => 'gauge', :unit => 'Seconds'},
       ]
     end
 
@@ -65,7 +65,7 @@ module Bipbip
       end
 
       data['slow_queries_count'] = slow_queries_status['total_count']
-      data['slow_queries_time_total'] = slow_queries_status['total_time']
+      data['slow_queries_time_avg'] = slow_queries_status['total_count'] > 0 ? (slow_queries_status['total_time'].to_f/slow_queries_status['total_count'].to_f) : 0
 
       data
     end
