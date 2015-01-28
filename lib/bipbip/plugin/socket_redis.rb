@@ -1,3 +1,5 @@
+require "net/http"
+
 module Bipbip
 
   class Plugin::SocketRedis < Plugin
