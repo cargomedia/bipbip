@@ -30,4 +30,13 @@ describe Bipbip::Plugin::SocketRedis do
     data['channels_count'].should eq(2)
     data['subscribers_count'].should eq(6)
   end
+
+  it 'should collect data for empty server response' do
+    plugin.stub(:fetch_socket_redis_stats).and_return({})
+
+    data = plugin.monitor
+
+    data['channels_count'].should eq(0)
+    data['subscribers_count'].should eq(0)
+  end
 end
