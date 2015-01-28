@@ -10,7 +10,7 @@ module Bipbip
     end
 
     def monitor
-      stats = fetch_socket_redis_stats
+      stats = fetch_socket_redis_status
       {
           'channels_count' => stats.length,
           'subscribers_count' => stats.values.reduce(0) { |memo, channel| memo += channel['subscribers'].length },
@@ -19,7 +19,7 @@ module Bipbip
 
     private
 
-    def fetch_socket_redis_stats
+    def fetch_socket_redis_status
       url = config['url'] || 'http://localhost:8085/status'
       uri = URI.parse(url)
 
