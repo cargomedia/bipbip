@@ -169,3 +169,7 @@ There is also possibility to mix metric entries of type `simple` and `advanced`
 ```
 
 Boolean values `true`, `false` will be replaced with `1`, `0` for both modes.
+
+### socket-redis
+Configuration options:
+- **url**: URL of `socket-redis` status. Defaults to `http://localhost:8085/status`
