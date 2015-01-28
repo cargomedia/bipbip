@@ -172,4 +172,4 @@ Boolean values `true`, `false` will be replaced with `1`, `0` for both modes.
 
 ### socket-redis
 Configuration options:
-- **url**: URL of `socket-redis` status. Defaults to `http://localhost:8085/status`
+- **url**: URL of `socket-redis` [status](https://github.com/cargomedia/socket-redis#status-request). Defaults to `http://localhost:8085/status`
