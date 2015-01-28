@@ -125,9 +125,11 @@ module Bipbip
 
         unless results.empty?
           result = results.pop
+          max_query_time = result['max_time'].to_f/1000
+
           memo['total']['count'] += result['total_count']
           memo['total']['time'] += result['total_time'].to_f/1000
-          memo['max']['query_time'] = result['max_time'] if memo['max']['query_time'] < result['max_time']
+          memo['max']['query_time'] = max_query_time if memo['max']['query_time'] < max_query_time
         end
 
         memo
