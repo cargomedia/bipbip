@@ -67,7 +67,7 @@ module Bipbip
 
       data['slow_queries_count'] = slow_queries_status['total']['count']
       data['slow_queries_time_avg'] = slow_queries_status['total']['count'] > 0 ? (slow_queries_status['total']['time'].to_f/slow_queries_status['total']['count'].to_f) : 0
-      data['slow_queries_time_max'] = slow_queries_status['max']['query_time']
+      data['slow_queries_time_max'] = slow_queries_status['max']['time']
 
       data
     end
@@ -115,7 +115,7 @@ module Bipbip
       database_names_ignore = ['admin', 'system']
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
 
-      stats = database_list.reduce({'total' => {'count' => 0, 'time' => 0}, 'max' => {'query_time' => 0}}) do |memo, database|
+      stats = database_list.reduce({'total' => {'count' => 0, 'time' => 0}, 'max' => {'time' => 0}}) do |memo, database|
 
         results = database.collection('system.profile').aggregate(
             [
@@ -125,11 +125,11 @@ module Bipbip
 
         unless results.empty?
           result = results.pop
-          max_query_time = result['max_time'].to_f/1000
+          max_time = result['max_time'].to_f/1000
 
           memo['total']['count'] += result['total_count']
           memo['total']['time'] += result['total_time'].to_f/1000
-          memo['max']['query_time'] = max_query_time if memo['max']['query_time'] < max_query_time
+          memo['max']['time'] = max_time if memo['max']['time'] < max_time
         end
 
         memo

@@ -22,7 +22,7 @@ describe Bipbip::Plugin::Mongodb do
                 'time' => 24.2,
             },
             'max' => {
-                'query_time' => 12
+                'time' => 12
             }
         }
     )
@@ -59,7 +59,7 @@ describe Bipbip::Plugin::Mongodb do
                 'time' => 24.2,
             },
             'max' => {
-                'query_time' => 12
+                'time' => 12
             }
         }
     )
