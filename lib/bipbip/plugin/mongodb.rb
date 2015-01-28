@@ -22,6 +22,7 @@ module Bipbip
           {:name => 'replication_lag', :type => 'gauge', :unit => 'Seconds'},
           {:name => 'slow_queries_count', :type => 'gauge_f', :unit => 'Queries'},
           {:name => 'slow_queries_time_avg', :type => 'gauge_f', :unit => 'Seconds'},
+          {:name => 'slow_queries_time_max', :type => 'gauge_f', :unit => 'Seconds'},
       ]
     end
 
@@ -64,8 +65,9 @@ module Bipbip
         data['replication_lag'] = replication_lag
       end
 
-      data['slow_queries_count'] = slow_queries_status['total_count']
-      data['slow_queries_time_avg'] = slow_queries_status['total_count'] > 0 ? (slow_queries_status['total_time'].to_f/slow_queries_status['total_count'].to_f) : 0
+      data['slow_queries_count'] = slow_queries_status['total']['count']
+      data['slow_queries_time_avg'] = slow_queries_status['total']['count'] > 0 ? (slow_queries_status['total']['time'].to_f/slow_queries_status['total']['count'].to_f) : 0
+      data['slow_queries_time_max'] = slow_queries_status['max']['time']
 
       data
     end
@@ -113,24 +115,29 @@ module Bipbip
       database_names_ignore = ['admin', 'system']
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
 
-      stats = database_list.reduce({'total_count' => 0, 'total_time' => 0}) do |memo, database|
+      stats = database_list.reduce({'total' => {'count' => 0, 'time' => 0}, 'max' => {'time' => 0}}) do |memo, database|
 
         results = database.collection('system.profile').aggregate(
             [
                 {'$match' => {'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gt' => timestamp_last_check}}},
-                {'$group' => {'_id' => 'null', 'total_count' => {'$sum' => 1}, 'total_time' => {'$sum' => '$millis'}}}
+                {'$group' => {'_id' => 'null', 'total_count' => {'$sum' => 1}, 'total_time' => {'$sum' => '$millis'}, 'max_time' => {'$max' => '$millis'}}}
             ])
 
         unless results.empty?
           result = results.pop
-          memo['total_count'] += result['total_count']
-          memo['total_time'] += result['total_time'].to_f/1000
+          max_time = result['max_time'].to_f/1000
+
+          memo['total']['count'] += result['total_count']
+          memo['total']['time'] += result['total_time'].to_f/1000
+          memo['max']['time'] = max_time if memo['max']['time'] < max_time
         end
 
         memo
       end
 
-      stats.each { |metric, value| stats[metric] = value/time_period }
+      stats['total'].each { |metric, value| stats['total'][metric] = value/time_period }
+
+      stats
     end
 
     def replication_lag
