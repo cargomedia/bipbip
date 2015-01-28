@@ -17,8 +17,13 @@ describe Bipbip::Plugin::Mongodb do
 
     plugin.stub(:fetch_slow_queries_status).and_return(
         {
-            'total_count' => 48.4,
-            'total_time' => 24.2
+            'total' => {
+                'count' => 48.4,
+                'time' => 24.2,
+            },
+            'max' => {
+                'query_time' => 12
+            }
         }
     )
 
@@ -27,6 +32,7 @@ describe Bipbip::Plugin::Mongodb do
     data['mem_resident'].should eq(1024)
     data['slow_queries_count'].should eq(48.4)
     data['slow_queries_time_avg'].should eq(0.5)
+    data['slow_queries_time_max'].should eq(12)
   end
 
   it 'should collect replication lag' do
@@ -48,8 +54,13 @@ describe Bipbip::Plugin::Mongodb do
 
     plugin.stub(:fetch_slow_queries_status).and_return(
         {
-            'total_count' => 0,
-            'total_time' => 0
+            'total' => {
+                'count' => 48.4,
+                'time' => 24.2,
+            },
+            'max' => {
+                'query_time' => 12
+            }
         }
     )
 
