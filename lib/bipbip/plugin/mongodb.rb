@@ -119,7 +119,7 @@ module Bipbip
 
         results = database.collection('system.profile').aggregate(
             [
-                {'$match' => {'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gt' => Time.now - 10000000000}}},
+                {'$match' => {'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gt' => timestamp_last_check}}},
                 {'$group' => {'_id' => 'null', 'total_count' => {'$sum' => 1}, 'total_time' => {'$sum' => '$millis'}, 'max_time' => {'$max' => '$millis'}}}
             ])
 
