@@ -112,7 +112,7 @@ module Bipbip
       timestamp_last_check = slow_query_last_check
       time_period = Time.now - timestamp_last_check
 
-      database_names_ignore = ['admin', 'system']
+      database_names_ignore = ['admin', 'system', 'local']
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
 
       stats = database_list.reduce({'total' => {'count' => 0, 'time' => 0}, 'max' => {'time' => 0}}) do |memo, database|
