@@ -42,12 +42,12 @@ module Bipbip
             interruptible_sleep (frequency - (Time.now - time))
           end
         rescue => e
-          log(Logger::ERROR, e.message)
+          log_exception(Logger::ERROR, e)
           interruptible_sleep retry_delay
           retry_delay += frequency if retry_delay < frequency * 10
           retry
         rescue Exception => e
-          log(Logger::FATAL, e.message)
+          log_exception(Logger::FATAL, e)
           raise e
         end
       end
@@ -91,6 +91,11 @@ module Bipbip
 
     def log(severity, message)
       Bipbip.logger.add(severity, message, "#{name} #{source_identifier}")
+    end
+
+    def log_exception(severity, exception)
+      backtrace = exception.backtrace.map { |line| " #{line}" }.join("\n")
+      log(severity, exception.message + "\n" + backtrace)
     end
   end
 end
