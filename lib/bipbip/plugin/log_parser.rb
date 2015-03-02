@@ -24,12 +24,14 @@ module Bipbip
       lines = @lines.entries
       @lines.clear
 
-      Hash[config['matchers'].map do |matcher|
-             name = matcher['name']
-             regexp = Regexp.new(matcher['regexp'])
-             value = lines.reject { |line| line.match(regexp).nil? }.length
-             [name, value]
-           end]
+      Hash[
+        config['matchers'].map do |matcher|
+          name = matcher['name']
+          regexp = Regexp.new(matcher['regexp'])
+          value = lines.reject { |line| line.match(regexp).nil? }.length
+          [name, value]
+        end
+      ]
     end
 
     private
