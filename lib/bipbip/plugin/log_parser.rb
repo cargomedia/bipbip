@@ -24,12 +24,14 @@ module Bipbip
       lines = @lines.entries
       @lines.clear
 
-      Hash[config['matchers'].map do |matcher|
-        name = matcher['name']
-        regexp = Regexp.new(matcher['regexp'])
-        value = lines.reject { |line| line.match(regexp).nil? }.length
-        [name, value]
-      end]
+      Hash[
+        config['matchers'].map do |matcher|
+          name = matcher['name']
+          regexp = Regexp.new(matcher['regexp'])
+          value = lines.reject { |line| line.match(regexp).nil? }.length
+          [name, value]
+        end
+      ]
     end
 
     private
@@ -63,6 +65,10 @@ module Bipbip
         @notifier.stop
         @notifier.close
         @notifier = nil
+
+        # Run GC to make sure file descriptor is freed
+        # See https://github.com/nex3/rb-inotify/pull/43
+        GC.start
       end
     end
 
