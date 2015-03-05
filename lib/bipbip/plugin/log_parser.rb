@@ -11,7 +11,14 @@ module Bipbip
     end
 
     def monitor
-      unless IO.select([notifier.to_io], [], [], 0).nil?
+      begin
+        io = IO.select([notifier.to_io], [], [], 0)
+      rescue Errno::EBADF => e
+        log(Logger::WARN, "Selecting from inotify IO gives EBADF, resetting notifier")
+        reset_notifier
+      end
+
+      unless io.nil?
         n = notifier
         begin
           n.process
@@ -65,10 +72,6 @@ module Bipbip
         @notifier.stop
         @notifier.close
         @notifier = nil
-
-        # Run GC to make sure file descriptor is freed
-        # See https://github.com/nex3/rb-inotify/pull/43
-        GC.start
       end
     end
 
