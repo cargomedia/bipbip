@@ -11,7 +11,14 @@ module Bipbip
     end
 
     def monitor
-      unless IO.select([notifier.to_io], [], [], 0).nil?
+      begin
+        io = IO.select([notifier.to_io], [], [], 0)
+      rescue Errno::EBADF => e
+        log(Logger::WARN, "Selecting from inotify IO gives EBADF, resetting notifier")
+        reset_notifier
+      end
+
+      unless io.nil?
         n = notifier
         begin
           n.process
