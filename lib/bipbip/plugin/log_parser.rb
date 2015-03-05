@@ -65,10 +65,6 @@ module Bipbip
         @notifier.stop
         @notifier.close
         @notifier = nil
-
-        # Run GC to make sure file descriptor is freed
-        # See https://github.com/nex3/rb-inotify/pull/43
-        GC.start
       end
     end
 
