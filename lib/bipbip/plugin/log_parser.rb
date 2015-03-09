@@ -70,7 +70,11 @@ module Bipbip
     def reset_notifier
       unless @notifier.nil?
         @notifier.stop
-        @notifier.close
+        begin
+          @notifier.close
+        rescue SystemCallError => e
+          log(Logger::WARN, "Cannot close notifier: `#{e.message}`")
+        end
         @notifier = nil
       end
     end
