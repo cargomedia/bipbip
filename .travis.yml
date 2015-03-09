@@ -8,3 +8,6 @@ services:
   - memcached
   - mysql
   - redis-server
+
+notifications:
+  email: false
