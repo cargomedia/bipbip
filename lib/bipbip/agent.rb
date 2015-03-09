@@ -44,6 +44,7 @@ module Bipbip
       @interrupted = false
       until @interrupted
         pid = Process.wait(-1)
+        next if @interrupted
         plugin = plugin_by_pid(pid)
         Bipbip.logger.error "Plugin #{plugin.name} with config #{plugin.config} died. Respawning..."
         sleep(PLUGIN_RESPAWN_DELAY)
