@@ -6,17 +6,19 @@ module Bipbip
     attr_accessor :name
     attr_accessor :config
     attr_accessor :metric_group
+    attr_accessor :tags
     attr_accessor :pid
 
-    def self.factory(name, config, frequency, metric_group = nil)
+    def self.factory(name, config, frequency, tags, metric_group = nil)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
-      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency, metric_group)
+      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency, tags, metric_group)
     end
 
-    def initialize(name, config, frequency, metric_group = nil)
+    def initialize(name, config, frequency, tags = nil, metric_group = nil)
       @name = name.to_s
       @config = config.to_hash
       @frequency = frequency.to_f
+      @tags = tags.to_a
       @metric_group = (metric_group || name).to_s
     end
 
