@@ -1,7 +1,7 @@
 module Bipbip
   require 'rubygems'  # For ruby < 1.9
 
-  require 'copperegg'
+  require 'copperegg/revealmetrics'
   require 'yaml'
   require 'json/pure'
   require 'logger'

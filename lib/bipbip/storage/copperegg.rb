@@ -4,7 +4,7 @@ module Bipbip
 
     def initialize(name, config)
       super(name, config)
-      CopperEgg::Api.apikey = config['api_key']
+      ::Copperegg::Revealmetrics::Api.apikey = config['api_key']
     end
 
     def setup_plugin(plugin)
@@ -17,9 +17,9 @@ module Bipbip
       end
 
       metric_group = @metric_groups.detect { |m| m.name == plugin.metric_group }
-      if metric_group.nil? || !metric_group.is_a?(CopperEgg::MetricGroup)
+      if metric_group.nil? || !metric_group.is_a?(::Copperegg::Revealmetrics::MetricGroup)
         Bipbip.logger.info "Creating copperegg metric group `#{plugin.metric_group}`"
-        metric_group = CopperEgg::MetricGroup.new(:name => plugin.metric_group, :label => plugin.metric_group, :frequency => plugin.frequency)
+        metric_group = ::Copperegg::Revealmetrics::MetricGroup.new(:name => plugin.metric_group, :label => plugin.metric_group, :frequency => plugin.frequency)
       end
       metric_group.frequency = plugin.frequency
       metric_group.metrics = plugin.metrics_schema.map do |sample|
@@ -35,12 +35,12 @@ module Bipbip
       if dashboard.nil?
         Bipbip.logger.info "Creating copperegg dashboard `#{plugin.metric_group}`"
         metrics = metric_group.metrics || []
-        CopperEgg::CustomDashboard.create(metric_group, :name => plugin.metric_group, :identifiers => nil, :metrics => metrics)
+        ::Copperegg::Revealmetrics::CustomDashboard.create(metric_group, :name => plugin.metric_group, :identifiers => nil, :metrics => metrics)
       end
     end
 
     def store_sample(plugin, time, data)
-      response = CopperEgg::MetricSample.save(plugin.metric_group, plugin.source_identifier, time.to_i, data)
+      response = ::Copperegg::Revealmetrics::MetricSample.save(plugin.metric_group, plugin.source_identifier, time.to_i, data)
       if response.code != '200'
         raise("Cannot store copperegg data `#{data}`. Response code `#{response.code}`, message `#{response.message}`, body `#{response.body}`")
       end
@@ -48,7 +48,7 @@ module Bipbip
 
     def _load_metric_groups
       Bipbip.logger.info 'Loading copperegg metric groups'
-      metric_groups = CopperEgg::MetricGroup.find
+      metric_groups = ::Copperegg::Revealmetrics::MetricGroup.find
       if metric_groups.nil?
         Bipbip.logger.fatal 'Cannot load copperegg metric groups'
         exit 1
@@ -58,7 +58,7 @@ module Bipbip
 
     def _load_dashboards
       Bipbip.logger.info 'Loading copperegg dashboards'
-      dashboards = CopperEgg::CustomDashboard.find
+      dashboards = ::Copperegg::Revealmetrics::CustomDashboard.find
       if dashboards.nil?
         Bipbip.logger.fatal 'Cannot load copperegg dashboards'
         exit 1
