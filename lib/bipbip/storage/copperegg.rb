@@ -10,6 +10,7 @@ module Bipbip
     def setup_plugin(plugin)
       @metric_groups ||= _load_metric_groups
       @dashboards ||= _load_dashboards
+      @tags ||= _load_tags
 
       if ![5, 15, 60, 300, 900, 3600, 21600].include?(plugin.frequency)
         log(Logger::FATAL, "Cannot use frequency #{plugin.frequency}")
@@ -31,6 +32,22 @@ module Bipbip
       end
       log(Logger::INFO, "Updating metric group `#{plugin.metric_group}`")
       metric_group.save
+
+      plugin.tags.each do |tag_name|
+        tag = @tags.detect { |t| t.name == tag_name }
+        if tag.nil?
+          log(Logger::INFO, "Creating tag `#{tag_name}`")
+          tag = ::Copperegg::Revealmetrics::Tag.new(:name => tag_name)
+        end
+        object_identifier = plugin.source_identifier
+        unless tag.objects.include?(object_identifier)
+          log(Logger::INFO, "Attaching object to tag `#{tag_name}`")
+          tag.objects << object_identifier
+          store_sample(plugin, Time.now, {}) # Need to store a sample before we can tag a custom object
+        end
+        log(Logger::INFO, "Updating tag `#{tag_name}`")
+        tag.save
+      end
 
       dashboard = @dashboards.detect { |d| d.name == plugin.metric_group }
       if dashboard.nil?
@@ -65,6 +82,17 @@ module Bipbip
         exit 1
       end
       dashboards
+    end
+
+    # @return [Copperegg::Revealmetrics::Tag[]]
+    def _load_tags
+      log(Logger::INFO, 'Loading tags')
+      tags = ::Copperegg::Revealmetrics::Tag.find
+      if tags.nil?
+        log(Logger::FATAL, 'Cannot load tags')
+        exit 1
+      end
+      tags
     end
 
   end
