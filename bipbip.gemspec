@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/cargomedia/bipbip'
   s.license = 'MIT'
 
-  s.add_runtime_dependency 'copperegg-revealmetrics', '~> 0.8.0'
+  s.add_runtime_dependency 'copperegg-revealmetrics', '~> 0.8.1'
   s.add_runtime_dependency 'memcached'
   s.add_runtime_dependency 'mysql2'
   s.add_runtime_dependency 'redis'

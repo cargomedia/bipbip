@@ -22,6 +22,7 @@ Example with CopperEgg as a storage and service plugins for *memcached* and *mys
 logfile: /var/log/bipbip.log
 loglevel: INFO
 frequency: 15
+tags: ['foo', 'bar']
 include: services.d/
 
 storages:
@@ -44,8 +45,9 @@ Configuration options:
 - **logfile** (optional): Path to log file. If not provided will log to `STDOUT`.
 - **loglevel** (optional): One of [Logger's levels](http://www.ruby-doc.org/stdlib-2.1.0/libdoc/logger/rdoc/Logger.html). Defaults to `INFO`.
 - **frequency** (optional): How often to measure metrics (in seconds). Defaults to `60`.
+- **tags** (optional): Tags for all service plugins.
 - **include** (optional): Optional directory where to look for *service plugin configurations* (relative to config file).
-- **storage**: List of storages to send data to.
+- **storages**: List of storages to send data to.
 - **services**: List of service plugins from which to gather metrics.
 
 The `include` directive allows to set a directory from which to load additional *service plugin* configurations. The above example could also be structured with multiple files:
@@ -66,6 +68,7 @@ port: 11211
 The configuration for each *service plugin* is described further down.
 The following options are available for all plugins:
 - `frequency`: Override the global measurement frequency.
+- `tags`: Additional tags for this specific service.
 - `metric_group`: Use a metric group name different from the plugin's name. Useful when using the same plugin twice.
 
 Storages

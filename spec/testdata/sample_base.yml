@@ -1,6 +1,7 @@
 logfile: /tmp/bipbip.log
 loglevel: INFO
 frequency: 15
+tags: ['foo', 'bar']
 include: sample_base_includes.d/
 
 storages:
@@ -9,9 +10,9 @@ storages:
     api_key: MOCK_APIKEY
 
 services:
-  - 
+  -
     plugin: mysql
     username: travis
-    password: 
+    password:
     hostname: localhost
     port: 3306

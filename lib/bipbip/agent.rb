@@ -60,7 +60,7 @@ module Bipbip
           'frequency' => 60,
           'include' => nil,
           'services' => [],
-          'services' => [],
+          'tags' => [],
       }.merge(config)
 
       Bipbip.logger = Logger.new(config['logfile'])
@@ -78,8 +78,9 @@ module Bipbip
         plugin_name = service['plugin']
         metric_group = service['metric_group']
         frequency = service['frequency'].nil? ? config['frequency'] : service['frequency']
-        plugin_config = service.reject { |key, value| ['plugin', 'frequency', 'metric_group'].include?(key) }
-        Bipbip::Plugin.factory(plugin_name, plugin_config, frequency, metric_group)
+        tags = config['tags'].to_a + service['tags'].to_a
+        plugin_config = service.reject { |key, value| ['plugin', 'frequency', 'tags', 'metric_group'].include?(key) }
+        Bipbip::Plugin.factory(plugin_name, plugin_config, frequency, tags, metric_group)
       end
 
       storages = config['storages'].to_a

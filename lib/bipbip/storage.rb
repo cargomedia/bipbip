@@ -23,5 +23,11 @@ module Bipbip
       raise 'Missing method store_sample'
     end
 
+    private
+
+    def log(severity, message)
+      Bipbip.logger.add(severity, message, "#{name}")
+    end
+
   end
 end
