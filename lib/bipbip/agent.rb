@@ -47,11 +47,13 @@ module Bipbip
       @interrupted = false
       until @interrupted
         thread = ThreadsWait.new(@threads).next_wait
-        next if @interrupted
         plugin = plugin_by_thread(thread)
+        next if @interrupted
+
         Bipbip.logger.error "Plugin #{plugin.name} with config #{plugin.config} died. Restarting..."
         interruptible_sleep(PLUGIN_RESPAWN_DELAY)
         next if @interrupted
+
         @threads.delete(thread)
         @threads.push(plugin.run(@storages))
       end
