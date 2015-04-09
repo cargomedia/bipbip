@@ -54,8 +54,11 @@ module Bipbip
         interruptible_sleep(PLUGIN_RESPAWN_DELAY)
         next if @interrupted
 
+        plugin_new = Bipbip::Plugin.factory_from_plugin(plugin)
+        @plugins.delete(plugin)
+        @plugins.push(plugin_new)
         @threads.delete(thread)
-        @threads.push(plugin.run(@storages))
+        @threads.push(plugin_new.run(@storages))
       end
     end
 

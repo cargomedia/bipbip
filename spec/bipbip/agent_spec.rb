@@ -28,7 +28,7 @@ describe Bipbip::Agent do
     agent.plugins = [plugin]
 
     thread = Thread.new { agent.run }
-    sleep 0.5
+    sleep 0.3
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
@@ -51,60 +51,38 @@ describe Bipbip::Agent do
     agent.plugins = [plugin]
 
     thread = Thread.new { agent.run }
-    sleep 0.5
+    sleep 0.3
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
     lines.select { |l| l.include?('my-plugin my-source: my-error') }.should have_at_least(2).items
+    lines.select { |l| l.include?('Plugin my-plugin with config {} died. Restarting...') }.should have_exactly(0).items
 
     thread.exit
     agent.interrupt
     Bipbip.logger = nil
   end
 
-  it 'should log plugin exceptions' do
+  it 'should log plugin exceptions and restart' do
     logger_file = Tempfile.new('bipbip-mock-logger')
     Bipbip.logger = Logger.new(logger_file.path)
 
-    plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
-    plugin.stub(:metrics_schema) { [] }
-    plugin.stub(:source_identifier) { 'my-source' }
-    plugin.stub(:monitor) { raise Exception.new('my-exception') }
+    agent.stub(:interruptible_sleep) {}
 
-    agent.plugins = [plugin]
-
-    thread = Thread.new do
-      $stderr = StringIO.new
-      agent.run
-    end
-    sleep 0.5
-
-    thread.alive?.should eq(true)
-    lines = logger_file.read.lines
-    lines.select { |l| l.include?('my-plugin my-source: my-exception') }.should have_at_least(1).items
-
-    thread.exit
-    agent.interrupt
-    Bipbip.logger = nil
-  end
-
-  it 'should restart failing plugins' do
-    logger_file = Tempfile.new('bipbip-mock-logger')
-    Bipbip.logger = Logger.new(logger_file.path)
+    Bipbip::Plugin.any_instance.stub(:metrics_schema) { [] }
+    Bipbip::Plugin.any_instance.stub(:source_identifier) { 'my-source' }
+    Bipbip::Plugin.any_instance.stub(:monitor) { raise Exception.new('my-exception') }
 
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
-    plugin.stub(:metrics_schema) { [] }
-    plugin.stub(:source_identifier) { 'my-source' }
-    plugin.stub(:monitor) { raise Exception.new('my-exception') }
-
     agent.plugins = [plugin]
 
     thread = Thread.new { agent.run }
-    sleep 0.5
+    sleep 0.3
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    lines.select { |l| l.include?('Plugin my-plugin with config {} died. Restarting...') }.should have_at_least(1).items
+    lines.select { |l| l.include?('my-plugin my-source: my-exception') }.should have_at_least(2).items
+    lines.select { |l| l.include?('Plugin my-plugin with config {} died. Restarting...') }.should have_at_least(2).items
 
     thread.exit
     agent.interrupt
