@@ -29,7 +29,7 @@ end
 
 begin
   optparse.parse!
-  if not options[:config]
+  unless options[:config]
     puts "Missing options: config file [-c PATH]"
     exit
   end
