@@ -16,7 +16,7 @@ describe Bipbip::Agent do
     Bipbip.logger = nil
   end
 
-  it 'should fork' do
+  it 'should run in a thread' do
     logger_file = Tempfile.new('bipbip-mock-logger')
     Bipbip.logger = Logger.new(logger_file.path)
 
@@ -88,14 +88,14 @@ describe Bipbip::Agent do
     Bipbip.logger = nil
   end
 
-  it 'should respawn dying plugins' do
+  it 'should restart failing plugins' do
     logger_file = Tempfile.new('bipbip-mock-logger')
     Bipbip.logger = Logger.new(logger_file.path)
 
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
     plugin.stub(:metrics_schema) { [] }
     plugin.stub(:source_identifier) { 'my-source' }
-    plugin.stub(:monitor) { Process.kill('KILL', Process.pid) }
+    plugin.stub(:monitor) { raise Exception.new('my-exception') }
 
     agent.plugins = [plugin]
 
@@ -104,7 +104,7 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    lines.select { |l| l.include?('Plugin my-plugin with config {} died. Respawning...') }.should have_at_least(1).items
+    lines.select { |l| l.include?('Plugin my-plugin with config {} died. Restarting...') }.should have_at_least(1).items
 
     thread.exit
     agent.interrupt

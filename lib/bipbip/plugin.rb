@@ -7,7 +7,7 @@ module Bipbip
     attr_accessor :config
     attr_accessor :metric_group
     attr_accessor :tags
-    attr_accessor :pid
+    attr_accessor :thread
 
     def self.factory(name, config, frequency, tags, metric_group = nil)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
@@ -22,15 +22,13 @@ module Bipbip
       @metric_group = (metric_group || name).to_s
     end
 
+    # @param [Array] storages
+    # @return [Thread]
     def run(storages)
-      @pid = fork do
-        ['INT', 'TERM'].each { |sig| trap(sig) {
-          Thread.new { interrupt } if !@interrupted
-        } }
-
+      @thread = Thread.new do
         retry_delay = frequency
         begin
-          until interrupted? do
+          while true
             time = Time.now
             data = monitor
             if data.empty?
@@ -53,16 +51,6 @@ module Bipbip
           raise e
         end
       end
-    end
-
-    def interrupt
-      log(Logger::INFO, "Interrupting plugin process #{Process.pid}")
-      @interrupted = true
-      interrupt_sleep
-    end
-
-    def interrupted?
-      @interrupted || Process.getpgid(Process.ppid) != Process.getpgrp
     end
 
     def frequency

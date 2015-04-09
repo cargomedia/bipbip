@@ -1,15 +1,18 @@
 module Bipbip
 
   class Agent
+    include InterruptibleSleep
 
     PLUGIN_RESPAWN_DELAY = 5
 
     attr_accessor :plugins
     attr_accessor :storages
+    attr_accessor :threads
 
     def initialize(config_file = nil)
       @plugins = []
       @storages = []
+      @threads = []
 
       load_config(config_file) if config_file
     end
@@ -29,38 +32,40 @@ module Bipbip
         end
       end
 
-      ['INT', 'TERM'].each { |sig| trap(sig) {
-        Thread.new do
+      ['INT', 'TERM'].each do |sig|
+        trap(sig) do
+          Bipbip.logger.info "Received signal #{sig}, interrupting..."
           interrupt
-          exit
         end
-      } }
+      end
 
       @plugins.each do |plugin|
         Bipbip.logger.info "Starting plugin #{plugin.name} with config #{plugin.config}"
-        plugin.run(@storages)
+        @threads.push(plugin.run(@storages))
       end
 
       @interrupted = false
       until @interrupted
-        pid = Process.wait(-1)
+        thread = ThreadsWait.new(@threads).next_wait
         next if @interrupted
-        plugin = plugin_by_pid(pid)
-        Bipbip.logger.error "Plugin #{plugin.name} with config #{plugin.config} died. Respawning..."
-        sleep(PLUGIN_RESPAWN_DELAY)
-        plugin.run(@storages)
+        plugin = plugin_by_thread(thread)
+        Bipbip.logger.error "Plugin #{plugin.name} with config #{plugin.config} died. Restarting..."
+        interruptible_sleep(PLUGIN_RESPAWN_DELAY)
+        next if @interrupted
+        @threads.delete(thread)
+        @threads.push(plugin.run(@storages))
       end
     end
 
     def load_config(config_file)
       config = YAML.load(File.open(config_file))
       config = {
-          'logfile' => STDOUT,
-          'loglevel' => 'INFO',
-          'frequency' => 60,
-          'include' => nil,
-          'services' => [],
-          'tags' => [],
+        'logfile' => STDOUT,
+        'loglevel' => 'INFO',
+        'frequency' => 60,
+        'include' => nil,
+        'services' => [],
+        'tags' => [],
       }.merge(config)
 
       Bipbip.logger = Logger.new(config['logfile'])
@@ -93,22 +98,20 @@ module Bipbip
 
     def interrupt
       @interrupted = true
-
-      Bipbip.logger.info 'Interrupt, killing plugin processes...'
-      @plugins.each do |plugin|
-        Process.kill('TERM', plugin.pid) if Process.exists?(plugin.pid)
+      @threads.each do |thread|
+        thread.terminate
       end
-
-      Bipbip.logger.info 'Waiting for all plugin processes to exit...'
-      Process.waitall
+      interrupt_sleep
     end
 
     private
 
-    def plugin_by_pid(pid)
-      plugin = @plugins.find { |plugin| plugin.pid == pid }
+    # @param [Thread] thread
+    # @return [Bipbip::Plugin]
+    def plugin_by_thread(thread)
+      plugin = @plugins.find { |plugin| plugin.thread == thread }
       if plugin.nil?
-        raise "Cannot find plugin with pid #{pid}"
+        raise "Cannot find plugin by thread #{thread}"
       end
       plugin
     end

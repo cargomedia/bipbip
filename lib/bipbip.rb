@@ -7,6 +7,7 @@ module Bipbip
   require 'logger'
   require 'socket'
   require 'shellwords'
+  require 'thwait'
 
   require 'interruptible_sleep'
   require 'process_exists'
