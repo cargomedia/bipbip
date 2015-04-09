@@ -5,13 +5,21 @@ module Bipbip
 
     attr_accessor :name
     attr_accessor :config
-    attr_accessor :metric_group
+    attr_accessor :frequency
     attr_accessor :tags
+    attr_accessor :metric_group
     attr_accessor :thread
 
     def self.factory(name, config, frequency, tags, metric_group = nil)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
       Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency, tags, metric_group)
+    end
+
+    # @param [Bipbip::Plugin] plugin
+    # @return [Bipbip::Plugin]
+    def self.factory_from_plugin(plugin)
+      class_name = plugin.class.name.gsub(/^Bipbip::/, '')
+      Bipbip::const_get(class_name).new(plugin.name, plugin.config, plugin.frequency, plugin.tags, plugin.metric_group)
     end
 
     def initialize(name, config, frequency, tags = nil, metric_group = nil)
@@ -41,7 +49,7 @@ module Bipbip
             retry_delay = frequency
             interruptible_sleep (frequency - (Time.now - time))
           end
-        rescue => e
+        rescue StandardError => e
           log_exception(Logger::ERROR, e)
           interruptible_sleep retry_delay
           retry_delay += frequency if retry_delay < frequency * 10
