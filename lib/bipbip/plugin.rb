@@ -34,17 +34,15 @@ module Bipbip
     # @return [Thread]
     def run(storages)
       @thread = Thread.new do
-        retry_delay = frequency
         begin
           while true
-            run_measurement(storages)
-            retry_delay = frequency
+            time = Time.now
+            run_measurement(time, storages)
             interruptible_sleep (frequency - (Time.now - time))
           end
         rescue StandardError => e
           log_exception(Logger::ERROR, e)
-          interruptible_sleep retry_delay
-          retry_delay += frequency if retry_delay < frequency * 10
+          interruptible_sleep frequency
           retry
         rescue Exception => e
           log_exception(Logger::FATAL, e)
@@ -79,8 +77,7 @@ module Bipbip
 
     private
 
-    def run_measurement(storages)
-      time = Time.now
+    def run_measurement(time, storages)
       data = monitor
       if data.empty?
         raise "#{name} #{source_identifier}: Empty data"
