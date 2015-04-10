@@ -9,12 +9,13 @@ module Bipbip
     attr_accessor :storages
     attr_accessor :threads
 
-    def initialize(config_file = nil)
-      @plugins = []
-      @storages = []
-      @threads = []
+    # @param [Bipbip::Config] config
+    def initialize(config)
+      @plugins = config.plugins
+      @storages = config.storages
+      Bipbip.logger = config.logger
 
-      load_config(config_file) if config_file
+      @threads = []
     end
 
     def run
@@ -60,45 +61,6 @@ module Bipbip
         @plugins.push(plugin_new)
         @threads.delete(thread)
         @threads.push(thread_new)
-      end
-    end
-
-    def load_config(config_file)
-      config = YAML.load(File.open(config_file))
-      config = {
-        'logfile' => STDOUT,
-        'loglevel' => 'INFO',
-        'frequency' => 60,
-        'include' => nil,
-        'services' => [],
-        'tags' => [],
-      }.merge(config)
-
-      Bipbip.logger = Logger.new(config['logfile'])
-      Bipbip.logger.level = Logger::const_get(config['loglevel'])
-
-      services = config['services'].to_a
-      if config['include']
-        include_path = File.expand_path(config['include'].to_s, File.dirname(config_file))
-
-        files = Dir[include_path + '/**/*.yaml', include_path + '/**/*.yml']
-        services += files.map { |file| YAML.load(File.open(file)) }
-      end
-
-      @plugins = services.map do |service|
-        plugin_name = service['plugin']
-        metric_group = service['metric_group']
-        frequency = service['frequency'].nil? ? config['frequency'] : service['frequency']
-        tags = config['tags'].to_a + service['tags'].to_a
-        plugin_config = service.reject { |key, value| ['plugin', 'frequency', 'tags', 'metric_group'].include?(key) }
-        Bipbip::Plugin.factory(plugin_name, plugin_config, frequency, tags, metric_group)
-      end
-
-      storages = config['storages'].to_a
-      @storages = storages.map do |storage|
-        storage_name = storage['name'].to_s
-        storage_config = storage.reject { |key, value| ['name'].include?(key) }
-        Bipbip::Storage.factory(storage_name, storage_config)
       end
     end
 

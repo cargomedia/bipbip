@@ -14,6 +14,7 @@ module Bipbip
 
   require 'bipbip/version'
   require 'bipbip/helper'
+  require 'bipbip/config'
   require 'bipbip/agent'
   require 'bipbip/storage'
   require 'bipbip/plugin'

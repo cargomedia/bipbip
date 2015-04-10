@@ -3,29 +3,26 @@ require 'bipbip/plugin/memcached'
 require 'tempfile'
 
 describe Bipbip::Agent do
-  let(:agent) { Bipbip::Agent.new }
+  let(:logger_file) { Tempfile.new('bipbip-mock-logger') }
+  let(:logger) { Logger.new(logger_file.path) }
 
   it 'should fail without services' do
-    Bipbip.logger = double('logger')
+    logger = double('logger')
+    agent = Bipbip::Agent.new(Bipbip::Config.new([], [], logger))
 
-    Bipbip.logger.should_receive(:info).with('Startup...')
-    Bipbip.logger.should_receive(:warn).with('No storages configured')
+    logger.should_receive(:info).with('Startup...')
+    logger.should_receive(:warn).with('No storages configured')
 
     expect { agent.run }.to raise_error('No services configured')
-
-    Bipbip.logger = nil
   end
 
   it 'should run in a thread' do
-    logger_file = Tempfile.new('bipbip-mock-logger')
-    Bipbip.logger = Logger.new(logger_file.path)
-
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
     plugin.stub(:metrics_schema) { [{:name => 'foo', :type => 'counter'}] }
     plugin.stub(:source_identifier) { 'my-source' }
     plugin.stub(:monitor) { {:foo => 12} }
 
-    agent.plugins = [plugin]
+    agent = Bipbip::Agent.new(Bipbip::Config.new([plugin], [], logger))
 
     thread = Thread.new { agent.run }
     sleep 0.3
@@ -36,19 +33,15 @@ describe Bipbip::Agent do
 
     thread.exit
     agent.interrupt
-    Bipbip.logger = nil
   end
 
   it 'should log plugin errors and retry' do
-    logger_file = Tempfile.new('bipbip-mock-logger')
-    Bipbip.logger = Logger.new(logger_file.path)
-
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
     plugin.stub(:metrics_schema) { [] }
     plugin.stub(:source_identifier) { 'my-source' }
     plugin.stub(:monitor) { raise 'my-error' }
 
-    agent.plugins = [plugin]
+    agent = Bipbip::Agent.new(Bipbip::Config.new([plugin], [], logger))
 
     thread = Thread.new { agent.run }
     sleep 0.3
@@ -60,21 +53,16 @@ describe Bipbip::Agent do
 
     thread.exit
     agent.interrupt
-    Bipbip.logger = nil
   end
 
   it 'should log plugin exceptions and restart' do
-    logger_file = Tempfile.new('bipbip-mock-logger')
-    Bipbip.logger = Logger.new(logger_file.path)
-
-    agent.stub(:interruptible_sleep) {}
-
     Bipbip::Plugin.any_instance.stub(:metrics_schema) { [] }
     Bipbip::Plugin.any_instance.stub(:source_identifier) { 'my-source' }
     Bipbip::Plugin.any_instance.stub(:monitor) { raise Exception.new('my-exception') }
-
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
-    agent.plugins = [plugin]
+
+    agent = Bipbip::Agent.new(Bipbip::Config.new([plugin], [], logger))
+    agent.stub(:interruptible_sleep) {}
 
     thread = Thread.new { agent.run }
     sleep 0.3
@@ -86,7 +74,6 @@ describe Bipbip::Agent do
 
     thread.exit
     agent.interrupt
-    Bipbip.logger = nil
   end
 
 end
