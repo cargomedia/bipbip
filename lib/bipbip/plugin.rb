@@ -8,7 +8,6 @@ module Bipbip
     attr_accessor :frequency
     attr_accessor :tags
     attr_accessor :metric_group
-    attr_accessor :thread
 
     def self.factory(name, config, frequency, tags, metric_group = nil)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
@@ -31,23 +30,20 @@ module Bipbip
     end
 
     # @param [Array] storages
-    # @return [Thread]
     def run(storages)
-      @thread = Thread.new do
-        begin
-          while true
-            time = Time.now
-            run_measurement(time, storages)
-            interruptible_sleep (frequency - (Time.now - time))
-          end
-        rescue StandardError => e
-          log_exception(Logger::ERROR, e)
-          interruptible_sleep frequency
-          retry
-        rescue Exception => e
-          log_exception(Logger::FATAL, e)
-          raise e
+      begin
+        while true
+          time = Time.now
+          run_measurement(time, storages)
+          interruptible_sleep (frequency - (Time.now - time))
         end
+      rescue StandardError => e
+        log_exception(Logger::ERROR, e)
+        interruptible_sleep frequency
+        retry
+      rescue Exception => e
+        log_exception(Logger::FATAL, e)
+        raise e
       end
     end
 

@@ -42,13 +42,14 @@ module Bipbip
 
       @plugins.each do |plugin|
         Bipbip.logger.info "Starting plugin #{plugin.name} with config #{plugin.config}"
-        @threads.push(plugin.run(@storages))
+        start_plugin(plugin, @storages)
       end
 
       @interrupted = false
       until @interrupted
         thread = ThreadsWait.new(@threads).next_wait
-        plugin = plugin_by_thread(thread)
+        @threads.delete(thread)
+        plugin = thread['plugin']
         next if @interrupted
 
         Bipbip.logger.error "Plugin #{plugin.name} with config #{plugin.config} terminated. Restarting..."
@@ -56,11 +57,9 @@ module Bipbip
         next if @interrupted
 
         plugin_new = Bipbip::Plugin.factory_from_plugin(plugin)
-        thread_new = plugin_new.run(@storages)
         @plugins.delete(plugin)
         @plugins.push(plugin_new)
-        @threads.delete(thread)
-        @threads.push(thread_new)
+        start_plugin(plugin_new, @storages)
       end
     end
 
@@ -82,6 +81,14 @@ module Bipbip
         raise "Cannot find plugin by thread #{thread}"
       end
       plugin
+    end
+
+    # @param [Bipbip::Plugin] plugin
+    # @param [Array<Bipbip::Storage>] storages
+    def start_plugin(plugin, storages)
+      thread = Thread.new { plugin.run(storages) }
+      thread['plugin'] = plugin
+      @threads.push(thread)
     end
   end
 end
