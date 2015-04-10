@@ -50,15 +50,16 @@ module Bipbip
         plugin = plugin_by_thread(thread)
         next if @interrupted
 
-        Bipbip.logger.error "Plugin #{plugin.name} with config #{plugin.config} died. Restarting..."
+        Bipbip.logger.error "Plugin #{plugin.name} with config #{plugin.config} terminated. Restarting..."
         interruptible_sleep(PLUGIN_RESPAWN_DELAY)
         next if @interrupted
 
         plugin_new = Bipbip::Plugin.factory_from_plugin(plugin)
+        thread_new = plugin_new.run(@storages)
         @plugins.delete(plugin)
         @plugins.push(plugin_new)
         @threads.delete(thread)
-        @threads.push(plugin_new.run(@storages))
+        @threads.push(thread_new)
       end
     end
 
