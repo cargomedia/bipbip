@@ -37,15 +37,7 @@ module Bipbip
         retry_delay = frequency
         begin
           while true
-            time = Time.now
-            data = monitor
-            if data.empty?
-              raise "#{name} #{source_identifier}: Empty data"
-            end
-            log(Logger::DEBUG, "Data: #{data}")
-            storages.each do |storage|
-              storage.store_sample(self, time, data)
-            end
+            run_measurement(storages)
             retry_delay = frequency
             interruptible_sleep (frequency - (Time.now - time))
           end
@@ -86,6 +78,18 @@ module Bipbip
     end
 
     private
+
+    def run_measurement(storages)
+      time = Time.now
+      data = monitor
+      if data.empty?
+        raise "#{name} #{source_identifier}: Empty data"
+      end
+      log(Logger::DEBUG, "Data: #{data}")
+      storages.each do |storage|
+        storage.store_sample(self, time, data)
+      end
+    end
 
     def log(severity, message)
       Bipbip.logger.add(severity, message, "#{name} #{source_identifier}")
