@@ -73,16 +73,6 @@ module Bipbip
 
     private
 
-    # @param [Thread] thread
-    # @return [Bipbip::Plugin]
-    def plugin_by_thread(thread)
-      plugin = @plugins.find { |plugin| plugin.thread == thread }
-      if plugin.nil?
-        raise "Cannot find plugin by thread #{thread}"
-      end
-      plugin
-    end
-
     # @param [Bipbip::Plugin] plugin
     # @param [Array<Bipbip::Storage>] storages
     def start_plugin(plugin, storages)
