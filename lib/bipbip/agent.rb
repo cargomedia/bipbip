@@ -56,6 +56,7 @@ module Bipbip
         interruptible_sleep(PLUGIN_RESPAWN_DELAY)
         next if @interrupted
 
+        # Re-instantiate plugin to get rid of existing database-connections etc
         plugin_new = Bipbip::Plugin.factory_from_plugin(plugin)
         @plugins.delete(plugin)
         @plugins.push(plugin_new)
