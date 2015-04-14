@@ -8,6 +8,7 @@ module Bipbip
   require 'socket'
   require 'shellwords'
   require 'thwait'
+  require 'timeout'
 
   require 'interruptible_sleep'
   require 'process_exists'

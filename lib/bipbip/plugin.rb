@@ -1,6 +1,10 @@
 module Bipbip
 
   class Plugin
+
+    class MeasurementTimeout < RuntimeError
+    end
+
     include InterruptibleSleep
 
     attr_accessor :name
@@ -32,11 +36,17 @@ module Bipbip
     # @param [Array] storages
     def run(storages)
       begin
+        timeout = frequency * 2
         while true
           time = Time.now
-          run_measurement(time, storages)
+          Timeout::timeout(frequency, MeasurementTimeout) do
+            run_measurement(time, storages)
+          end
           interruptible_sleep (frequency - (Time.now - time))
         end
+      rescue MeasurementTimeout => e
+        log(Logger::ERROR, "Measurement timeout of #{timeout} seconds reached.")
+        retry
       rescue StandardError => e
         log_exception(Logger::ERROR, e)
         interruptible_sleep frequency

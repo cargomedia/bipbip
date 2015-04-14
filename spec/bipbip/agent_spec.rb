@@ -55,6 +55,26 @@ describe Bipbip::Agent do
     agent.interrupt
   end
 
+  it 'should log plugin timeouts and retry' do
+    plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
+    plugin.stub(:metrics_schema) { [] }
+    plugin.stub(:source_identifier) { 'my-source' }
+    plugin.stub(:monitor) { sleep(1) }
+
+    agent = Bipbip::Agent.new(Bipbip::Config.new([plugin], [], logger))
+
+    thread = Thread.new { agent.run }
+    sleep 0.5
+
+    thread.alive?.should eq(true)
+    lines = logger_file.read.lines
+    lines.select { |l| l.include?('my-plugin my-source: Measurement timeout of 0.2 seconds reached.') }.should have_at_least(2).items
+    lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.should have_exactly(0).items
+
+    thread.exit
+    agent.interrupt
+  end
+
   it 'should log plugin exceptions and restart' do
     Bipbip::Plugin.any_instance.stub(:metrics_schema) { [] }
     Bipbip::Plugin.any_instance.stub(:source_identifier) { 'my-source' }
