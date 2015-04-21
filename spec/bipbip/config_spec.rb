@@ -1,20 +1,17 @@
 require 'bipbip'
 
-describe Bipbip::Agent do
+describe Bipbip::Config do
 
 
   describe "loading up YAML config with includes" do
-    before(:each) do
-      Bipbip.logger = double('logger')
-    end
     it 'should set up storages and plugins and inherit the base frequency unless overwritten' do
-      bipbip = Bipbip::Agent.new("#{File.dirname(__FILE__)}/../testdata/sample_base.yml")
+      config = Bipbip::Config.factory_from_file("#{File.dirname(__FILE__)}/../testdata/sample_base.yml")
 
-      bipbip.instance_variable_get(:@storages).count.should eq(1)
-      bipbip.instance_variable_get(:@storages).first.name.should eq 'copperegg'
-      bipbip.instance_variable_get(:@storages).first.config['api_key'].should eq 'MOCK_APIKEY'
+      config.storages.count.should eq(1)
+      config.storages.first.name.should eq 'copperegg'
+      config.storages.first.config['api_key'].should eq 'MOCK_APIKEY'
 
-      sorted_plugins = bipbip.instance_variable_get(:@plugins).sort { |a, b| a.name <=> b.name }
+      sorted_plugins = config.plugins.sort { |a, b| a.name <=> b.name }
       sorted_plugins.count.should eq(3)
 
       sorted_plugins[0].name.should eq 'mysql'
@@ -29,8 +26,6 @@ describe Bipbip::Agent do
       sorted_plugins[2].frequency.should eq(15) # default frequency
       sorted_plugins[2].config['namespace'].should eq 'resque:prefix'
       sorted_plugins[2].tags.should eq(['foo', 'bar'])
-
-      Bipbip.logger = nil
     end
   end
 

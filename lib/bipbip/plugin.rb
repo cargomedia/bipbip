@@ -1,17 +1,28 @@
 module Bipbip
 
   class Plugin
+
+    class MeasurementTimeout < RuntimeError
+    end
+
     include InterruptibleSleep
 
     attr_accessor :name
     attr_accessor :config
-    attr_accessor :metric_group
+    attr_accessor :frequency
     attr_accessor :tags
-    attr_accessor :pid
+    attr_accessor :metric_group
 
     def self.factory(name, config, frequency, tags, metric_group = nil)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
       Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency, tags, metric_group)
+    end
+
+    # @param [Bipbip::Plugin] plugin
+    # @return [Bipbip::Plugin]
+    def self.factory_from_plugin(plugin)
+      class_name = plugin.class.name.gsub(/^Bipbip::/, '')
+      Bipbip::const_get(class_name).new(plugin.name, plugin.config, plugin.frequency, plugin.tags, plugin.metric_group)
     end
 
     def initialize(name, config, frequency, tags = nil, metric_group = nil)
@@ -22,47 +33,28 @@ module Bipbip
       @metric_group = (metric_group || name).to_s
     end
 
+    # @param [Array] storages
     def run(storages)
-      @pid = fork do
-        ['INT', 'TERM'].each { |sig| trap(sig) {
-          Thread.new { interrupt } if !@interrupted
-        } }
-
-        retry_delay = frequency
-        begin
-          until interrupted? do
-            time = Time.now
-            data = monitor
-            if data.empty?
-              raise "#{name} #{source_identifier}: Empty data"
-            end
-            log(Logger::DEBUG, "Data: #{data}")
-            storages.each do |storage|
-              storage.store_sample(self, time, data)
-            end
-            retry_delay = frequency
-            interruptible_sleep (frequency - (Time.now - time))
+      begin
+        timeout = frequency * 2
+        while true
+          time = Time.now
+          Timeout::timeout(timeout, MeasurementTimeout) do
+            run_measurement(frequency, storages)
           end
-        rescue => e
-          log_exception(Logger::ERROR, e)
-          interruptible_sleep retry_delay
-          retry_delay += frequency if retry_delay < frequency * 10
-          retry
-        rescue Exception => e
-          log_exception(Logger::FATAL, e)
-          raise e
+          interruptible_sleep (frequency - (Time.now - time))
         end
+      rescue MeasurementTimeout => e
+        log(Logger::ERROR, "Measurement timeout of #{timeout} seconds reached.")
+        retry
+      rescue StandardError => e
+        log_exception(Logger::ERROR, e)
+        interruptible_sleep frequency
+        retry
+      rescue Exception => e
+        log_exception(Logger::FATAL, e)
+        raise e
       end
-    end
-
-    def interrupt
-      log(Logger::INFO, "Interrupting plugin process #{Process.pid}")
-      @interrupted = true
-      interrupt_sleep
-    end
-
-    def interrupted?
-      @interrupted || Process.getpgid(Process.ppid) != Process.getpgrp
     end
 
     def frequency
@@ -90,6 +82,17 @@ module Bipbip
     end
 
     private
+
+    def run_measurement(time, storages)
+      data = monitor
+      if data.empty?
+        raise "#{name} #{source_identifier}: Empty data"
+      end
+      log(Logger::DEBUG, "Data: #{data}")
+      storages.each do |storage|
+        storage.store_sample(self, time, data)
+      end
+    end
 
     def log(severity, message)
       Bipbip.logger.add(severity, message, "#{name} #{source_identifier}")

@@ -7,12 +7,14 @@ module Bipbip
   require 'logger'
   require 'socket'
   require 'shellwords'
+  require 'thwait'
+  require 'timeout'
 
   require 'interruptible_sleep'
-  require 'process_exists'
 
   require 'bipbip/version'
   require 'bipbip/helper'
+  require 'bipbip/config'
   require 'bipbip/agent'
   require 'bipbip/storage'
   require 'bipbip/plugin'

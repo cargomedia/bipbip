@@ -29,7 +29,7 @@ end
 
 begin
   optparse.parse!
-  if not options[:config]
+  unless options[:config]
     puts "Missing options: config file [-c PATH]"
     exit
   end
@@ -40,8 +40,10 @@ rescue OptionParser::InvalidOption, OptionParser::MissingArgument
 end
 
 begin
-  Bipbip::Agent.new(options[:config]).run
+  config = Bipbip::Config.factory_from_file(options[:config])
+  agent = Bipbip::Agent.new(config)
+  agent.run
 rescue => e
-  Bipbip.logger.fatal e.message + "\n" + e.backtrace.map{|s| "\t#{s}"}.join("\n")
+  Bipbip.logger.fatal e.message + "\n" + e.backtrace.map { |s| "\t#{s}" }.join("\n")
   exit 1
 end
