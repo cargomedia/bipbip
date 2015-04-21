@@ -11,7 +11,6 @@ module Bipbip
   require 'timeout'
 
   require 'interruptible_sleep'
-  require 'process_exists'
 
   require 'bipbip/version'
   require 'bipbip/helper'
