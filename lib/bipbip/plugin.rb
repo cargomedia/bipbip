@@ -40,7 +40,7 @@ module Bipbip
         while true
           time = Time.now
           Timeout::timeout(timeout, MeasurementTimeout) do
-            run_measurement(frequency, storages)
+            run_measurement(time, storages)
           end
           interruptible_sleep (frequency - (Time.now - time))
         end
