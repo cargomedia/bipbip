@@ -21,8 +21,7 @@ module Bipbip
     # @param [Bipbip::Plugin] plugin
     # @return [Bipbip::Plugin]
     def self.factory_from_plugin(plugin)
-      class_name = plugin.class.name.gsub(/^Bipbip::/, '')
-      Bipbip::const_get(class_name).new(plugin.name, plugin.config, plugin.frequency, plugin.tags, plugin.metric_group)
+      plugin.class.new(plugin.name, plugin.config, plugin.frequency, plugin.tags, plugin.metric_group)
     end
 
     def initialize(name, config, frequency, tags = nil, metric_group = nil)
