@@ -45,9 +45,11 @@ module Bipbip
 
     def notifier
       if @notifier.nil?
-        @notifier = create_notifier
+        file_stat = File.stat(config['path'])
+        raise "Cannot read file `#{config['path']}`" unless file_stat.readable?
         @lines = []
-        @size = File.stat(config['path']).size
+        @size = file_stat.size
+        @notifier = create_notifier
       end
       @notifier
     end
