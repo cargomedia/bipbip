@@ -29,7 +29,7 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    lines.select { |l| l.include?('my-plugin my-source: Data: {:foo=>12}') }.should have_at_least(2).items
+    expect(lines.select { |l| l.include?('my-plugin my-source: Data: {:foo=>12}') }.size).to be >= 2
 
     thread.exit
     agent.interrupt
@@ -48,8 +48,8 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    lines.select { |l| l.include?('my-plugin my-source: my-error') }.should have_at_least(2).items
-    lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.should have_exactly(0).items
+    expect(lines.select { |l| l.include?('my-plugin my-source: my-error') }.size).to be >= 2
+    expect(lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.size).to eq(0)
 
     thread.exit
     agent.interrupt
@@ -68,8 +68,8 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    lines.select { |l| l.include?('my-plugin my-source: Measurement timeout of 0.2 seconds reached.') }.should have_at_least(2).items
-    lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.should have_exactly(0).items
+    expect(lines.select { |l| l.include?('my-plugin my-source: Measurement timeout of 0.2 seconds reached.') }.size).to be >= 2
+    expect(lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.size).to eq(0)
 
     thread.exit
     agent.interrupt
@@ -89,8 +89,8 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    lines.select { |l| l.include?('my-plugin my-source: my-exception') }.should have_at_least(2).items
-    lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.should have_at_least(2).items
+    expect(lines.select { |l| l.include?('my-plugin my-source: my-exception') }.size).to be >= 2
+    expect(lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.size).to be >= 2
 
     thread.exit
     agent.interrupt
