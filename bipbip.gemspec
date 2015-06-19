@@ -19,8 +19,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'gearman-ruby'
   s.add_runtime_dependency 'resque', '~> 1.25'
   s.add_runtime_dependency 'monit', '~> 0.3'
-  s.add_runtime_dependency 'mongo', '~> 1.10'
-  s.add_runtime_dependency 'bson_ext', '~> 1.10'
+  s.add_runtime_dependency 'mongo', '~> 2.0.5'
+  s.add_runtime_dependency 'bson', '~> 3.0.3'
   s.add_runtime_dependency 'rb-inotify', '~> 0.9.5'
   s.add_runtime_dependency 'elasticsearch', '~> 1.0.6'
 
