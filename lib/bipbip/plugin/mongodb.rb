@@ -84,7 +84,7 @@ module Bipbip
           'hostname' => 'localhost',
           'port' => 27017,
       }.merge(config)
-      @mongodb_client ||= Mongo::Client.new([options['hostname'] + ':' + options['port'].to_s], :socket_timeout => 2)
+      @mongodb_client ||= Mongo::Client.new([options['hostname'] + ':' + options['port'].to_s], :socket_timeout => 2, :slave_ok => true)
     end
 
     # @return [Mongo::DB]
