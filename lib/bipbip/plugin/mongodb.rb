@@ -78,28 +78,27 @@ module Bipbip
       config['slow_query_threshold'] || 0
     end
 
-    # @return [Mongo::MongoClient]
+    # @return [Mongo::Client]
     def mongodb_client
       options = {
           'hostname' => 'localhost',
           'port' => 27017,
       }.merge(config)
-      @mongodb_client ||= Mongo::MongoClient.new(options['hostname'], options['port'], {:op_timeout => 2, :slave_ok => true})
+      @mongodb_client ||= Mongo::Client.new([options['hostname'] + ':' + options['port'].to_s], :socket_timeout => 2)
     end
 
     # @return [Mongo::DB]
     def mongodb_database(db_name)
-      db = mongodb_client.db(db_name)
-      db.authenticate(config['username'], config['password']) unless config['password'].nil?
-      db
+      mongodb_client.with(config['username'], config['password']) unless config['password'].nil?
+      mongodb_client.use(db_name)
     end
 
     def fetch_server_status
-      mongodb_database('admin').command('serverStatus' => 1)
+      mongodb_database('admin').command('serverStatus' => 1).documents.first
     end
 
     def fetch_replica_status
-      mongodb_database('admin').command('replSetGetStatus' => 1)
+      mongodb_database('admin').command('replSetGetStatus' => 1).documents.first
     end
 
     def slow_query_last_check
@@ -117,14 +116,14 @@ module Bipbip
 
       stats = database_list.reduce({'total' => {'count' => 0, 'time' => 0}, 'max' => {'time' => 0}}) do |memo, database|
 
-        results = database.collection('system.profile').aggregate(
+        results = database['system.profile'].find.aggregate(
             [
                 {'$match' => {'millis' => {'$gte' => slow_query_threshold}, 'ts' => {'$gt' => timestamp_last_check}}},
                 {'$group' => {'_id' => 'null', 'total_count' => {'$sum' => 1}, 'total_time' => {'$sum' => '$millis'}, 'max_time' => {'$max' => '$millis'}}}
             ])
 
-        unless results.empty?
-          result = results.pop
+        unless results.count == 0
+          result = results.first
           max_time = result['max_time'].to_f/1000
 
           memo['total']['count'] += result['total_count']
