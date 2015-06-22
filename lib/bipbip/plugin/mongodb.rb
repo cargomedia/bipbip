@@ -27,8 +27,6 @@ module Bipbip
     end
 
     def monitor
-      @mongodb_client = nil
-
       status = fetch_server_status
       slow_queries_status = fetch_slow_queries_status
 
