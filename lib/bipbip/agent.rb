@@ -33,28 +33,18 @@ module Bipbip
         end
       end
 
-      ['INT', 'TERM'].each do |sig|
-        trap(sig) do
-          Bipbip.logger.info "Received signal #{sig}, interrupting..."
-          interrupt
-        end
-      end
-
       @plugins.each do |plugin|
         Bipbip.logger.info "Starting plugin #{plugin.name} with config #{plugin.config}"
         start_plugin(plugin, @storages)
       end
 
-      @interrupted = false
-      until @interrupted
+      while true
         thread = ThreadsWait.new(@threads).next_wait
         @threads.delete(thread)
         plugin = thread['plugin']
-        next if @interrupted
 
         Bipbip.logger.error "Plugin #{plugin.name} with config #{plugin.config} terminated. Restarting..."
         interruptible_sleep(PLUGIN_RESPAWN_DELAY)
-        next if @interrupted
 
         # Re-instantiate plugin to get rid of existing database-connections etc
         plugin_new = Bipbip::Plugin.factory_from_plugin(plugin)
@@ -62,14 +52,6 @@ module Bipbip
         @plugins.push(plugin_new)
         start_plugin(plugin_new, @storages)
       end
-    end
-
-    def interrupt
-      @interrupted = true
-      @threads.each do |thread|
-        thread.terminate
-      end
-      interrupt_sleep
     end
 
     private
