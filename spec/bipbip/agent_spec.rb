@@ -32,7 +32,6 @@ describe Bipbip::Agent do
     expect(lines.select { |l| l.include?('my-plugin my-source: Data: {:foo=>12}') }.size).to be >= 2
 
     thread.exit
-    agent.interrupt
   end
 
   it 'should log plugin errors and retry' do
@@ -52,7 +51,6 @@ describe Bipbip::Agent do
     expect(lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.size).to eq(0)
 
     thread.exit
-    agent.interrupt
   end
 
   it 'should log plugin timeouts and retry' do
@@ -72,7 +70,6 @@ describe Bipbip::Agent do
     expect(lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.size).to eq(0)
 
     thread.exit
-    agent.interrupt
   end
 
   it 'should log plugin exceptions and restart' do
@@ -93,7 +90,6 @@ describe Bipbip::Agent do
     expect(lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.size).to be >= 2
 
     thread.exit
-    agent.interrupt
   end
 
 end
