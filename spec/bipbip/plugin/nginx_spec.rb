@@ -3,15 +3,6 @@ require 'bipbip/plugin/nginx'
 require 'webmock/rspec'
 
 describe Bipbip::Plugin::Nginx do
-
-  before(:all) do
-    WebMock.enable!
-  end
-
-  after(:all) do
-    WebMock.disable!
-  end
-
   let(:plugin) { Bipbip::Plugin::Nginx.new('nginx', {'url' => 'http://localhost/server-status'}, 10) }
 
   it 'should collect data' do
