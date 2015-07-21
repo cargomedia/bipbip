@@ -4,9 +4,10 @@ module Bipbip
 
   class Plugin::Monit < Plugin
 
-    #See https://bitbucket.org/tildeslash/monit/src/d60968cf7972cc902e5b6e2961d44456e1d9b736/src/monit.h?at=master#cl-135
-    #    https://bitbucket.org/tildeslash/monit/src/d60968cf7972cc902e5b6e2961d44456e1d9b736/src/monit.h?at=master#cl-146
+    # See https://bitbucket.org/tildeslash/monit/src/d60968cf7972cc902e5b6e2961d44456e1d9b736/src/monit.h?at=master#monit.h-145
     STATE_FAILED = '1'
+
+    # See https://bitbucket.org/tildeslash/monit/src/d60968cf7972cc902e5b6e2961d44456e1d9b736/src/monit.h?at=master#monit.h-135
     MONITOR_NOT = '0'
 
     def metrics_schema
