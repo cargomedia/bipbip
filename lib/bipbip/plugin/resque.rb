@@ -45,6 +45,7 @@ module Bipbip
         data['num_workers'] = ::Resque.workers.count
         data['num_idle_workers'] = ::Resque.workers.select { |w| w.idle? }.count
         data['num_active_workers'] = data['num_workers'] - data['num_idle_workers']
+        data['num_failures'] = ::Resque::Failure.count
         ::Resque.queues.each do |queue|
           data["queue_size_#{sanitize_queue_name(queue)}"] = ::Resque.size(queue).to_i
         end
