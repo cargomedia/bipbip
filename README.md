@@ -1,7 +1,11 @@
-bipbip [![Build Status](https://travis-ci.org/cargomedia/bipbip.png)](https://travis-ci.org/cargomedia/bipbip)
+bipbip
 ======
 Agent to collect server metrics and send them to the [CopperEgg RevealMetrics](http://copperegg.com/) platform.
 Plugins for different metrics available.
+
+[![Build Status](https://img.shields.io/travis/cargomedia/bipbip/master.svg)](https://travis-ci.org/cargomedia/bipbip)
+[![Gem Version](https://img.shields.io/gem/v/bipbip.svg)](https://rubygems.org/gems/bipbip)
+
 
 Installation
 ------------
