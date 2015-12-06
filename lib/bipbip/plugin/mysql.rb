@@ -1,43 +1,41 @@
 require 'mysql2'
 
 module Bipbip
-
   class Plugin::Mysql < Plugin
-
     def metrics_schema
       [
-          {:name => 'Max_used_connections', :type => 'gauge', :unit => 'Connections'},
-          {:name => 'Connections', :type => 'counter', :unit => 'Connections'},
-          {:name => 'Threads_connected', :type => 'gauge', :unit => 'Threads'},
+        { name: 'Max_used_connections', type: 'gauge', unit: 'Connections' },
+        { name: 'Connections', type: 'counter', unit: 'Connections' },
+        { name: 'Threads_connected', type: 'gauge', unit: 'Threads' },
 
-          {:name => 'Slave_running', :type => 'gauge', :unit => 'Boolean'},
-          {:name => 'Seconds_Behind_Master', :type => 'gauge', :unit => 'Seconds'},
+        { name: 'Slave_running', type: 'gauge', unit: 'Boolean' },
+        { name: 'Seconds_Behind_Master', type: 'gauge', unit: 'Seconds' },
 
-          {:name => 'Created_tmp_disk_tables', :type => 'counter', :unit => 'Tables'},
+        { name: 'Created_tmp_disk_tables', type: 'counter', unit: 'Tables' },
 
-          {:name => 'Queries', :type => 'counter', :unit => 'Queries'},
-          {:name => 'Slow_queries', :type => 'counter', :unit => 'Queries'},
+        { name: 'Queries', type: 'counter', unit: 'Queries' },
+        { name: 'Slow_queries', type: 'counter', unit: 'Queries' },
 
-          {:name => 'Table_locks_immediate', :type => 'counter', :unit => 'Locks'},
-          {:name => 'Table_locks_waited', :type => 'counter', :unit => 'Locks'},
+        { name: 'Table_locks_immediate', type: 'counter', unit: 'Locks' },
+        { name: 'Table_locks_waited', type: 'counter', unit: 'Locks' },
 
-          {:name => 'Processlist', :type => 'gauge', :unit => 'Processes'},
-          {:name => 'Processlist_Locked', :type => 'gauge', :unit => 'Processes'},
+        { name: 'Processlist', type: 'gauge', unit: 'Processes' },
+        { name: 'Processlist_Locked', type: 'gauge', unit: 'Processes' },
 
-          {:name => 'Com_select', :type => 'counter', :unit => 'Commands'},
-          {:name => 'Com_delete', :type => 'counter', :unit => 'Commands'},
-          {:name => 'Com_insert', :type => 'counter', :unit => 'Commands'},
-          {:name => 'Com_update', :type => 'counter', :unit => 'Commands'},
-          {:name => 'Com_replace', :type => 'counter', :unit => 'Commands'},
+        { name: 'Com_select', type: 'counter', unit: 'Commands' },
+        { name: 'Com_delete', type: 'counter', unit: 'Commands' },
+        { name: 'Com_insert', type: 'counter', unit: 'Commands' },
+        { name: 'Com_update', type: 'counter', unit: 'Commands' },
+        { name: 'Com_replace', type: 'counter', unit: 'Commands' }
       ]
     end
 
     def monitor
       mysql = Mysql2::Client.new(
-          :host => config['hostname'],
-          :port => config['port'],
-          :username => config['username'],
-          :password => config['password']
+        host: config['hostname'],
+        port: config['port'],
+        username: config['username'],
+        password: config['password']
       )
 
       stats = Hash.new(0)

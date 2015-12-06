@@ -3,12 +3,11 @@ require 'bipbip/plugin/puppet'
 require 'yaml'
 
 describe Bipbip::Plugin::Puppet do
-  let(:plugin) {
+  let(:plugin) do
     Bipbip::Plugin::Puppet.new('puppet', {}, 10)
-  }
+  end
 
   it 'should collect data' do
-
     puppet_yaml = <<YAML
 ---
     version:

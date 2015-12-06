@@ -2,29 +2,25 @@ require 'bipbip'
 require 'bipbip/plugin/mongodb'
 
 describe Bipbip::Plugin::Mongodb do
-  let(:plugin) { Bipbip::Plugin::Mongodb.new('mongodb', {'hostname' => 'localhost', 'port' => 27017}, 10) }
+  let(:plugin) { Bipbip::Plugin::Mongodb.new('mongodb', { 'hostname' => 'localhost', 'port' => 27_017 }, 10) }
 
   it 'should collect data' do
     plugin.stub(:fetch_server_status).and_return(
-        {
-            'connections' => {
-                'current' => 100
-            },
-            'mem' => {
-                'resident' => 1024
-            }
-        })
+      'connections' => {
+        'current' => 100
+      },
+      'mem' => {
+        'resident' => 1024
+      })
 
     plugin.stub(:fetch_slow_queries_status).and_return(
-        {
-            'total' => {
-                'count' => 48.4,
-                'time' => 24.2,
-            },
-            'max' => {
-                'time' => 12
-            }
-        }
+      'total' => {
+        'count' => 48.4,
+        'time' => 24.2
+      },
+      'max' => {
+        'time' => 12
+      }
     )
 
     data = plugin.monitor
@@ -37,35 +33,28 @@ describe Bipbip::Plugin::Mongodb do
 
   it 'should collect replication lag' do
     plugin.stub(:fetch_server_status).and_return(
-        {
-            'repl' => {
-                'secondary' => true
-            }
-        })
+      'repl' => {
+        'secondary' => true
+      })
 
     plugin.stub(:fetch_replica_status).and_return(
-        {
-            'set' => 'rep1',
-            'members' => [
-                {'stateStr' => 'PRIMARY', 'optime' => BSON::Timestamp.new(1000, 1)},
-                {'stateStr' => 'SECONDARY', 'optime' => BSON::Timestamp.new(1003, 1), 'self' => true},
-            ]
-        })
+      'set' => 'rep1',
+      'members' => [
+        { 'stateStr' => 'PRIMARY', 'optime' => BSON::Timestamp.new(1000, 1) },
+        { 'stateStr' => 'SECONDARY', 'optime' => BSON::Timestamp.new(1003, 1), 'self' => true }
+      ])
 
     plugin.stub(:fetch_slow_queries_status).and_return(
-        {
-            'total' => {
-                'count' => 48.4,
-                'time' => 24.2,
-            },
-            'max' => {
-                'time' => 12
-            }
-        }
+      'total' => {
+        'count' => 48.4,
+        'time' => 24.2
+      },
+      'max' => {
+        'time' => 12
+      }
     )
 
     data = plugin.monitor
     data['replication_lag'].should eq(3)
   end
-
 end

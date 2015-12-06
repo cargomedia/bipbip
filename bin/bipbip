@@ -11,30 +11,29 @@ options = {}
 optparse = OptionParser.new do |opts|
   opts.banner = "Usage: #{name} [options]"
 
-  opts.on("-c", "--config PATH", "Configuration file") do |c|
+  opts.on('-c', '--config PATH', 'Configuration file') do |c|
     options[:config] = c
   end
 
-  opts.on("-v", "--version", "Version") do |v|
+  opts.on('-v', '--version', 'Version') do |_v|
     puts "#{name} v#{version}"
     exit
   end
 
-  opts.on("-h", "--help", "Show this help") do |h|
+  opts.on('-h', '--help', 'Show this help') do |_h|
     puts opts
     exit
   end
 end
 
-
 begin
   optparse.parse!
   unless options[:config]
-    puts "Missing options: config file [-c PATH]"
+    puts 'Missing options: config file [-c PATH]'
     exit
   end
 rescue OptionParser::InvalidOption, OptionParser::MissingArgument
-  puts $!.to_s
+  puts $ERROR_INFO.to_s
   puts optparse
   exit
 end

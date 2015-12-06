@@ -2,7 +2,7 @@ require 'bipbip'
 require 'bipbip/plugin/memcached'
 
 describe Bipbip::Plugin::Memcached do
-  let(:plugin) { Bipbip::Plugin::Memcached.new('memcached', {'hostname' => 'localhost', 'port' => 11211}, 10) }
+  let(:plugin) { Bipbip::Plugin::Memcached.new('memcached', { 'hostname' => 'localhost', 'port' => 11_211 }, 10) }
 
   it 'should collect data' do
     data = plugin.monitor

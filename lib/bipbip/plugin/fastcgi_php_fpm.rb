@@ -1,12 +1,10 @@
 module Bipbip
-
   class Plugin::FastcgiPhpFpm < Plugin
-
     def metrics_schema
       [
-          {:name => 'accepted conn', :type => 'counter', :unit => 'Connections'},
-          {:name => 'listen queue', :type => 'gauge', :unit => 'Connections'},
-          {:name => 'active processes', :type => 'gauge', :unit => 'Processes'},
+        { name: 'accepted conn', type: 'counter', unit: 'Connections' },
+        { name: 'listen queue', type: 'gauge', unit: 'Connections' },
+        { name: 'active processes', type: 'gauge', unit: 'Processes' }
       ]
     end
 
@@ -23,10 +21,10 @@ module Bipbip
       ENV.replace(env_backup)
 
       body = response.split(/\r?\n\r?\n/)[1]
-      raise "FastCGI response has no body: #{response}" unless body
+      fail "FastCGI response has no body: #{response}" unless body
       status = JSON.parse(body)
 
-      status.reject{|k, v| !metrics_names.include?(k)}
+      status.reject { |k, _v| !metrics_names.include?(k) }
     end
   end
 end

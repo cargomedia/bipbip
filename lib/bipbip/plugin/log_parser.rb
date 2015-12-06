@@ -1,12 +1,10 @@
 require 'rb-inotify'
 
 module Bipbip
-
   class Plugin::LogParser < Plugin
-
     def metrics_schema
       config['matchers'].map do |matcher|
-        {:name => matcher['name'], :type => 'gauge', :unit => 'Boolean'}
+        { name: matcher['name'], type: 'gauge', unit: 'Boolean' }
       end
     end
 
@@ -14,7 +12,7 @@ module Bipbip
       begin
         io = IO.select([notifier.to_io], [], [], 0)
       rescue Errno::EBADF => e
-        log(Logger::WARN, "Selecting from inotify IO gives EBADF, resetting notifier")
+        log(Logger::WARN, 'Selecting from inotify IO gives EBADF, resetting notifier')
         reset_notifier
       end
 
@@ -35,7 +33,7 @@ module Bipbip
         config['matchers'].map do |matcher|
           name = matcher['name']
           regexp = Regexp.new(matcher['regexp'])
-          value = lines.reject { |line| line.match(regexp).nil? }.length
+          value = lines.count { |line| !line.match(regexp).nil? }
           [name, value]
         end
       ]
@@ -46,7 +44,7 @@ module Bipbip
     def notifier
       if @notifier.nil?
         file_stat = File.stat(config['path'])
-        raise "Cannot read file `#{config['path']}`" unless file_stat.readable?
+        fail "Cannot read file `#{config['path']}`" unless file_stat.readable?
         @lines = []
         @size = file_stat.size
         @notifier = create_notifier
@@ -70,15 +68,14 @@ module Bipbip
     end
 
     def reset_notifier
-      unless @notifier.nil?
-        @notifier.stop
-        begin
-          @notifier.close
-        rescue SystemCallError => e
-          log(Logger::WARN, "Cannot close notifier: `#{e.message}`")
-        end
-        @notifier = nil
+      return if @notifier.nil?
+      @notifier.stop
+      begin
+        @notifier.close
+      rescue SystemCallError => e
+        log(Logger::WARN, "Cannot close notifier: `#{e.message}`")
       end
+      @notifier = nil
     end
 
     def roll_file
@@ -90,6 +87,5 @@ module Bipbip
       end
       file.close
     end
-
   end
 end

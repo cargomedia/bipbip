@@ -1,5 +1,4 @@
 module Bipbip
-
   class Agent
     include InterruptibleSleep
 
@@ -22,9 +21,7 @@ module Bipbip
       Bipbip.logger.info 'Startup...'
       Bipbip.logger.warn 'No storages configured' if @storages.empty?
 
-      if @plugins.empty?
-        raise 'No services configured'
-      end
+      fail 'No services configured' if @plugins.empty?
 
       @storages.each do |storage|
         @plugins.each do |plugin|
@@ -38,7 +35,7 @@ module Bipbip
         start_plugin(plugin, @storages)
       end
 
-      while true
+      loop do
         thread = ThreadsWait.new(@threads).next_wait
         @threads.delete(thread)
         plugin = thread['plugin']

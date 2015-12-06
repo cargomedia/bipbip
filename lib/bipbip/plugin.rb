@@ -1,7 +1,5 @@
 module Bipbip
-
   class Plugin
-
     class MeasurementTimeout < RuntimeError
     end
 
@@ -15,7 +13,7 @@ module Bipbip
 
     def self.factory(name, config, frequency, tags, metric_group = nil)
       require "bipbip/plugin/#{Bipbip::Helper.name_to_filename(name)}"
-      Plugin::const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency, tags, metric_group)
+      Plugin.const_get(Bipbip::Helper.name_to_classname(name)).new(name, config, frequency, tags, metric_group)
     end
 
     # @param [Bipbip::Plugin] plugin
@@ -34,31 +32,27 @@ module Bipbip
 
     # @param [Array] storages
     def run(storages)
-      begin
-        timeout = frequency * 2
-        while true
-          time = Time.now
-          Timeout::timeout(timeout, MeasurementTimeout) do
-            run_measurement(time, storages)
-          end
-          interruptible_sleep (frequency - (Time.now - time))
+      timeout = frequency * 2
+      loop do
+        time = Time.now
+        Timeout.timeout(timeout, MeasurementTimeout) do
+          run_measurement(time, storages)
         end
-      rescue MeasurementTimeout => e
-        log(Logger::ERROR, "Measurement timeout of #{timeout} seconds reached.")
-        retry
-      rescue StandardError => e
-        log_exception(Logger::ERROR, e)
-        interruptible_sleep frequency
-        retry
-      rescue Exception => e
-        log_exception(Logger::FATAL, e)
-        raise e
+        interruptible_sleep (frequency - (Time.now - time))
       end
+    rescue MeasurementTimeout => e
+      log(Logger::ERROR, "Measurement timeout of #{timeout} seconds reached.")
+      retry
+    rescue StandardError => e
+      log_exception(Logger::ERROR, e)
+      interruptible_sleep frequency
+      retry
+    rescue Exception => e
+      log_exception(Logger::FATAL, e)
+      raise e
     end
 
-    def frequency
-      @frequency
-    end
+    attr_reader :frequency
 
     def source_identifier
       identifier = Bipbip.fqdn + '::' + metric_group
@@ -73,20 +67,18 @@ module Bipbip
     end
 
     def metrics_schema
-      raise 'Missing method metrics_schema'
+      fail 'Missing method metrics_schema'
     end
 
     def monitor
-      raise 'Missing method monitor'
+      fail 'Missing method monitor'
     end
 
     private
 
     def run_measurement(time, storages)
       data = monitor
-      if data.empty?
-        raise "#{name} #{source_identifier}: Empty data"
-      end
+      fail "#{name} #{source_identifier}: Empty data" if data.empty?
       log(Logger::DEBUG, "Data: #{data}")
       storages.each do |storage|
         storage.store_sample(self, time, data)

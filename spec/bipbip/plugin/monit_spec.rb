@@ -2,12 +2,11 @@ require 'bipbip'
 require 'bipbip/plugin/monit'
 
 describe Bipbip::Plugin::Monit do
-  let(:plugin) {
+  let(:plugin) do
     Bipbip::Plugin::Monit.new('monit', {}, 10)
-  }
+  end
 
   it 'should collect data' do
-
     status_service1 = double('service1')
     allow(status_service1).to receive(:monitor).and_return('2')
     allow(status_service1).to receive(:status).and_return('2')

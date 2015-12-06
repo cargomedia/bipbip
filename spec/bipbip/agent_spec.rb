@@ -18,9 +18,9 @@ describe Bipbip::Agent do
 
   it 'should run in a thread' do
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
-    plugin.stub(:metrics_schema) { [{:name => 'foo', :type => 'counter'}] }
+    plugin.stub(:metrics_schema) { [{ name: 'foo', type: 'counter' }] }
     plugin.stub(:source_identifier) { 'my-source' }
-    plugin.stub(:monitor) { {:foo => 12} }
+    plugin.stub(:monitor) { { foo: 12 } }
 
     agent = Bipbip::Agent.new(Bipbip::Config.new([plugin], [], logger))
 
@@ -29,7 +29,7 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    expect(lines.select { |l| l.include?('my-plugin my-source: Data: {:foo=>12}') }.size).to be >= 2
+    expect(lines.count { |l| l.include?('my-plugin my-source: Data: {:foo=>12}') }).to be >= 2
 
     thread.exit
   end
@@ -38,7 +38,7 @@ describe Bipbip::Agent do
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
     plugin.stub(:metrics_schema) { [] }
     plugin.stub(:source_identifier) { 'my-source' }
-    plugin.stub(:monitor) { raise 'my-error' }
+    plugin.stub(:monitor) { fail 'my-error' }
 
     agent = Bipbip::Agent.new(Bipbip::Config.new([plugin], [], logger))
 
@@ -47,8 +47,8 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    expect(lines.select { |l| l.include?('my-plugin my-source: my-error') }.size).to be >= 2
-    expect(lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.size).to eq(0)
+    expect(lines.count { |l| l.include?('my-plugin my-source: my-error') }).to be >= 2
+    expect(lines.count { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }).to eq(0)
 
     thread.exit
   end
@@ -66,8 +66,8 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    expect(lines.select { |l| l.include?('my-plugin my-source: Measurement timeout of 0.2 seconds reached.') }.size).to be >= 2
-    expect(lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.size).to eq(0)
+    expect(lines.count { |l| l.include?('my-plugin my-source: Measurement timeout of 0.2 seconds reached.') }).to be >= 2
+    expect(lines.count { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }).to eq(0)
 
     thread.exit
   end
@@ -75,7 +75,7 @@ describe Bipbip::Agent do
   it 'should log plugin exceptions and restart' do
     Bipbip::Plugin.any_instance.stub(:metrics_schema) { [] }
     Bipbip::Plugin.any_instance.stub(:source_identifier) { 'my-source' }
-    Bipbip::Plugin.any_instance.stub(:monitor) { raise Exception.new('my-exception') }
+    Bipbip::Plugin.any_instance.stub(:monitor) { fail Exception.new('my-exception') }
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
 
     agent = Bipbip::Agent.new(Bipbip::Config.new([plugin], [], logger))
@@ -86,10 +86,9 @@ describe Bipbip::Agent do
 
     thread.alive?.should eq(true)
     lines = logger_file.read.lines
-    expect(lines.select { |l| l.include?('my-plugin my-source: my-exception') }.size).to be >= 2
-    expect(lines.select { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }.size).to be >= 2
+    expect(lines.count { |l| l.include?('my-plugin my-source: my-exception') }).to be >= 2
+    expect(lines.count { |l| l.include?('Plugin my-plugin with config {} terminated. Restarting...') }).to be >= 2
 
     thread.exit
   end
-
 end

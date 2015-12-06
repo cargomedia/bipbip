@@ -1,17 +1,15 @@
 module Bipbip
-
   class Plugin::Nginx < Plugin
-
     def metrics_schema
       [
-        {:name => 'connections_accepts', :type => 'counter', :unit => 'Connections'},
-        {:name => 'connections_handled', :type => 'counter', :unit => 'Connections'},
-        {:name => 'connections_dropped', :type => 'counter', :unit => 'Connections'},
-        {:name => 'connections_requests', :type => 'counter', :unit => 'Requests'},
-        {:name => 'active_total', :type => 'gauge', :unit => 'Connections'},
-        {:name => 'active_reading', :type => 'gauge', :unit => 'Connections'},
-        {:name => 'active_writing', :type => 'gauge', :unit => 'Connections'},
-        {:name => 'active_waiting', :type => 'gauge', :unit => 'Connections'},
+        { name: 'connections_accepts', type: 'counter', unit: 'Connections' },
+        { name: 'connections_handled', type: 'counter', unit: 'Connections' },
+        { name: 'connections_dropped', type: 'counter', unit: 'Connections' },
+        { name: 'connections_requests', type: 'counter', unit: 'Requests' },
+        { name: 'active_total', type: 'gauge', unit: 'Connections' },
+        { name: 'active_reading', type: 'gauge', unit: 'Connections' },
+        { name: 'active_writing', type: 'gauge', unit: 'Connections' },
+        { name: 'active_waiting', type: 'gauge', unit: 'Connections' }
       ]
     end
 
@@ -19,10 +17,10 @@ module Bipbip
       uri = URI.parse(config['url'])
       response = Net::HTTP.get_response(uri)
 
-      raise "Invalid response from server at #{config['url']}" unless response.code == "200"
+      fail "Invalid response from server at #{config['url']}" unless response.code == '200'
 
       lines = response.body.split(/\r*\n/)
-      lines.map { |line| line.strip! }
+      lines.map(&:strip!)
 
       data = {}
 
@@ -48,7 +46,7 @@ module Bipbip
     def match_or_fail(string, regexp)
       match_data = regexp.match(string)
       if match_data.nil?
-        raise "Data `#{string}` doesn't match pattern `#{regexp}`."
+        fail "Data `#{string}` doesn't match pattern `#{regexp}`."
       end
       match_data
     end
