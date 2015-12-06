@@ -1,7 +1,5 @@
 module Bipbip
-
   class Storage::Copperegg < Storage
-
     def initialize(name, config)
       super(name, config)
       ::Copperegg::Revealmetrics::Api.apikey = config['api_key']
@@ -12,7 +10,7 @@ module Bipbip
       @dashboards ||= _load_dashboards
       @tags ||= _load_tags
 
-      if ![5, 15, 60, 300, 900, 3600, 21600].include?(plugin.frequency)
+      unless [5, 15, 60, 300, 900, 3600, 21_600].include?(plugin.frequency)
         log(Logger::FATAL, "Cannot use frequency #{plugin.frequency}")
         exit 1
       end
@@ -20,14 +18,14 @@ module Bipbip
       metric_group = @metric_groups.detect { |m| m.name == plugin.metric_group }
       if metric_group.nil? || !metric_group.is_a?(::Copperegg::Revealmetrics::MetricGroup)
         log(Logger::INFO, "Creating metric group `#{plugin.metric_group}`")
-        metric_group = ::Copperegg::Revealmetrics::MetricGroup.new(:name => plugin.metric_group, :label => plugin.metric_group, :frequency => plugin.frequency)
+        metric_group = ::Copperegg::Revealmetrics::MetricGroup.new(name: plugin.metric_group, label: plugin.metric_group, frequency: plugin.frequency)
       end
       metric_group.frequency = plugin.frequency
       metric_group.metrics = plugin.metrics_schema.map do |sample|
         {
-          :name => sample[:name],
-          :type => 'ce_' + sample[:type],
-          :unit => sample[:unit],
+          name: sample[:name],
+          type: 'ce_' + sample[:type],
+          unit: sample[:unit]
         }
       end
       log(Logger::INFO, "Updating metric group `#{plugin.metric_group}`")
@@ -37,7 +35,7 @@ module Bipbip
         tag = @tags.detect { |t| t.name == tag_name }
         if tag.nil?
           log(Logger::INFO, "Creating tag `#{tag_name}`")
-          tag = ::Copperegg::Revealmetrics::Tag.new(:name => tag_name)
+          tag = ::Copperegg::Revealmetrics::Tag.new(name: tag_name)
         end
         object_identifier = plugin.source_identifier
         unless tag.objects.include?(object_identifier)
@@ -53,14 +51,14 @@ module Bipbip
       if dashboard.nil?
         log(Logger::INFO, "Creating dashboard `#{plugin.metric_group}`")
         metrics = metric_group.metrics || []
-        ::Copperegg::Revealmetrics::CustomDashboard.create(metric_group, :name => plugin.metric_group, :identifiers => nil, :metrics => metrics)
+        ::Copperegg::Revealmetrics::CustomDashboard.create(metric_group, name: plugin.metric_group, identifiers: nil, metrics: metrics)
       end
     end
 
     def store_sample(plugin, time, data)
       response = ::Copperegg::Revealmetrics::MetricSample.save(plugin.metric_group, plugin.source_identifier, time.to_i, data)
       if response.code != '200'
-        raise("Cannot store copperegg data `#{data}`. Response code `#{response.code}`, message `#{response.message}`, body `#{response.body}`")
+        fail("Cannot store copperegg data `#{data}`. Response code `#{response.code}`, message `#{response.message}`, body `#{response.body}`")
       end
     end
 
@@ -94,6 +92,5 @@ module Bipbip
       end
       tags
     end
-
   end
 end

@@ -5,7 +5,6 @@ describe Bipbip::Plugin::Postfix do
   let(:plugin) { Bipbip::Plugin::Postfix.new('postfix', {}, 10) }
 
   it 'should collect more than one mail in queue' do
-
     postqueue = <<EOS
 -Queue ID- --Size-- ----Arrival Time---- -Sender/Recipient-------
 6E49C3823C9*    7577 Mon Dec  1 10:05:14  noreply@example.com
@@ -39,7 +38,6 @@ EOS
   end
 
   it 'should collect exact one mail in queue' do
-
     postqueue = <<EOS
 -Queue ID- --Size-- ----Arrival Time---- -Sender/Recipient-------
 6E49C3823C9*    7577 Mon Dec  1 10:05:14  noreply@example.com
@@ -60,5 +58,4 @@ EOS
     data = plugin.monitor
     data['mails_queued_total'].should eq(0)
   end
-
 end

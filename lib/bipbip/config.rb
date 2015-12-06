@@ -1,7 +1,5 @@
 module Bipbip
-
   class Config
-
     attr_reader :plugins
     attr_reader :storages
     attr_reader :logger
@@ -16,11 +14,11 @@ module Bipbip
         'frequency' => 60,
         'include' => nil,
         'services' => [],
-        'tags' => [],
+        'tags' => []
       }.merge(config)
 
       logger = Logger.new(config['logfile'])
-      logger.level = Logger::const_get(config['loglevel'])
+      logger.level = Logger.const_get(config['loglevel'])
 
       plugins_config = config['services'].to_a
       if config['include']
@@ -35,14 +33,14 @@ module Bipbip
         metric_group = service['metric_group']
         frequency = service['frequency'].nil? ? config['frequency'] : service['frequency']
         tags = config['tags'].to_a + service['tags'].to_a
-        plugin_config = service.reject { |key, value| ['plugin', 'frequency', 'tags', 'metric_group'].include?(key) }
+        plugin_config = service.reject { |key, _value| %w(plugin frequency tags metric_group).include?(key) }
         Bipbip::Plugin.factory(plugin_name, plugin_config, frequency, tags, metric_group)
       end
 
       storages_config = config['storages'].to_a
       storages = storages_config.map do |storage|
         storage_name = storage['name'].to_s
-        storage_config = storage.reject { |key, value| ['name'].include?(key) }
+        storage_config = storage.reject { |key, _value| ['name'].include?(key) }
         Bipbip::Storage.factory(storage_name, storage_config)
       end
 
@@ -57,6 +55,5 @@ module Bipbip
       @storages = storages || []
       @logger = logger || Logger.new(STDOUT)
     end
-
   end
 end

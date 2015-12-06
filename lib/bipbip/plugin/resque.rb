@@ -2,19 +2,17 @@ require 'redis'
 require 'resque'
 
 module Bipbip
-
   class Plugin::Resque < Plugin
-
     def metrics_schema
       schema_list = [
-          {:name => 'num_workers', :type => 'counter', :unit => 'Workers'},
-          {:name => 'num_idle_workers', :type => 'counter', :unit => 'Workers'},
-          {:name => 'num_active_workers', :type => 'counter', :unit => 'Workers'},
+        { name: 'num_workers', type: 'counter', unit: 'Workers' },
+        { name: 'num_idle_workers', type: 'counter', unit: 'Workers' },
+        { name: 'num_active_workers', type: 'counter', unit: 'Workers' }
       ]
 
       with_resque_connection do
         ::Resque.queues.each do |queue|
-          schema_list << {:name => "queue_size_#{sanitize_queue_name(queue)}", :type => 'gauge', :unit => 'Jobs'}
+          schema_list << { name: "queue_size_#{sanitize_queue_name(queue)}", type: 'gauge', unit: 'Jobs' }
         end
       end
 
@@ -27,8 +25,8 @@ module Bipbip
 
     def with_resque_connection
       redis = ::Redis.new(
-          :host => config['hostname'] || 'localhost',
-          :port => config['port'] || 6369
+        host: config['hostname'] || 'localhost',
+        port: config['port'] || 6369
       )
       redis.select config['database']
       ::Resque.redis = redis
@@ -43,7 +41,7 @@ module Bipbip
       data = {}
       with_resque_connection do
         data['num_workers'] = ::Resque.workers.count
-        data['num_idle_workers'] = ::Resque.workers.select { |w| w.idle? }.count
+        data['num_idle_workers'] = ::Resque.workers.count(&:idle?)
         data['num_active_workers'] = data['num_workers'] - data['num_idle_workers']
         ::Resque.queues.each do |queue|
           data["queue_size_#{sanitize_queue_name(queue)}"] = ::Resque.size(queue).to_i

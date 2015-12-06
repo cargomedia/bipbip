@@ -1,16 +1,14 @@
 module Bipbip
-
   class Plugin::FastcgiPhpOpcache < Plugin
-
     def metrics_schema
       [
-          {:name => 'free_memory', :type => 'gauge', :unit => 'b'},
-          {:name => 'current_wasted_percentage', :type => 'gauge', :unit => '%'},
-          {:name => 'num_cached_keys', :type => 'gauge', :unit => 'Keys'},
-          {:name => 'hit_rate', :type => 'gauge', :unit => '%'},
-          {:name => 'misses', :type => 'counter', :unit => 'Misses'},
-          {:name => 'hits', :type => 'counter', :unit => 'Hits'},
-          {:name => 'oom_restarts', :type => 'counter', :unit => 'Restarts'},
+        { name: 'free_memory', type: 'gauge', unit: 'b' },
+        { name: 'current_wasted_percentage', type: 'gauge', unit: '%' },
+        { name: 'num_cached_keys', type: 'gauge', unit: 'Keys' },
+        { name: 'hit_rate', type: 'gauge', unit: '%' },
+        { name: 'misses', type: 'counter', unit: 'Misses' },
+        { name: 'hits', type: 'counter', unit: 'Hits' },
+        { name: 'oom_restarts', type: 'counter', unit: 'Restarts' }
       ]
     end
 
@@ -26,7 +24,7 @@ module Bipbip
       ENV.replace(env_backup)
 
       body = response.split(/\r?\n\r?\n/)[1]
-      raise "FastCGI response has no body: #{response}" unless body
+      fail "FastCGI response has no body: #{response}" unless body
       stats = JSON.parse(body)
       @data_previous ||= stats
 
@@ -36,13 +34,13 @@ module Bipbip
 
       @data_previous = stats
       {
-          :free_memory => stats_memory['free_memory'].to_i,
-          :current_wasted_percentage => stats_memory['current_wasted_percentage'].to_i,
-          :num_cached_keys => stats_statistics['num_cached_keys'].to_i,
-          :hit_rate => hit_rate,
-          :misses => stats_statistics['misses'].to_i,
-          :hits => stats_statistics['hits'].to_i,
-          :oom_restarts => stats_statistics['oom_restarts'].to_i,
+        free_memory: stats_memory['free_memory'].to_i,
+        current_wasted_percentage: stats_memory['current_wasted_percentage'].to_i,
+        num_cached_keys: stats_statistics['num_cached_keys'].to_i,
+        hit_rate: hit_rate,
+        misses: stats_statistics['misses'].to_i,
+        hits: stats_statistics['hits'].to_i,
+        oom_restarts: stats_statistics['oom_restarts'].to_i
       }
     end
 

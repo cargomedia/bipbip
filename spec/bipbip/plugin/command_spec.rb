@@ -2,13 +2,12 @@ require 'bipbip'
 require 'bipbip/plugin/command'
 
 describe Bipbip::Plugin::Command do
-  let(:plugin1) { Bipbip::Plugin::Command.new('command', {'command' => 'command'}, 10) }
-  let(:plugin2) { Bipbip::Plugin::Command.new('command', {'command' => "ruby -e 'puts \"{\\\"file_count\\\": 5}\"'"}, 10) }
+  let(:plugin1) { Bipbip::Plugin::Command.new('command', { 'command' => 'command' }, 10) }
+  let(:plugin2) { Bipbip::Plugin::Command.new('command', { 'command' => "ruby -e 'puts \"{\\\"file_count\\\": 5}\"'" }, 10) }
 
   it 'should collect data for simple mode' do
-
     plugin1.stub(:exec_command).and_return(
-<<DATA
+      <<DATA
 {
   "common_ok": true,
   "router_ok": false,
@@ -28,9 +27,8 @@ DATA
   end
 
   it 'should collect data for advanced mode' do
-
     plugin1.stub(:exec_command).and_return(
-        <<DATA
+      <<DATA
 {
   "common_ok": {"value": false, "type": "gauge", "unit": "Boolean"},
   "report_ok": {"value": "true", "type": "gauge", "unit": "Boolean"},
@@ -56,5 +54,4 @@ DATA
 
     data['file_count'].should eq(5)
   end
-
 end

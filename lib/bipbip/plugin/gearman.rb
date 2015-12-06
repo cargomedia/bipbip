@@ -3,12 +3,10 @@ class GearmanServer < Gearman::Server
 end
 
 module Bipbip
-
   class Plugin::Gearman < Plugin
-
     def metrics_schema
       [
-          {:name => 'jobs_queued_total', :type => 'gauge', :unit => 'Jobs'},
+        { name: 'jobs_queued_total', type: 'gauge', unit: 'Jobs' }
       ]
     end
 
@@ -17,13 +15,13 @@ module Bipbip
       stats = gearman.status
 
       jobs_queued_total = 0
-      stats.each do |function_name, data|
-        data.each do |queue, stats|
+      stats.each do |_function_name, data|
+        data.each do |queue, _stats|
           jobs_queued_total += queue.to_i
         end
       end
 
-      {:jobs_queued_total => jobs_queued_total}
+      { jobs_queued_total: jobs_queued_total }
     end
   end
 end

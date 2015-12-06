@@ -1,5 +1,5 @@
 module Bipbip
-  require 'rubygems'  # For ruby < 1.9
+  require 'rubygems' # For ruby < 1.9
 
   require 'copperegg/revealmetrics'
   require 'yaml'
@@ -28,6 +28,10 @@ module Bipbip
   end
 
   def self.fqdn
-    @fqdn ||= Socket.gethostbyname(Socket.gethostname).first rescue Socket.gethostname
+    @fqdn ||= begin
+                Socket.gethostbyname(Socket.gethostname).first
+              rescue
+                Socket.gethostname
+              end
   end
 end

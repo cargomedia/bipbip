@@ -7,6 +7,6 @@ module InterruptibleSleep
   end
 
   def interrupt_sleep
-    @_sleep_interrupt.close if @_sleep_interrupt and !@_sleep_interrupt.closed?
+    @_sleep_interrupt.close if @_sleep_interrupt && !@_sleep_interrupt.closed?
   end
 end

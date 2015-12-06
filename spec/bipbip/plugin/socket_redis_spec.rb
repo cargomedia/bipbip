@@ -5,24 +5,21 @@ describe Bipbip::Plugin::SocketRedis do
   let(:plugin) { Bipbip::Plugin::SocketRedis.new('socket-redis', {}, 10) }
 
   it 'should collect data' do
-
     plugin.stub(:fetch_socket_redis_status).and_return(
-        {
-            'channel1' => {
-                'subscribers' => {
-                    'sub1' => {},
-                    'sub2' => {},
-                }
-            },
-            'channel2' => {
-                'subscribers' => {
-                    'sub1' => {},
-                    'sub2' => {},
-                    'sub3' => {},
-                    'sub4' => {},
-                }
-            }
+      'channel1' => {
+        'subscribers' => {
+          'sub1' => {},
+          'sub2' => {}
         }
+      },
+      'channel2' => {
+        'subscribers' => {
+          'sub1' => {},
+          'sub2' => {},
+          'sub3' => {},
+          'sub4' => {}
+        }
+      }
     )
 
     data = plugin.monitor
