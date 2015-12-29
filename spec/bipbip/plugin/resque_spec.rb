@@ -26,6 +26,8 @@ describe Bipbip::Plugin::Resque do
       mock_queues[queue]
     end
 
+    ::Resque::Failure.stub(:count).and_return(234)
+
     data = plugin.monitor
 
     data['num_workers'].should be_instance_of(Fixnum)
@@ -34,6 +36,7 @@ describe Bipbip::Plugin::Resque do
     data['num_workers'].should eq(5)
     data['num_idle_workers'].should eq(2)
     data['num_active_workers'].should eq(3)
+    data['num_failures'].should eq(234)
     data['queue_size_special_stuff'].should eq(3)
     data['queue_size_low_priority'].should eq(10)
     data['queue_size_critical'].should eq(0)

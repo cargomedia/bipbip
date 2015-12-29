@@ -7,7 +7,8 @@ module Bipbip
       schema_list = [
         { name: 'num_workers', type: 'counter', unit: 'Workers' },
         { name: 'num_idle_workers', type: 'counter', unit: 'Workers' },
-        { name: 'num_active_workers', type: 'counter', unit: 'Workers' }
+        { name: 'num_active_workers', type: 'counter', unit: 'Workers' },
+        { name: 'num_failures', type: 'counter', unit: 'Jobs' }
       ]
 
       with_resque_connection do
@@ -43,6 +44,7 @@ module Bipbip
         data['num_workers'] = ::Resque.workers.count
         data['num_idle_workers'] = ::Resque.workers.count(&:idle?)
         data['num_active_workers'] = data['num_workers'] - data['num_idle_workers']
+        data['num_failures'] = ::Resque::Failure.count
         ::Resque.queues.each do |queue|
           data["queue_size_#{sanitize_queue_name(queue)}"] = ::Resque.size(queue).to_i
         end
