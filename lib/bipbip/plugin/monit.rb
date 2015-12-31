@@ -2,11 +2,11 @@ require 'monit'
 
 module Bipbip
   class Plugin::Monit < Plugin
-    # See https://bitbucket.org/tildeslash/monit/src/d60968cf7972cc902e5b6e2961d44456e1d9b736/src/monit.h?at=master#monit.h-145
-    STATE_FAILED = '1'
-
     # See https://bitbucket.org/tildeslash/monit/src/d60968cf7972cc902e5b6e2961d44456e1d9b736/src/monit.h?at=master#monit.h-135
-    MONITOR_NOT = '0'
+    MONITOR_NOT = 0x0
+    MONITOR_YES = 0x1
+    MONITOR_INIT = 0x2
+    MONITOR_WAITING = 0x4
 
     def metrics_schema
       [
@@ -30,7 +30,9 @@ module Bipbip
       begin
         data['Running'] = status.get ? 1 : 0
         data['All_Services_ok'] = status.services.any? do |service|
-          service.monitor == MONITOR_NOT || service.status == STATE_FAILED
+          error_flags_bitmap = service.status.to_i
+          monitor_status = service.monitor.to_i
+          (monitor_status == MONITOR_NOT) || (error_flags_bitmap != 0)
         end ? 0 : 1
       rescue
         data['Running'] = 0
