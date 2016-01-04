@@ -4,8 +4,9 @@ module Bipbip
   class Plugin::Coturn < Plugin
     def metrics_schema
       [
-        {name : 'total_sessions_count', type : 'gauge', unit : 'Sessions'}
-      {name : 'total_users_count', type : 'gauge', unit : 'Sessions'}
+        {name : 'total_sessions_count', type : 'gauge', unit : 'Sessions'},
+        {name : 'total_users_count', type : 'gauge', unit : 'Sessions'},
+        {name : 'total_data_send', type : 'gauge', unit : 'Sessions'}
       ]
     end
 
@@ -15,13 +16,14 @@ module Bipbip
       current_sessions = localhost.cmd("ps")
       localhost.close
 
-      # parse string
       # match total sessions
       # loop to find uniq users
-      # loop to find data
+      # loop to find send data
 
       {
-        'sessions' => 0
+        'total_sessions_count' => 0,
+        'total_users_count' => 0,
+        'total_data_send' => 0
       }
     end
   end
