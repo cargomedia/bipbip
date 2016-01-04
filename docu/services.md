@@ -176,5 +176,5 @@ Configuration options:
 
 ### coturn
 Configuration options:
-- **hostname**
-- **port**
+- **hostname** (optional): Will default to `localhost`.
+- **port** (optional): Defaults to `5766`.
