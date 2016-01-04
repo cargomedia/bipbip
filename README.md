@@ -108,6 +108,7 @@ These service plugins ship with bipbip:
 - puppet
 - command
 - socket-redis
+- coturn
 
 Please refer to [/docu/services.md](/docu/services.md) for information about the individual plugins and their configuration options.
 
