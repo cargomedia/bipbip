@@ -31,6 +31,5 @@ module Bipbip
 
       response
     end
-
   end
 end
