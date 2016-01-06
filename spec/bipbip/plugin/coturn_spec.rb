@@ -4,7 +4,22 @@ require 'bipbip/plugin/coturn'
 describe Bipbip::Plugin::Coturn do
   let(:plugin) { Bipbip::Plugin::Coturn.new('coturn', { 'hostname' => 'localhost', 'port' => '5766' }, 10) }
 
-  it 'should collect turnserver sessions data' do
+  it 'should collect data for no sessions' do
+    response = <<EOS
+
+    Total sessions: 0
+EOS
+
+    plugin.stub(:_fetch_session_data).and_return(response)
+
+    data = plugin.monitor
+
+    data['total_sessions_count'].should eq(0)
+    data['total_bitrate_outgoing'].should eq(0)
+    data['total_bitrate_incoming'].should eq(0)
+  end
+
+  it 'should collect turnserver multiple sessions data' do
     response = <<EOS
     1) id=128000000000000076, user <njam>:
       realm: njam.com
