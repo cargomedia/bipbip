@@ -6,6 +6,21 @@ describe Bipbip::Plugin::Coturn do
 
   it 'should collect turnserver sessions data' do
     response = <<EOS
+
+    Total sessions: 0
+EOS
+
+    plugin.stub(:_fetch_session_data).and_return(response)
+
+    data = plugin.monitor
+
+    data['total_sessions_count'].should eq(0)
+    data['total_bitrate_outgoing'].should eq(0)
+    data['total_bitrate_incoming'].should eq(0)
+  end
+
+  it 'should collect turnserver sessions data' do
+    response = <<EOS
     1) id=128000000000000076, user <njam>:
       realm: njam.com
     started 761 secs ago
