@@ -30,7 +30,7 @@ module Bipbip
     def _fetch_rtpbroadcast_data
       promise = Concurrent::Promise.new
 
-      client = _create_client('http://10.10.10.111:8088/janus')
+      client = _create_client(config['url'] || 'http://localhost:8088/janus')
       client.connect
 
       _create_session(client).then do |session|
