@@ -5,7 +5,11 @@ module Bipbip
   class Plugin::Janus < Plugin
     def metrics_schema
       [
-        { name: 'rtpbroadcast_mountpoints_count', type: 'gauge', unit: 'Mountpoints' }
+        { name: 'rtpbroadcast_mountpoints_count', type: 'gauge', unit: 'Mountpoints' },
+        { name: 'rtpbroadcast_total_streams_count', type: 'gauge', unit: 'Streams' },
+        { name: 'rtpbroadcast_total_streams_bandwidth', type: 'gauge', unit: 'b/s' },
+        { name: 'rtpbroadcast_streams_zero_fps_count', type: 'gauge', unit: 'Streams' },
+        { name: 'rtpbroadcast_streams_zero_bitrate_count', type: 'gauge', unit: 'Streams' }
       ]
     end
 
@@ -13,7 +17,11 @@ module Bipbip
       data = _fetch_rtpbroadcast_data
       mountpoints = data['data']['list']
       {
-        'rtpbroadcast_mountpoints_count' => mountpoints.count
+        'rtpbroadcast_mountpoints_count' => mountpoints.count,
+        'rtpbroadcast_total_streams_count' => mountpoints.map { |mp| mp['streams'].count }.reduce(:+),
+        'rtpbroadcast_total_streams_bandwidth' => mountpoints.map { |mp| mp['streams'].map { |s| s['stats']['cur'] }.reduce(:+) }.reduce(:+),
+        'rtpbroadcast_streams_zero_fps_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['frame']['fps'] == 0 } }.count,
+        'rtpbroadcast_streams_zero_bitrate_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['stats']['cur'] == 0 } }.count
       }
     end
 
