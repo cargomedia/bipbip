@@ -31,7 +31,6 @@ module Bipbip
       promise = Concurrent::Promise.new
 
       client = _create_client(config['url'] || 'http://localhost:8088/janus')
-      client.run
 
       _create_session(client).then do |session|
         _create_plugin(client, session).then do |plugin|
@@ -48,10 +47,7 @@ module Bipbip
         fail "Failed to create session: #{error}"
       end
 
-      response = promise.value
-      client.disconnect
-
-      response
+      promise.value
     end
 
     # @param [String] websocket_url
