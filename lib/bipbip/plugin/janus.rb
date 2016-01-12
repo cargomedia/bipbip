@@ -31,7 +31,7 @@ module Bipbip
       promise = Concurrent::Promise.new
 
       client = _create_client(config['url'] || 'http://localhost:8088/janus')
-      client.connect
+      client.run
 
       _create_session(client).then do |session|
         _create_plugin(client, session).then do |plugin|
@@ -39,7 +39,7 @@ module Bipbip
             data = list.data
             promise.set(data).execute
           end.rescue do |error|
-            fail "Failed to get list: #{error}"
+            fail "Failed to get list of mountpoints: #{error}"
           end
         end.rescue do |error|
           fail "Failed to create plugin: #{error}"
@@ -48,7 +48,10 @@ module Bipbip
         fail "Failed to create session: #{error}"
       end
 
-      promise.value
+      response = promise.value
+      client.disconnect
+
+      response
     end
 
     # @param [String] websocket_url
@@ -87,9 +90,10 @@ module Bipbip
 
     # @param [JanusGateway::Client] client
     # @param [JanusGateway::Plugin::Rtpbroadcast] plugin
+    # @return [Concurrent::Promise]
     def _request_list(client, plugin)
       list = JanusGateway::Plugin::Rtpbroadcast::List.new(client, plugin)
-      list.create
+      list.get
     end
   end
 end
