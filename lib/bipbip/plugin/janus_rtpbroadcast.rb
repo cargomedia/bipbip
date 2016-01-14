@@ -2,7 +2,7 @@ require 'janus_gateway'
 require 'eventmachine'
 
 module Bipbip
-  class Plugin::Janus < Plugin
+  class Plugin::JanusRtpbroadcast < Plugin
     def metrics_schema
       [
         { name: 'rtpbroadcast_mountpoints_count', type: 'gauge', unit: 'Mountpoints' },
@@ -14,8 +14,8 @@ module Bipbip
     end
 
     def monitor
-      data = _fetch_rtpbroadcast_data
-      mountpoints = data['data']['list']
+      data_rtp = _fetch_rtpbroadcast_data
+      mountpoints = data_rtp['data']['list']
       {
         'rtpbroadcast_mountpoints_count' => mountpoints.count,
         'rtpbroadcast_total_streams_count' => mountpoints.map { |mp| mp['streams'].count }.reduce(:+),
@@ -41,7 +41,7 @@ module Bipbip
             fail "Failed to get list of mountpoints: #{error}"
           end
         end.rescue do |error|
-          fail "Failed to create plugin: #{error}"
+          fail "Failed to create rtpbroadcast plugin: #{error}"
         end
       end.rescue do |error|
         fail "Failed to create session: #{error}"
