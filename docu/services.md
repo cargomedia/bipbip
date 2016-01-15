@@ -179,6 +179,10 @@ Configuration options:
 - **hostname** (optional): Will default to `localhost`.
 - **port** (optional): Defaults to `5766`.
 
-### janus
+### janus-rtpbroadcast
+Configuration options:
+- **url** (optional): Will default to `http://localhost:8088/janus`.
+
+### janus-audioroom
 Configuration options:
 - **url** (optional): Will default to `http://localhost:8088/janus`.
