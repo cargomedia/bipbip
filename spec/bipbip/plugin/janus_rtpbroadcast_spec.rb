@@ -2,7 +2,7 @@ require 'bipbip'
 require 'bipbip/plugin/janus_rtpbroadcast'
 
 describe Bipbip::Plugin::JanusRtpbroadcast do
-  let(:plugin) { Bipbip::Plugin::JanusRtpbroadcast.new('coturn', { 'url' => 'http://10.10.10.111:8088/janus' }, 10) }
+  let(:plugin) { Bipbip::Plugin::JanusRtpbroadcast.new('coturn', { 'url' => 'http://localhost:8088/janus' }, 10) }
 
   it 'should collect janus rtpbroadcast status data' do
     response = <<EOS
