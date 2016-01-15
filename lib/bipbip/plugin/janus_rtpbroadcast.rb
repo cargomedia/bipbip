@@ -37,6 +37,8 @@ module Bipbip
           _request_list(client, plugin).then do |list|
             data = list.data
             promise.set(data).execute
+
+            session.destroy
           end.rescue do |error|
             fail "Failed to get list of mountpoints: #{error}"
           end
