@@ -5,8 +5,10 @@ module Bipbip
     def metrics_schema
       [
         { name: 'rtpbroadcast_mountpoints_count', type: 'gauge', unit: 'Mountpoints' },
-        { name: 'rtpbroadcast_total_streams_count', type: 'gauge', unit: 'Streams' },
-        { name: 'rtpbroadcast_total_streams_bandwidth', type: 'gauge', unit: 'b/s' },
+        { name: 'rtpbroadcast_streams_count', type: 'gauge', unit: 'Streams' },
+        { name: 'rtpbroadcast_streams_listeners_count', type: 'gauge', unit: 'Listeners' },
+        { name: 'rtpbroadcast_streams_waiters_count', type: 'gauge', unit: 'Waiters' },
+        { name: 'rtpbroadcast_streams_bandwidth', type: 'gauge', unit: 'b/s' },
         { name: 'rtpbroadcast_streams_zero_fps_count', type: 'gauge', unit: 'Streams' },
         { name: 'rtpbroadcast_streams_zero_bitrate_count', type: 'gauge', unit: 'Streams' }
       ]
