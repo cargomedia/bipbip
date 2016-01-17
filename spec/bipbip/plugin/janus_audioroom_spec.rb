@@ -2,7 +2,7 @@ require 'bipbip'
 require 'bipbip/plugin/janus_audioroom'
 
 describe Bipbip::Plugin::JanusAudioroom do
-  let(:plugin) { Bipbip::Plugin::JanusAudioroom.new('coturn', { 'url' => 'http://localhost:8088/janus' }, 10) }
+  let(:plugin) { Bipbip::Plugin::JanusAudioroom.new('janus-audioroom', { 'url' => 'http://10.10.10.111:8088/janus' }, 10) }
 
   it 'should collect janus audioroom status data' do
     response = <<EOS
