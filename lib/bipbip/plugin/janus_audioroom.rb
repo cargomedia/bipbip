@@ -1,5 +1,4 @@
 require 'janus_gateway'
-require 'eventmachine'
 
 module Bipbip
   class Plugin::JanusAudioroom < Plugin
@@ -30,8 +29,8 @@ module Bipbip
 
       _create_session(client).then do |session|
         _create_plugin(client, session).then do |plugin|
-          _request_list(client, plugin).then do |list|
-            data = list.data
+          plugin.list.then do |list|
+            data = list['plugindata']
             promise.set(data).execute
 
             session.destroy
@@ -48,11 +47,10 @@ module Bipbip
       promise.value
     end
 
-    # @param [String] websocket_url
-    # @param [String] session_data
+    # @param [String] http_url
     # @return [JanusGateway::Client]
-    def _create_client(websocket_url)
-      transport = JanusGateway::Transport::Http.new(websocket_url)
+    def _create_client(http_url)
+      transport = JanusGateway::Transport::Http.new(http_url)
       client = JanusGateway::Client.new(transport)
 
       client.on(:close) do
@@ -80,14 +78,6 @@ module Bipbip
         fail 'Plugin got destroyed.'
       end
       plugin.create
-    end
-
-    # @param [JanusGateway::Client] client
-    # @param [JanusGateway::Plugin::Audioroom] plugin
-    # @return [Concurrent::Promise]
-    def _request_list(client, plugin)
-      list = JanusGateway::Plugin::Audioroom::List.new(client, plugin)
-      list.get
     end
   end
 end

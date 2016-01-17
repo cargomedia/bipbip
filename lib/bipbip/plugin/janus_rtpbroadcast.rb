@@ -1,5 +1,4 @@
 require 'janus_gateway'
-require 'eventmachine'
 
 module Bipbip
   class Plugin::JanusRtpbroadcast < Plugin
@@ -18,10 +17,12 @@ module Bipbip
       mountpoints = data_rtp['data']['list']
       {
         'rtpbroadcast_mountpoints_count' => mountpoints.count,
-        'rtpbroadcast_total_streams_count' => mountpoints.map { |mp| mp['streams'].count }.reduce(:+),
-        'rtpbroadcast_total_streams_bandwidth' => mountpoints.map { |mp| mp['streams'].map { |s| s['stats']['cur'] }.reduce(:+) }.reduce(:+),
+        'rtpbroadcast_streams_count' => mountpoints.map { |mp| mp['streams'].count }.reduce(:+),
+        'rtpbroadcast_streams_listeners_count' => mountpoints.map { |mp| mp['streams'].map { |s| s['listeners'] || 0 }.reduce(:+) }.reduce(:+),
+        'rtpbroadcast_streams_waiters_count' => mountpoints.map { |mp| mp['streams'].map { |s| s['waiters'] || 0 }.reduce(:+) }.reduce(:+),
+        'rtpbroadcast_streams_bandwidth' => mountpoints.map { |mp| mp['streams'].map { |s| s['stats']['cur'] }.reduce(:+) }.reduce(:+),
         'rtpbroadcast_streams_zero_fps_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['frame']['fps'] == 0 } }.count,
-        'rtpbroadcast_streams_zero_bitrate_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['stats']['cur'] == 0 } }.count
+        'rtpbroadcast_streams_zero_bitrate_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['stats']['cur'] == 0 } }.count,
       }
     end
 
@@ -34,8 +35,8 @@ module Bipbip
 
       _create_session(client).then do |session|
         _create_plugin(client, session).then do |plugin|
-          _request_list(client, plugin).then do |list|
-            data = list.data
+          plugin.list.then do |list|
+            data = list['plugindata']
             promise.set(data).execute
 
             session.destroy
@@ -52,11 +53,11 @@ module Bipbip
       promise.value
     end
 
-    # @param [String] websocket_url
+    # @param [String] http_url
     # @param [String] session_data
     # @return [JanusGateway::Client]
-    def _create_client(websocket_url)
-      transport = JanusGateway::Transport::Http.new(websocket_url)
+    def _create_client(http_url)
+      transport = JanusGateway::Transport::Http.new(http_url)
       client = JanusGateway::Client.new(transport)
 
       client.on(:close) do
@@ -84,14 +85,6 @@ module Bipbip
         fail 'Plugin got destroyed.'
       end
       plugin.create
-    end
-
-    # @param [JanusGateway::Client] client
-    # @param [JanusGateway::Plugin::Rtpbroadcast] plugin
-    # @return [Concurrent::Promise]
-    def _request_list(client, plugin)
-      list = JanusGateway::Plugin::Rtpbroadcast::List.new(client, plugin)
-      list.get
     end
   end
 end
