@@ -41,8 +41,8 @@ EOS
 
     data = plugin.monitor
 
-    data['rooms_count'].should eq(3)
-    data['participants_count'].should eq(10)
+    data['room_count'].should eq(3)
+    data['participant_count'].should eq(10)
     data['room_zero_participant_count'].should eq(1)
   end
 end

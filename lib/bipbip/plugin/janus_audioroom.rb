@@ -5,8 +5,8 @@ module Bipbip
   class Plugin::JanusAudioroom < Plugin
     def metrics_schema
       [
-        {name: 'rooms_count', type: 'gauge', unit: 'Rooms'},
-        {name: 'participants_count', type: 'gauge', unit: 'Participants'},
+        {name: 'room_count', type: 'gauge', unit: 'Rooms'},
+        {name: 'participant_count', type: 'gauge', unit: 'Participants'},
         {name: 'room_zero_participant_count', type: 'gauge', unit: 'Rooms'}
       ]
     end
@@ -15,8 +15,8 @@ module Bipbip
       data = _fetch_data
       audiorooms = data.nil? ? [] : data['data']['list']
       {
-        'rooms_count' => audiorooms.count,
-        'participants_count' => audiorooms.map { |room| room['num_participants'] }.reduce(:+),
+        'room_count' => audiorooms.count,
+        'participant_count' => audiorooms.map { |room| room['num_participants'] }.reduce(:+),
         'room_zero_participant_count' => audiorooms.select { |room| room['num_participants'] == 0 }.count
       }
     end
