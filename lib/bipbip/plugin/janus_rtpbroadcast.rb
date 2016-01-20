@@ -15,8 +15,8 @@ module Bipbip
     end
 
     def monitor
-      data_rtp = _fetch_data
-      mountpoints = data_rtp['data']['list']
+      data = _fetch_data
+      mountpoints = data.nil? ? [] : data['data']['list']
       {
         'mountpoint_count' => mountpoints.count,
         'stream_count' => mountpoints.map { |mp| mp['streams'].count }.reduce(:+),
@@ -33,23 +33,35 @@ module Bipbip
     def _fetch_data
       promise = Concurrent::Promise.new
 
-      client = _create_client(config['url'] || 'http://localhost:8088/janus')
+      EM.run do
+        EM.error_handler do |error|
+          promise.fail(error).execute
+        end
 
-      _create_session(client).then do |session|
-        _create_plugin(client, session).then do |plugin|
-          plugin.list.then do |list|
-            data = list['plugindata']
-            promise.set(data).execute
+        client = _create_client(config['url'] || 'http://127.0.0.1:8088/janus')
 
-            session.destroy
+        _create_session(client).then do |session|
+          _create_plugin(client, session).then do |plugin|
+            plugin.list.then do |list|
+              data = list['plugindata']
+
+              session.destroy.value
+              promise.set(data).execute
+
+              EM.stop
+            end.rescue do |error|
+              promise.fail("Failed to get list of mountpoints: #{error}").execute
+            end
           end.rescue do |error|
-            fail "Failed to get list of mountpoints: #{error}"
+            promise.fail("Failed to create rtpbroadcast plugin: #{error}").execute
           end
         end.rescue do |error|
-          fail "Failed to create rtpbroadcast plugin: #{error}"
+          promise.fail("Failed to create session: #{error}").execute
         end
-      end.rescue do |error|
-        fail "Failed to create session: #{error}"
+
+        promise.rescue do |_err|
+          EM.stop
+        end
       end
 
       promise.value
