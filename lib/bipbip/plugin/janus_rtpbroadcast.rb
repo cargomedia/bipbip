@@ -17,14 +17,15 @@ module Bipbip
     def monitor
       data = _fetch_data
       mountpoints = data.nil? ? [] : data['data']['list']
+      streams = mountpoints.map { |mp| mp['streams'] }.flatten
       {
         'mountpoint_count' => mountpoints.count,
-        'stream_count' => mountpoints.map { |mp| mp['streams'].count }.reduce(:+),
-        'streams_listener_count' => mountpoints.map { |mp| mp['streams'].map { |s| s['listeners'] || 0 }.reduce(:+) }.reduce(:+),
-        'streams_waiter_count' => mountpoints.map { |mp| mp['streams'].map { |s| s['waiters'] || 0 }.reduce(:+) }.reduce(:+),
-        'streams_bandwidth' => mountpoints.map { |mp| mp['streams'].map { |s| s['stats']['cur'] }.reduce(:+) }.reduce(:+),
-        'streams_zero_fps_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['frame']['fps'] == 0 } }.count,
-        'streams_zero_bitrate_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['stats']['cur'] == 0 } }.count
+        'stream_count' => streams.count,
+        'streams_listener_count' => streams.map { |s| s['listeners'] || 0 }.reduce(:+),
+        'streams_waiter_count' => streams.map { |s| s['waiters'] || 0 }.reduce(:+),
+        'streams_bandwidth' => streams.map { |s| s['stats']['cur'] }.reduce(:+),
+        'streams_zero_fps_count' => streams.count { |s| s['frame']['fps'] == 0 },
+        'streams_zero_bitrate_count' => streams.count { |s| s['stats']['cur'] == 0 }
       }
     end
 
