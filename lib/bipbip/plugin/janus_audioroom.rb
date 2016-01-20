@@ -1,18 +1,19 @@
 require 'janus_gateway'
+require 'eventmachine'
 
 module Bipbip
   class Plugin::JanusAudioroom < Plugin
     def metrics_schema
       [
-        { name: 'audioroom_rooms_count', type: 'gauge', unit: 'Rooms' },
-        { name: 'audioroom_participants_count', type: 'gauge', unit: 'Participants' },
-        { name: 'audioroom_room_zero_participant_count', type: 'gauge', unit: 'Rooms' }
+        {name: 'audioroom_rooms_count', type: 'gauge', unit: 'Rooms'},
+        {name: 'audioroom_participants_count', type: 'gauge', unit: 'Participants'},
+        {name: 'audioroom_room_zero_participant_count', type: 'gauge', unit: 'Rooms'}
       ]
     end
 
     def monitor
-      data_audio = _fetch_audioroom_data
-      audiorooms = data_audio['data']['list']
+      data = _fetch_audioroom_data.value
+      audiorooms = data.nil? ? [] : data['data']['list']
       {
         'audioroom_rooms_count' => audiorooms.count,
         'audioroom_participants_count' => audiorooms.map { |room| room['num_participants'] }.reduce(:+),
@@ -25,26 +26,38 @@ module Bipbip
     def _fetch_audioroom_data
       promise = Concurrent::Promise.new
 
-      client = _create_client(config['url'] || 'http://localhost:8088/janus')
+      EM.run do
+        EM.error_handler do |error|
+          promise.fail(error).execute
+        end
 
-      _create_session(client).then do |session|
-        _create_plugin(client, session).then do |plugin|
-          plugin.list.then do |list|
-            data = list['plugindata']
-            promise.set(data).execute
+        client = _create_client(config['url'] || 'http://localhost:8088/janus')
 
-            session.destroy
+        _create_session(client).then do |session|
+          _create_plugin(client, session).then do |plugin|
+            plugin.list.then do |list|
+              data = list['plugindata']
+
+              session.destroy.value
+              promise.set(data).execute
+
+              EM.stop
+            end.rescue do |error|
+              promise.fail("Failed to get list of audioroom: #{error}").execute
+            end
           end.rescue do |error|
-            fail "Failed to get list of audioroom: #{error}"
+            promise.fail("Failed to create audioroom plugin: #{error}").execute
           end
         end.rescue do |error|
-          fail "Failed to create audioroom plugin: #{error}"
+          promise.fail("Failed to create session: #{error}").execute
         end
-      end.rescue do |error|
-        fail "Failed to create session: #{error}"
+
+        promise.rescue do |_err|
+          EM.stop
+        end
       end
 
-      promise.value
+      promise
     end
 
     # @param [String] http_url
