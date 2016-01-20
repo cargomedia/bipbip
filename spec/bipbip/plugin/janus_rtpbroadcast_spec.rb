@@ -61,12 +61,12 @@ EOS
 
     data = plugin.monitor
 
-    data['rtpbroadcast_mountpoints_count'].should eq(1)
-    data['rtpbroadcast_streams_count'].should eq(3)
-    data['rtpbroadcast_streams_listeners_count'].should eq(120)
-    data['rtpbroadcast_streams_waiters_count'].should eq(28)
-    data['rtpbroadcast_streams_bandwidth'].should eq(15)
-    data['rtpbroadcast_streams_zero_fps_count'].should eq(1)
-    data['rtpbroadcast_streams_zero_bitrate_count'].should eq(1)
+    data['mountpoint_count'].should eq(1)
+    data['stream_count'].should eq(3)
+    data['streams_listener_count'].should eq(120)
+    data['streams_waiter_count'].should eq(28)
+    data['streams_bandwidth'].should eq(15)
+    data['streams_zero_fps_count'].should eq(1)
+    data['streams_zero_bitrate_count'].should eq(1)
   end
 end

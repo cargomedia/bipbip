@@ -4,33 +4,33 @@ module Bipbip
   class Plugin::JanusRtpbroadcast < Plugin
     def metrics_schema
       [
-        { name: 'rtpbroadcast_mountpoints_count', type: 'gauge', unit: 'Mountpoints' },
-        { name: 'rtpbroadcast_streams_count', type: 'gauge', unit: 'Streams' },
-        { name: 'rtpbroadcast_streams_listeners_count', type: 'gauge', unit: 'Listeners' },
-        { name: 'rtpbroadcast_streams_waiters_count', type: 'gauge', unit: 'Waiters' },
-        { name: 'rtpbroadcast_streams_bandwidth', type: 'gauge', unit: 'b/s' },
-        { name: 'rtpbroadcast_streams_zero_fps_count', type: 'gauge', unit: 'Streams' },
-        { name: 'rtpbroadcast_streams_zero_bitrate_count', type: 'gauge', unit: 'Streams' }
+        { name: 'mountpoint_count', type: 'gauge', unit: 'Mountpoints' },
+        { name: 'stream_count', type: 'gauge', unit: 'Streams' },
+        { name: 'streams_listener_count', type: 'gauge', unit: 'Listeners' },
+        { name: 'streams_waiter_count', type: 'gauge', unit: 'Waiters' },
+        { name: 'streams_bandwidth', type: 'gauge', unit: 'b/s' },
+        { name: 'streams_zero_fps_count', type: 'gauge', unit: 'Streams' },
+        { name: 'streams_zero_bitrate_count', type: 'gauge', unit: 'Streams' }
       ]
     end
 
     def monitor
-      data_rtp = _fetch_rtpbroadcast_data
+      data_rtp = _fetch_data
       mountpoints = data_rtp['data']['list']
       {
-        'rtpbroadcast_mountpoints_count' => mountpoints.count,
-        'rtpbroadcast_streams_count' => mountpoints.map { |mp| mp['streams'].count }.reduce(:+),
-        'rtpbroadcast_streams_listeners_count' => mountpoints.map { |mp| mp['streams'].map { |s| s['listeners'] || 0 }.reduce(:+) }.reduce(:+),
-        'rtpbroadcast_streams_waiters_count' => mountpoints.map { |mp| mp['streams'].map { |s| s['waiters'] || 0 }.reduce(:+) }.reduce(:+),
-        'rtpbroadcast_streams_bandwidth' => mountpoints.map { |mp| mp['streams'].map { |s| s['stats']['cur'] }.reduce(:+) }.reduce(:+),
-        'rtpbroadcast_streams_zero_fps_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['frame']['fps'] == 0 } }.count,
-        'rtpbroadcast_streams_zero_bitrate_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['stats']['cur'] == 0 } }.count,
+        'mountpoint_count' => mountpoints.count,
+        'stream_count' => mountpoints.map { |mp| mp['streams'].count }.reduce(:+),
+        'streams_listener_count' => mountpoints.map { |mp| mp['streams'].map { |s| s['listeners'] || 0 }.reduce(:+) }.reduce(:+),
+        'streams_waiter_count' => mountpoints.map { |mp| mp['streams'].map { |s| s['waiters'] || 0 }.reduce(:+) }.reduce(:+),
+        'streams_bandwidth' => mountpoints.map { |mp| mp['streams'].map { |s| s['stats']['cur'] }.reduce(:+) }.reduce(:+),
+        'streams_zero_fps_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['frame']['fps'] == 0 } }.count,
+        'streams_zero_bitrate_count' => mountpoints.map { |mp| mp['streams'].select { |s| s['stats']['cur'] == 0 } }.count,
       }
     end
 
     private
 
-    def _fetch_rtpbroadcast_data
+    def _fetch_data
       promise = Concurrent::Promise.new
 
       client = _create_client(config['url'] || 'http://localhost:8088/janus')
