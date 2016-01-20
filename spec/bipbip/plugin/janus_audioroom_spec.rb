@@ -2,7 +2,7 @@ require 'bipbip'
 require 'bipbip/plugin/janus_audioroom'
 
 describe Bipbip::Plugin::JanusAudioroom do
-  let(:plugin) { Bipbip::Plugin::JanusAudioroom.new('janus-audioroom', { 'url' => 'http://10.10.10.111:8088/janus' }, 10) }
+  let(:plugin) { Bipbip::Plugin::JanusAudioroom.new('janus-audioroom', { 'url' => 'http://127.0.0.1:8088/janus' }, 10) }
 
   it 'should collect janus audioroom status data' do
     response = <<EOS
@@ -37,12 +37,12 @@ describe Bipbip::Plugin::JanusAudioroom do
 }
 EOS
 
-    plugin.stub(:_fetch_audioroom_data).and_return(JSON.parse(response))
+    plugin.stub(:_fetch_data).and_return(JSON.parse(response))
 
     data = plugin.monitor
 
-    data['audioroom_rooms_count'].should eq(3)
-    data['audioroom_participants_count'].should eq(10)
-    data['audioroom_room_zero_participant_count'].should eq(1)
+    data['rooms_count'].should eq(3)
+    data['participants_count'].should eq(10)
+    data['room_zero_participant_count'].should eq(1)
   end
 end

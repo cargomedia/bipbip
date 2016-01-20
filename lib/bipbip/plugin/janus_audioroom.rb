@@ -5,25 +5,25 @@ module Bipbip
   class Plugin::JanusAudioroom < Plugin
     def metrics_schema
       [
-        {name: 'audioroom_rooms_count', type: 'gauge', unit: 'Rooms'},
-        {name: 'audioroom_participants_count', type: 'gauge', unit: 'Participants'},
-        {name: 'audioroom_room_zero_participant_count', type: 'gauge', unit: 'Rooms'}
+        {name: 'rooms_count', type: 'gauge', unit: 'Rooms'},
+        {name: 'participants_count', type: 'gauge', unit: 'Participants'},
+        {name: 'room_zero_participant_count', type: 'gauge', unit: 'Rooms'}
       ]
     end
 
     def monitor
-      data = _fetch_audioroom_data.value
+      data = _fetch_data
       audiorooms = data.nil? ? [] : data['data']['list']
       {
-        'audioroom_rooms_count' => audiorooms.count,
-        'audioroom_participants_count' => audiorooms.map { |room| room['num_participants'] }.reduce(:+),
-        'audioroom_room_zero_participant_count' => audiorooms.select { |room| room['num_participants'] == 0 }.count
+        'rooms_count' => audiorooms.count,
+        'participants_count' => audiorooms.map { |room| room['num_participants'] }.reduce(:+),
+        'room_zero_participant_count' => audiorooms.select { |room| room['num_participants'] == 0 }.count
       }
     end
 
     private
 
-    def _fetch_audioroom_data
+    def _fetch_data
       promise = Concurrent::Promise.new
 
       EM.run do
@@ -57,7 +57,7 @@ module Bipbip
         end
       end
 
-      promise
+      promise.value
     end
 
     # @param [String] http_url
