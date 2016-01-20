@@ -24,7 +24,7 @@ module Bipbip
     private
 
     def log(severity, message)
-      Bipbip.logger.add(severity, message, "#{name}")
+      Bipbip.logger.add(severity, message, name.to_s)
     end
   end
 end

@@ -6,13 +6,15 @@ describe Bipbip::Plugin::Resque do
 
   it 'should collect data' do
     # set up some mock workers - we just track whether they're idle or not
-    ::Resque.stub(:workers).and_return([
-      double(idle?: false),
-      double(idle?: true),
-      double(idle?: true),
-      double(idle?: false),
-      double(idle?: false)
-    ])
+    ::Resque.stub(:workers).and_return(
+      [
+        double(idle?: false),
+        double(idle?: true),
+        double(idle?: true),
+        double(idle?: false),
+        double(idle?: false)
+      ]
+    )
 
     # set up some mock queues
     mock_queues = {

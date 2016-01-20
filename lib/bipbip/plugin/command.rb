@@ -26,9 +26,9 @@ module Bipbip
       command_output.map do |metric, value|
         case detect_operation_mode(value)
         when :simple
-          { name: "#{metric}", type: 'gauge' }
+          { name: metric.to_s, type: 'gauge' }
         when :advanced
-          { name: "#{metric}", type: value['type'], unit: value['unit'] }
+          { name: metric.to_s, type: value['type'], unit: value['unit'] }
         end
       end
     end
