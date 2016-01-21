@@ -45,4 +45,24 @@ EOS
     data['participant_count'].should eq(10)
     data['room_zero_participant_count'].should eq(1)
   end
+
+  it 'should handle empty list of rooms' do
+    response = <<EOS
+{
+  "plugin": "janus.plugin.cm.audioroom",
+  "data": {
+    "audioroom": "success",
+    "list": []
+  }
+}
+EOS
+
+    plugin.stub(:_fetch_data).and_return(JSON.parse(response))
+
+    data = plugin.monitor
+
+    data['room_count'].should eq(0)
+    data['participant_count'].should eq(0)
+    data['room_zero_participant_count'].should eq(0)
+  end
 end

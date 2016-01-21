@@ -21,9 +21,9 @@ module Bipbip
       {
         'mountpoint_count' => mountpoints.count,
         'stream_count' => streams.count,
-        'streams_listener_count' => streams.map { |s| s['listeners'] || 0 }.reduce(:+),
-        'streams_waiter_count' => streams.map { |s| s['waiters'] || 0 }.reduce(:+),
-        'streams_bandwidth' => streams.map { |s| s['stats']['cur'] }.reduce(:+),
+        'streams_listener_count' => streams.map { |s| s['listeners'] }.reduce(0, :+),
+        'streams_waiter_count' => streams.map { |s| s['waiters'] }.reduce(0, :+),
+        'streams_bandwidth' => streams.map { |s| s['stats']['cur'] }.reduce(0, :+),
         'streams_zero_fps_count' => streams.count { |s| s['frame']['fps'] == 0 },
         'streams_zero_bitrate_count' => streams.count { |s| s['stats']['cur'] == 0 }
       }
