@@ -3,7 +3,7 @@ require 'bipbip/plugin/log_parser'
 require 'tempfile'
 
 describe Bipbip::Plugin::LogParser do
-  let (:file) do
+  let(:file) do
     Tempfile.new('bipbip-logparser-spec')
   end
 

@@ -66,11 +66,11 @@ module Bipbip
       metrics_schema.each do |metric|
         name = metric[:name]
         unit = metric[:unit]
-        if 'Boolean' == unit
-          data[name] = ('ON' === stats[name] || 'Yes' === stats[name]) ? 1 : 0
-        else
-          data[name] = stats[name].to_i
-        end
+        data[name] = if 'Boolean' == unit
+                       (('ON' === stats[name] || 'Yes' === stats[name]) ? 1 : 0)
+                     else
+                       stats[name].to_i
+                     end
       end
       data
     end
