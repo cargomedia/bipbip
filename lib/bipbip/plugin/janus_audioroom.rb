@@ -16,7 +16,7 @@ module Bipbip
       audiorooms = data['data']['list']
       {
         'room_count' => audiorooms.count,
-        'participant_count' => audiorooms.map { |room| room['num_participants'] }.reduce(:+),
+        'participant_count' => audiorooms.map { |room| room['num_participants'] }.reduce(0, :+),
         'room_zero_participant_count' => audiorooms.count { |room| room['num_participants'] == 0 }
       }
     end

@@ -87,4 +87,28 @@ EOS
     data['streams_zero_fps_count'].should eq(1)
     data['streams_zero_bitrate_count'].should eq(1)
   end
+
+  it 'should handle empty list of mountpoints' do
+    response = <<EOS
+{
+  "plugin": "janus.plugin.cm.rtpbroadcast",
+  "data": {
+    "streaming": "list",
+    "list": []
+  }
+}
+EOS
+
+    plugin.stub(:_fetch_data).and_return(JSON.parse(response))
+
+    data = plugin.monitor
+
+    data['mountpoint_count'].should eq(0)
+    data['stream_count'].should eq(0)
+    data['streams_listener_count'].should eq(0)
+    data['streams_waiter_count'].should eq(0)
+    data['streams_bandwidth'].should eq(0)
+    data['streams_zero_fps_count'].should eq(0)
+    data['streams_zero_bitrate_count'].should eq(0)
+  end
 end
