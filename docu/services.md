@@ -17,8 +17,9 @@ Configuration options:
 Configuration options:
 - **hostname** (optional): Defaults to `localhost`.
 - **port** (optional): Defaults to `27017`.
-- **username** (optional)
+- **user** (optional)
 - **password** (optional)
+- **database** (optional)
 - **slow_query_threshold** (optional): Defaults to `0` millis (meaning it will count all slow queries as configured by [`slowOpThresholdMs`](http://docs.mongodb.org/manual/reference/configuration-options/#operationProfiling.slowOpThresholdMs)).
 
 ### redis
