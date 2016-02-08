@@ -77,9 +77,9 @@ module Bipbip
     # @return [Mongo::Client]
     def mongodb_client
       options = {
-        :socket_timeout => 2,
+        socket_timeout: 2
       }.merge(config)
-      options = Hash[options.map{|(k,v)| [k.to_sym,v]}]
+      options = Hash[options.map { |(k, v)| [k.to_sym, v] }]
       @mongodb_client ||= Mongo::Client.new([options[:hostname] + ':' + options[:port].to_s], options)
     end
 
