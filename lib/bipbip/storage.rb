@@ -14,11 +14,11 @@ module Bipbip
     end
 
     def setup_plugin(_plugin)
-      fail 'Missing method setup_plugin'
+      raise 'Missing method setup_plugin'
     end
 
     def store_sample(_plugin, _time, _data)
-      fail 'Missing method store_sample'
+      raise 'Missing method store_sample'
     end
 
     private

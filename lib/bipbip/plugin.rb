@@ -67,18 +67,18 @@ module Bipbip
     end
 
     def metrics_schema
-      fail 'Missing method metrics_schema'
+      raise 'Missing method metrics_schema'
     end
 
     def monitor
-      fail 'Missing method monitor'
+      raise 'Missing method monitor'
     end
 
     private
 
     def run_measurement(time, storages)
       data = monitor
-      fail "#{name} #{source_identifier}: Empty data" if data.empty?
+      raise "#{name} #{source_identifier}: Empty data" if data.empty?
       log(Logger::DEBUG, "Data: #{data}")
       storages.each do |storage|
         storage.store_sample(self, time, data)

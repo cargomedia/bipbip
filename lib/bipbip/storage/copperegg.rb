@@ -58,7 +58,7 @@ module Bipbip
     def store_sample(plugin, time, data)
       response = ::Copperegg::Revealmetrics::MetricSample.save(plugin.metric_group, plugin.source_identifier, time.to_i, data)
       if response.code != '200'
-        fail("Cannot store copperegg data `#{data}`. Response code `#{response.code}`, message `#{response.message}`, body `#{response.body}`")
+        raise("Cannot store copperegg data `#{data}`. Response code `#{response.code}`, message `#{response.message}`, body `#{response.body}`")
       end
     end
 

@@ -55,7 +55,7 @@ module Bipbip
       end
 
       promise.rescue do |error|
-        fail(error)
+        raise(error)
       end
 
       promise.value

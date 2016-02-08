@@ -144,8 +144,8 @@ module Bipbip
       primary = member_list.find { |member| member['stateStr'] == 'PRIMARY' }
       secondary = member_list.find { |member| member['stateStr'] == 'SECONDARY' && member['self'] == true }
 
-      fail "No primary member in replica `#{status['set']}`" if primary.nil?
-      fail "Cannot find itself as secondary member in replica `#{status['set']}`" if secondary.nil?
+      raise "No primary member in replica `#{status['set']}`" if primary.nil?
+      raise "Cannot find itself as secondary member in replica `#{status['set']}`" if secondary.nil?
 
       (secondary['optime'].seconds - primary['optime'].seconds)
     end

@@ -38,7 +38,7 @@ describe Bipbip::Agent do
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
     plugin.stub(:metrics_schema) { [] }
     plugin.stub(:source_identifier) { 'my-source' }
-    plugin.stub(:monitor) { fail 'my-error' }
+    plugin.stub(:monitor) { raise 'my-error' }
 
     agent = Bipbip::Agent.new(Bipbip::Config.new([plugin], [], logger))
 
@@ -75,7 +75,7 @@ describe Bipbip::Agent do
   it 'should log plugin exceptions and restart' do
     Bipbip::Plugin.any_instance.stub(:metrics_schema) { [] }
     Bipbip::Plugin.any_instance.stub(:source_identifier) { 'my-source' }
-    Bipbip::Plugin.any_instance.stub(:monitor) { fail Exception.new('my-exception') }
+    Bipbip::Plugin.any_instance.stub(:monitor) { raise Exception.new('my-exception') }
     plugin = Bipbip::Plugin.new('my-plugin', {}, 0.1)
 
     agent = Bipbip::Agent.new(Bipbip::Config.new([plugin], [], logger))

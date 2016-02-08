@@ -11,7 +11,7 @@ module Bipbip
       uri = URI.parse(config['url'])
       response = Net::HTTP.get_response(uri)
 
-      fail "Invalid response from server at #{config['url']}" unless response.code == '200'
+      raise "Invalid response from server at #{config['url']}" unless response.code == '200'
 
       astats = response.body.split(/\r*\n/)
 
