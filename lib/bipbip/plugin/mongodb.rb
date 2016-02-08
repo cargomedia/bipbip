@@ -77,15 +77,14 @@ module Bipbip
     # @return [Mongo::Client]
     def mongodb_client
       options = {
-        'hostname' => 'localhost',
-        'port' => 27_017
+        :socket_timeout => 2,
       }.merge(config)
-      @mongodb_client ||= Mongo::Client.new([options['hostname'] + ':' + options['port'].to_s], socket_timeout: 2, slave_ok: true)
+      options = Hash[options.map{|(k,v)| [k.to_sym,v]}]
+      @mongodb_client ||= Mongo::Client.new([options[:hostname] + ':' + options[:port].to_s], options)
     end
 
     # @return [Mongo::DB]
     def mongodb_database(db_name)
-      mongodb_client.with(config['username'], config['password']) unless config['password'].nil?
       mongodb_client.use(db_name)
     end
 
