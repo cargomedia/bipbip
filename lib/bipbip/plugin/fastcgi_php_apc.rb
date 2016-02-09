@@ -19,7 +19,7 @@ module Bipbip
       ENV.replace(env_backup)
 
       body = response.split(/\r?\n\r?\n/)[1]
-      fail "FastCGI response has no body: #{response}" unless body
+      raise "FastCGI response has no body: #{response}" unless body
       stats = JSON.parse(body)
 
       { opcode_mem_size: stats['opcode_mem_size'].to_i, user_mem_size: stats['user_mem_size'].to_i }

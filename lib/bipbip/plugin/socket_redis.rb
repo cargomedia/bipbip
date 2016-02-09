@@ -25,7 +25,7 @@ module Bipbip
 
       response = Net::HTTP.get_response(uri)
       unless response.code == '200'
-        fail "Invalid response from server at `#{url}`. Response code `#{response.code}`, message `#{response.message}`, body `#{response.body}`"
+        raise "Invalid response from server at `#{url}`. Response code `#{response.code}`, message `#{response.message}`, body `#{response.body}`"
       end
 
       JSON.parse(response.body)

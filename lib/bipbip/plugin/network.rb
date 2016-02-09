@@ -9,7 +9,7 @@ module Bipbip
     def monitor
       tcp_summary = `ss -s | grep '^TCP:'`
       tcp_counters = /^TCP:\s+(\d+) \(estab (\d+), closed (\d+), orphaned (\d+), synrecv (\d+), timewait (\d+)\/(\d+)\), ports (\d+)$/.match(tcp_summary)
-      fail "Cannot match ss-output `#{tcp_summary}`" unless tcp_counters
+      raise "Cannot match ss-output `#{tcp_summary}`" unless tcp_counters
 
       { connections_total: tcp_counters[1].to_i }
     end

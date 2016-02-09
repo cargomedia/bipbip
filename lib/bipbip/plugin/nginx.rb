@@ -17,7 +17,7 @@ module Bipbip
       uri = URI.parse(config['url'])
       response = Net::HTTP.get_response(uri)
 
-      fail "Invalid response from server at #{config['url']}" unless response.code == '200'
+      raise "Invalid response from server at #{config['url']}" unless response.code == '200'
 
       lines = response.body.split(/\r*\n/)
       lines.map(&:strip!)
@@ -46,7 +46,7 @@ module Bipbip
     def match_or_fail(string, regexp)
       match_data = regexp.match(string)
       if match_data.nil?
-        fail "Data `#{string}` doesn't match pattern `#{regexp}`."
+        raise "Data `#{string}` doesn't match pattern `#{regexp}`."
       end
       match_data
     end

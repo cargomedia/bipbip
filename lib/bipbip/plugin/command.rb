@@ -55,7 +55,7 @@ module Bipbip
         message = ['Command execution failed:', command]
         message.push 'STDOUT:', output_stdout unless output_stdout.empty?
         message.push 'STDERR:', output_stderr unless output_stderr.empty?
-        fail message.join("\n")
+        raise message.join("\n")
       end
 
       output_stdout

@@ -21,7 +21,7 @@ module Bipbip
       ENV.replace(env_backup)
 
       body = response.split(/\r?\n\r?\n/)[1]
-      fail "FastCGI response has no body: #{response}" unless body
+      raise "FastCGI response has no body: #{response}" unless body
       status = JSON.parse(body)
 
       status.reject { |k, _v| !metrics_names.include?(k) }
