@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'memcached', '~> 1.8.0'
   s.add_runtime_dependency 'mysql2', '~> 0.3.18'
   s.add_runtime_dependency 'redis', '~> 3.2.1'
-  s.add_runtime_dependency 'gearman-ruby', '~> 3.0.7'
+  s.add_runtime_dependency 'gearman-ruby', '~> 4.0.5'
   s.add_runtime_dependency 'resque', '~> 1.25'
   s.add_runtime_dependency 'monit', '~> 0.3'
   s.add_runtime_dependency 'mongo', '~> 2.0.5'
