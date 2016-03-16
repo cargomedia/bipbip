@@ -16,9 +16,7 @@ module Bipbip
 
       jobs_queued_total = 0
       stats.each do |_function_name, data|
-        data.each do |queue, _stats|
-          jobs_queued_total += queue.to_i
-        end
+        jobs_queued_total += data[:queue].to_i
       end
 
       { jobs_queued_total: jobs_queued_total }
