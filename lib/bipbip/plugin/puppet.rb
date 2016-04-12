@@ -54,7 +54,8 @@ module Bipbip
     private
 
     def last_run_summary
-      YAML.load_file(Pathname.new('/var/lib/puppet/state/last_run_summary.yaml'))
+      lastrunfile = config['lastrunfile'] || '/var/lib/puppet/state/last_run_summary.yaml'
+      YAML.load_file(Pathname.new(lastrunfile))
     end
   end
 end
