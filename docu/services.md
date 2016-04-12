@@ -133,7 +133,7 @@ Configuration options:
 - **port**
 
 ### puppet
-No configuration necessary.
+- **lastrunfile** (optional): Path of `last_run_summary.yaml`. Defaults to `/var/lib/puppet/state/last_run_summary.yaml`.
 
 ### command
 Configuration options:
