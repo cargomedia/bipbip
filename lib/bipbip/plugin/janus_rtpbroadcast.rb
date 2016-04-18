@@ -10,7 +10,9 @@ module Bipbip
         { name: 'streams_waiter_count', type: 'gauge', unit: 'Waiters' },
         { name: 'streams_bandwidth', type: 'gauge', unit: 'b/s' },
         { name: 'streams_zero_fps_count', type: 'gauge', unit: 'Streams' },
-        { name: 'streams_zero_bitrate_count', type: 'gauge', unit: 'Streams' }
+        { name: 'streams_zero_bitrate_count', type: 'gauge', unit: 'Streams' },
+        { name: 'streams_packet_loss_audio', type: 'gauge', unit: '%' },
+        { name: 'streams_packet_loss_video', type: 'gauge', unit: '%' }
       ]
     end
 
@@ -21,11 +23,13 @@ module Bipbip
       {
         'mountpoint_count' => mountpoints.count,
         'stream_count' => streams.count,
-        'streams_listener_count' => streams.map { |s| s['listeners'] }.reduce(0, :+),
-        'streams_waiter_count' => streams.map { |s| s['waiters'] }.reduce(0, :+),
-        'streams_bandwidth' => streams.map { |s| s['stats']['cur'] }.reduce(0, :+),
+        'streams_listener_count' => streams.map { |s| s['webrtc-endpoint']['listeners'] }.reduce(0, :+),
+        'streams_waiter_count' => streams.map { |s| s['webrtc-endpoint']['waiters'] }.reduce(0, :+),
+        'streams_bandwidth' => streams.map { |s| s['stats']['video']['bitrate'] + s['stats']['audio']['bitrate'] }.reduce(0, :+),
         'streams_zero_fps_count' => streams.count { |s| s['frame']['fps'] == 0 },
-        'streams_zero_bitrate_count' => streams.count { |s| s['stats']['cur'] == 0 }
+        'streams_zero_bitrate_count' => streams.count { |s| s['stats']['video']['bitrate'] == 0 || s['stats']['audio']['bitrate'] == 0 },
+        'streams_packet_loss_audio' => streams.map { |s| s['stats']['audio']['packet-loss'] }.reduce(0, :+),
+        'streams_packet_loss_video' => streams.map { |s| s['stats']['video']['packet-loss'] }.reduce(0, :+)
       }
     end
 
