@@ -85,7 +85,7 @@ describe Bipbip::Plugin::JanusRtpbroadcast do
             "webrtc-endpoint": {"listeners": 200, "waiters": 100},
             "stats": {
                 "audio": {"packet-loss": 0.5, "bitrate": 10},
-                "video": {"packet-loss": 0.1, "bitrate": 40}
+                "video": {"packet-loss": 0.2, "bitrate": 40}
             },
             "frame": {"width": 0, "height": 0, "fps": 50, "key-distance": 50},
             "session": {"webrtc-active": 0, "autoswitch-enabled": 1, "remb-avg": 0}
@@ -108,8 +108,10 @@ EOS
     data['streams_bandwidth'].should eq(65)
     data['streams_zero_fps_count'].should eq(1)
     data['streams_zero_bitrate_count'].should eq(1)
-    data['streams_packet_loss_audio'].should eq(2.4)
-    data['streams_packet_loss_video'].should eq(0.7)
+    data['streams_packet_loss_audio_max'].should eq(0.9)
+    data['streams_packet_loss_audio_avg'].should eq(0.6)
+    data['streams_packet_loss_video_max'].should eq(0.4)
+    data['streams_packet_loss_video_avg'].should eq(0.2)
   end
 
   it 'should handle empty list of mountpoints' do
