@@ -34,10 +34,10 @@ module Bipbip
         'streams_bandwidth' => streams.map { |s| s['stats']['video']['bitrate'] + s['stats']['audio']['bitrate'] }.reduce(0, :+),
         'streams_zero_fps_count' => streams.count { |s| s['frame']['fps'] == 0 },
         'streams_zero_bitrate_count' => streams.count { |s| s['stats']['video']['bitrate'] == 0 || s['stats']['audio']['bitrate'] == 0 },
-        'streams_packet_loss_audio_max' => streams.map { |s| s['stats']['audio']['packet-loss'] }.max,
-        'streams_packet_loss_audio_avg' => packet_loss_audio_avg,
-        'streams_packet_loss_video_max' => streams.map { |s| s['stats']['video']['packet-loss'] }.max,
-        'streams_packet_loss_video_avg' => packet_loss_video_avg
+        'streams_packet_loss_audio_max' => streams.map { |s| s['stats']['audio']['packet-loss'] * 100 }.max,
+        'streams_packet_loss_audio_avg' => packet_loss_audio_avg * 100,
+        'streams_packet_loss_video_max' => streams.map { |s| s['stats']['video']['packet-loss'] * 100 }.max,
+        'streams_packet_loss_video_avg' => packet_loss_video_avg * 100
       }
     end
 

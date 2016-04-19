@@ -108,10 +108,10 @@ EOS
     data['streams_bandwidth'].should eq(65)
     data['streams_zero_fps_count'].should eq(1)
     data['streams_zero_bitrate_count'].should eq(1)
-    data['streams_packet_loss_audio_max'].should eq(0.9)
-    data['streams_packet_loss_audio_avg'].should eq(0.6)
-    data['streams_packet_loss_video_max'].should eq(0.4)
-    data['streams_packet_loss_video_avg'].should eq(0.2)
+    data['streams_packet_loss_audio_max'].should eq(90)
+    data['streams_packet_loss_audio_avg'].should eq(60)
+    data['streams_packet_loss_video_max'].should eq(40)
+    data['streams_packet_loss_video_avg'].should eq(20)
   end
 
   it 'should handle empty list of mountpoints' do
