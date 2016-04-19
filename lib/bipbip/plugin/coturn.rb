@@ -26,7 +26,17 @@ module Bipbip
         'Host' => config['hostname'] || 'localhost',
         'Port' => config['port'] || 5766
       )
-      response = coturn.cmd('ps')
+
+      begin
+        response = coturn.cmd('ps')
+      rescue Net::OpenTimeout => e
+        raise("Cannot open connection to `coturn`. Error: `#{e.message}`")
+      rescue Net::ReadTimeout => e
+        raise("Cannot read data from `coturn`. Error: `#{e.message}`")
+      rescue => e
+        raise("Cannot query data from `coturn`. Error: `#{e.message}`")
+      end
+
       coturn.close
 
       response
