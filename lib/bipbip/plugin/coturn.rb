@@ -26,7 +26,9 @@ module Bipbip
         'Host' => config['hostname'] || 'localhost',
         'Port' => config['port'] || 5766
       )
+      response = coturn.cmd('ps')
       coturn.close
+
       response
     end
   end
