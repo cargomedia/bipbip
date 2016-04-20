@@ -13,7 +13,7 @@ module Bipbip
     def monitor
       data = _fetch_session_data
       {
-        'total_sessions_count' => data.match(/Total sessions: (.*)/)[1].to_i,
+        'total_sessions_count' => (data.scan(/Total sessions: (\d+)$/).flatten.map(&:to_i).reduce(:+) || 0),
         'total_bitrate_outgoing' => (data.scan(/ s=(\d+),/).flatten.map(&:to_i).reduce(:+) || 0) * 8,
         'total_bitrate_incoming' => (data.scan(/ r=(\d+),/).flatten.map(&:to_i).reduce(:+) || 0) * 8
       }
@@ -26,19 +26,7 @@ module Bipbip
         'Host' => config['hostname'] || 'localhost',
         'Port' => config['port'] || 5766
       )
-
-      begin
-        response = coturn.cmd('ps')
-      rescue Net::OpenTimeout => e
-        raise("Cannot open connection to `coturn`. Error: `#{e.message}`")
-      rescue Net::ReadTimeout => e
-        raise("Cannot read data from `coturn`. Error: `#{e.message}`")
-      rescue => e
-        raise("Cannot query data from `coturn`. Error: `#{e.message}`")
-      end
-
       coturn.close
-
       response
     end
   end
