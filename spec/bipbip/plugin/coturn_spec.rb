@@ -68,4 +68,18 @@ EOS
     data['total_bitrate_outgoing'].should eq(1000 * 8)
     data['total_bitrate_incoming'].should eq(200 * 8)
   end
+
+  it 'should raise error for malformed response' do
+    response = <<EOS
+    TURN Server
+    Coturn-4.5.0.3 'dan Eider'
+
+    Type '?' for help
+    >
+EOS
+
+    plugin.stub(:_fetch_session_data).and_return(response)
+
+    expect { plugin.monitor }.to raise_error(/Cannot prepare metrics for malformed response:/)
+  end
 end
