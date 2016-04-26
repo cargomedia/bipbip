@@ -33,7 +33,7 @@ module Bipbip
         'streams_waiter_count' => streams.map { |s| s['webrtc-endpoint']['waiters'] }.reduce(0, :+),
         'streams_bandwidth' => streams.map { |s| (s['stats']['video']['bitrate'] || 0) + (s['stats']['audio']['bitrate'] || 0) }.reduce(0, :+),
         'streams_zero_fps_count' => streams.count { |s| s['frame']['fps'] == 0 },
-        'streams_zero_bitrate_count' => streams.count { |s| s['stats']['video']['bitrate'].nil? || s['stats']['video']['bitrate'] == 0  },
+        'streams_zero_bitrate_count' => streams.count { |s| s['stats']['video']['bitrate'].nil? || s['stats']['video']['bitrate'] == 0 },
         'streams_packet_loss_audio_max' => streams.map { |s| (s['stats']['audio']['packet-loss'] || 0) * 100 }.max,
         'streams_packet_loss_audio_avg' => packet_loss_audio_avg * 100,
         'streams_packet_loss_video_max' => streams.map { |s| (s['stats']['video']['packet-loss'] || 0) * 100 }.max,
