@@ -137,4 +137,56 @@ EOS
     data['streams_zero_fps_count'].should eq(0)
     data['streams_zero_bitrate_count'].should eq(0)
   end
+
+  it 'should handle null values in responses' do
+    response = <<EOS
+{
+  "plugin": "janus.plugin.cm.rtpbroadcast",
+  "data": {
+    "streaming": "list",
+    "list": [
+      {
+        "id": "0",
+        "uid": "XXXXXX6edf6828474300c5d5f7074284",
+        "name": "0",
+        "description": "Opus/VP8 tester.py test stream",
+        "streams": [
+          {
+            "id": "2",
+            "uid": "XXXXXX6edf6828474300c5d5f7074284",
+            "index": 1,
+            "rtp-endpoint": {
+                "audio": {"host": "127.0.0.1","port": 9784},
+                "video": {"host": "127.0.0.1", "port": 9504}
+            },
+            "webrtc-endpoint": {"listeners": 200, "waiters": 100},
+            "stats": {
+                "audio": {"packet-loss": null, "bitrate": null},
+                "video": {"packet-loss": null, "bitrate": null}
+            },
+            "frame": {"width": 0, "height": 0, "fps": 50, "key-distance": 50},
+            "session": {"webrtc-active": 0, "autoswitch-enabled": 1, "remb-avg": null }
+          }
+        ]
+      }
+    ]
+  }
+}
+EOS
+
+    plugin.stub(:_fetch_data).and_return(JSON.parse(response))
+
+    data = plugin.monitor
+
+    data['mountpoint_count'].should eq(1)
+    data['stream_count'].should eq(1)
+    data['streams_listener_count'].should eq(200)
+    data['streams_waiter_count'].should eq(100)
+    data['streams_bandwidth'].should eq(0)
+    data['streams_zero_bitrate_count'].should eq(1)
+    data['streams_packet_loss_audio_max'].should eq(0)
+    data['streams_packet_loss_audio_avg'].should eq(0)
+    data['streams_packet_loss_video_max'].should eq(0)
+    data['streams_packet_loss_video_avg'].should eq(0)
+  end
 end
