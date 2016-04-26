@@ -10,7 +10,11 @@ module Bipbip
         { name: 'streams_waiter_count', type: 'gauge', unit: 'Waiters' },
         { name: 'streams_bandwidth', type: 'gauge', unit: 'b/s' },
         { name: 'streams_zero_fps_count', type: 'gauge', unit: 'Streams' },
-        { name: 'streams_zero_bitrate_count', type: 'gauge', unit: 'Streams' }
+        { name: 'streams_zero_bitrate_count', type: 'gauge', unit: 'Streams' },
+        { name: 'streams_packet_loss_audio_max', type: 'gauge', unit: '%' },
+        { name: 'streams_packet_loss_audio_avg', type: 'gauge', unit: '%' },
+        { name: 'streams_packet_loss_video_max', type: 'gauge', unit: '%' },
+        { name: 'streams_packet_loss_video_avg', type: 'gauge', unit: '%' }
       ]
     end
 
@@ -18,14 +22,22 @@ module Bipbip
       data = _fetch_data
       mountpoints = data['data']['list']
       streams = mountpoints.map { |mp| mp['streams'] }.flatten
+
+      packet_loss_audio_avg = streams.count != 0 ? streams.map { |s| s['stats']['audio']['packet-loss'] }.reduce(0, :+) / streams.count : 0
+      packet_loss_video_avg = streams.count != 0 ? streams.map { |s| s['stats']['video']['packet-loss'] }.reduce(0, :+) / streams.count : 0
+
       {
         'mountpoint_count' => mountpoints.count,
         'stream_count' => streams.count,
-        'streams_listener_count' => streams.map { |s| s['listeners'] }.reduce(0, :+),
-        'streams_waiter_count' => streams.map { |s| s['waiters'] }.reduce(0, :+),
-        'streams_bandwidth' => streams.map { |s| s['stats']['cur'] }.reduce(0, :+),
+        'streams_listener_count' => streams.map { |s| s['webrtc-endpoint']['listeners'] }.reduce(0, :+),
+        'streams_waiter_count' => streams.map { |s| s['webrtc-endpoint']['waiters'] }.reduce(0, :+),
+        'streams_bandwidth' => streams.map { |s| s['stats']['video']['bitrate'] + s['stats']['audio']['bitrate'] }.reduce(0, :+),
         'streams_zero_fps_count' => streams.count { |s| s['frame']['fps'] == 0 },
-        'streams_zero_bitrate_count' => streams.count { |s| s['stats']['cur'] == 0 }
+        'streams_zero_bitrate_count' => streams.count { |s| s['stats']['video']['bitrate'] == 0 || s['stats']['audio']['bitrate'] == 0 },
+        'streams_packet_loss_audio_max' => streams.map { |s| s['stats']['audio']['packet-loss'] * 100 }.max,
+        'streams_packet_loss_audio_avg' => packet_loss_audio_avg * 100,
+        'streams_packet_loss_video_max' => streams.map { |s| s['stats']['video']['packet-loss'] * 100 }.max,
+        'streams_packet_loss_video_avg' => packet_loss_video_avg * 100
       }
     end
 
