@@ -163,7 +163,7 @@ EOS
             "webrtc-endpoint": {"listeners": 200, "waiters": 100},
             "stats": {
                 "audio": {"packet-loss-rate": null, "packet-loss-count": null, "bitrate": null},
-                "video": {"packet-loss-reate": null, "packet-loss-count": null, "bitrate": null}
+                "video": {"packet-loss-rate": null, "packet-loss-count": null, "bitrate": null}
             },
             "frame": {"width": 0, "height": 0, "fps": 50, "key-distance": 50},
             "session": {"webrtc-active": 0, "autoswitch-enabled": 1, "remb-avg": null }
