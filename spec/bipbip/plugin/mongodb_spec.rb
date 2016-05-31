@@ -11,7 +11,8 @@ describe Bipbip::Plugin::Mongodb do
       },
       'mem' => {
         'resident' => 1024
-      })
+      }
+    )
 
     plugin.stub(:fetch_slow_queries_status).and_return(
       'total' => {
@@ -35,14 +36,16 @@ describe Bipbip::Plugin::Mongodb do
     plugin.stub(:fetch_server_status).and_return(
       'repl' => {
         'secondary' => true
-      })
+      }
+    )
 
     plugin.stub(:fetch_replica_status).and_return(
       'set' => 'rep1',
       'members' => [
         { 'stateStr' => 'PRIMARY', 'optime' => BSON::Timestamp.new(1000, 1) },
         { 'stateStr' => 'SECONDARY', 'optime' => BSON::Timestamp.new(1003, 1), 'self' => true }
-      ])
+      ]
+    )
 
     plugin.stub(:fetch_slow_queries_status).and_return(
       'total' => {

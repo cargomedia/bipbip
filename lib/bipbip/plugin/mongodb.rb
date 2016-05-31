@@ -120,7 +120,8 @@ module Bipbip
               'total_time' => { '$sum' => '$millis' },
               'max_time' => { '$max' => '$millis' }
             } }
-          ])
+          ]
+        )
 
         unless results.count == 0
           result = results.first
