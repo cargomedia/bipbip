@@ -13,8 +13,10 @@ module Bipbip
         { name: 'streams_zero_bitrate_count', type: 'gauge', unit: 'Streams' },
         { name: 'streams_packet_loss_audio_max', type: 'gauge', unit: '%' },
         { name: 'streams_packet_loss_audio_avg', type: 'gauge', unit: '%' },
+        { name: 'streams_packet_loss_audio_count', type: 'counter', unit: 'Packets' },
         { name: 'streams_packet_loss_video_max', type: 'gauge', unit: '%' },
-        { name: 'streams_packet_loss_video_avg', type: 'gauge', unit: '%' }
+        { name: 'streams_packet_loss_video_avg', type: 'gauge', unit: '%' },
+        { name: 'streams_packet_loss_video_count', type: 'counter', unit: 'Packets' }
       ]
     end
 
@@ -23,8 +25,8 @@ module Bipbip
       mountpoints = data['data']['list']
       streams = mountpoints.map { |mp| mp['streams'] }.flatten
 
-      packet_loss_audio_avg = streams.count != 0 ? streams.map { |s| s['stats']['audio']['packet-loss'] || 0 }.reduce(0, :+) / streams.count : 0
-      packet_loss_video_avg = streams.count != 0 ? streams.map { |s| s['stats']['video']['packet-loss'] || 0 }.reduce(0, :+) / streams.count : 0
+      packet_loss_audio_avg = streams.count != 0 ? streams.map { |s| s['stats']['audio']['packet-loss-rate'] || 0 }.reduce(0, :+) / streams.count : 0
+      packet_loss_video_avg = streams.count != 0 ? streams.map { |s| s['stats']['video']['packet-loss-rate'] || 0 }.reduce(0, :+) / streams.count : 0
 
       {
         'mountpoint_count' => mountpoints.count,
@@ -34,10 +36,12 @@ module Bipbip
         'streams_bandwidth' => streams.map { |s| (s['stats']['video']['bitrate'] || 0) + (s['stats']['audio']['bitrate'] || 0) }.reduce(0, :+),
         'streams_zero_fps_count' => streams.count { |s| s['frame']['fps'] == 0 },
         'streams_zero_bitrate_count' => streams.count { |s| s['stats']['video']['bitrate'].nil? || s['stats']['video']['bitrate'] == 0 },
-        'streams_packet_loss_audio_max' => streams.map { |s| (s['stats']['audio']['packet-loss'] || 0) * 100 }.max,
+        'streams_packet_loss_audio_max' => streams.map { |s| (s['stats']['audio']['packet-loss-rate'] || 0) * 100 }.max,
         'streams_packet_loss_audio_avg' => packet_loss_audio_avg * 100,
-        'streams_packet_loss_video_max' => streams.map { |s| (s['stats']['video']['packet-loss'] || 0) * 100 }.max,
-        'streams_packet_loss_video_avg' => packet_loss_video_avg * 100
+        'streams_packet_loss_audio_count' => streams.map { |s| (s['stats']['audio']['packet-loss-count'] || 0) }.reduce(0, :+),
+        'streams_packet_loss_video_max' => streams.map { |s| (s['stats']['video']['packet-loss-rate'] || 0) * 100 }.max,
+        'streams_packet_loss_video_avg' => packet_loss_video_avg * 100,
+        'streams_packet_loss_video_count' => streams.map { |s| (s['stats']['video']['packet-loss-count'] || 0) }.reduce(0, :+)
       }
     end
 

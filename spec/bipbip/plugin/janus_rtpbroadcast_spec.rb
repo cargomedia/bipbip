@@ -27,8 +27,8 @@ describe Bipbip::Plugin::JanusRtpbroadcast do
             },
             "webrtc-endpoint": {"listeners": 32, "waiters": 4},
             "stats": {
-                "audio": {"packet-loss": 0.1, "bitrate": 1},
-                "video": {"packet-loss": 0.4, "bitrate": 4}
+                "audio": {"packet-loss-rate": 0.1, "packet-loss-count": 100, "bitrate": 1},
+                "video": {"packet-loss-rate": 0.4, "packet-loss-count": 100, "bitrate": 4}
             },
             "frame": {"width": 0, "height": 0, "fps": 10, "key-distance": 20},
             "session": {"webrtc-active": 0, "autoswitch-enabled": 1, "remb-avg": 0}
@@ -43,8 +43,8 @@ describe Bipbip::Plugin::JanusRtpbroadcast do
             },
             "webrtc-endpoint": {"listeners": 0, "waiters": 12},
             "stats": {
-                "audio": {"packet-loss": 0.9, "bitrate": 3},
-                "video": {"packet-loss": 0.1, "bitrate": 7}
+                "audio": {"packet-loss-rate": 0.9, "packet-loss-count": 10, "bitrate": 3},
+                "video": {"packet-loss-rate": 0.1, "packet-loss-count": 100, "bitrate": 7}
             },
             "frame": {"width": 0, "height": 0, "fps": 30, "key-distance": 30},
             "session": {"webrtc-active": 0, "autoswitch-enabled": 1, "remb-avg": 0}
@@ -59,8 +59,8 @@ describe Bipbip::Plugin::JanusRtpbroadcast do
             },
             "webrtc-endpoint": {"listeners": 88, "waiters": 12},
             "stats": {
-                "audio": {"packet-loss": 0.9, "bitrate": 0},
-                "video": {"packet-loss": 0.1, "bitrate": 0}
+                "audio": {"packet-loss-rate": 0.9, "packet-loss-count": 1000, "bitrate": 0},
+                "video": {"packet-loss-rate": 0.1, "packet-loss-count": 1000, "bitrate": 0}
             },
             "frame": {"width": 0, "height": 0, "fps": 0, "key-distance": 40},
             "session": {"webrtc-active": 0, "autoswitch-enabled": 1, "remb-avg": 0
@@ -84,8 +84,8 @@ describe Bipbip::Plugin::JanusRtpbroadcast do
             },
             "webrtc-endpoint": {"listeners": 200, "waiters": 100},
             "stats": {
-                "audio": {"packet-loss": 0.5, "bitrate": 10},
-                "video": {"packet-loss": 0.2, "bitrate": 40}
+                "audio": {"packet-loss-rate": 0.5, "packet-loss-count": 1, "bitrate": 10},
+                "video": {"packet-loss-rate": 0.2, "packet-loss-count": 1, "bitrate": 40}
             },
             "frame": {"width": 0, "height": 0, "fps": 50, "key-distance": 50},
             "session": {"webrtc-active": 0, "autoswitch-enabled": 1, "remb-avg": 0}
@@ -110,8 +110,9 @@ EOS
     data['streams_zero_bitrate_count'].should eq(1)
     data['streams_packet_loss_audio_max'].should eq(90)
     data['streams_packet_loss_audio_avg'].should eq(60)
+    data['streams_packet_loss_audio_count'].should eq(1111)
     data['streams_packet_loss_video_max'].should eq(40)
-    data['streams_packet_loss_video_avg'].should eq(20)
+    data['streams_packet_loss_video_count'].should eq(1201)
   end
 
   it 'should handle empty list of mountpoints' do
@@ -161,8 +162,8 @@ EOS
             },
             "webrtc-endpoint": {"listeners": 200, "waiters": 100},
             "stats": {
-                "audio": {"packet-loss": null, "bitrate": null},
-                "video": {"packet-loss": null, "bitrate": null}
+                "audio": {"packet-loss-rate": null, "packet-loss-count": null, "bitrate": null},
+                "video": {"packet-loss-rate": null, "packet-loss-count": null, "bitrate": null}
             },
             "frame": {"width": 0, "height": 0, "fps": 50, "key-distance": 50},
             "session": {"webrtc-active": 0, "autoswitch-enabled": 1, "remb-avg": null }
@@ -186,7 +187,9 @@ EOS
     data['streams_zero_bitrate_count'].should eq(1)
     data['streams_packet_loss_audio_max'].should eq(0)
     data['streams_packet_loss_audio_avg'].should eq(0)
+    data['streams_packet_loss_audio_count'].should eq(0)
     data['streams_packet_loss_video_max'].should eq(0)
     data['streams_packet_loss_video_avg'].should eq(0)
+    data['streams_packet_loss_video_count'].should eq(0)
   end
 end
