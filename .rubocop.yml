@@ -9,5 +9,9 @@ Style/Documentation:
 Style/MultilineBlockChain:
   Enabled: false
 
+Style/MutableConstant:
+  Exclude:
+    - lib/bipbip/version.rb
+
 Performance/PushSplat:
   Enabled: false
