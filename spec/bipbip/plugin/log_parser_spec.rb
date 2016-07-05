@@ -95,7 +95,7 @@ describe Bipbip::Plugin::LogParser do
   end
 
   it 'should raise if unable to read file' do
-    file.chmod(0000)
+    file.chmod(0o0)
     expect { plugin.monitor }.to raise_error(RuntimeError, /Cannot read file/)
   end
 end

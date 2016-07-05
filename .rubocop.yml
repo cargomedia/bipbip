@@ -8,3 +8,6 @@ Style/Documentation:
 
 Style/MultilineBlockChain:
   Enabled: false
+
+Performance/PushSplat:
+  Enabled: false
