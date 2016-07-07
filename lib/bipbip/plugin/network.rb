@@ -5,7 +5,7 @@ module Bipbip
       _interfaces.each do |interface|
         _errors.each do |e|
           metrics <<
-              { name: "#{interface}_#{e}", type: 'gauge' }
+            { name: "#{interface}_#{e}", type: 'gauge' }
         end
       end
       metrics
