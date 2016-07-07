@@ -47,7 +47,8 @@ Configuration options:
 - **url**: URL of nginx' [stub_status](http://nginx.org/en/docs/http/ngx_http_stub_status_module.html) (e.g. `http://localhost:80/server-status`).
 
 ### network
-No configuration necessary.
+Configuration options:
+- **interfaces** (optional): List of network interfaces to observe (e.g. ['eth0', 'eth1']).
 
 ### monit
 Configuration options:
