@@ -48,7 +48,7 @@ Configuration options:
 
 ### network
 Configuration options:
-- **interfaces** (optional): List of network interfaces to observe (e.g. ['eth0', 'eth1']).
+- **exclude_interfaces** (optional): Regex list of network interfaces to exclude (Default: `[ /lo/, /bond/, /vboxnet/ ]`).
 
 ### monit
 Configuration options:
