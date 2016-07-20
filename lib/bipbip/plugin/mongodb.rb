@@ -68,7 +68,7 @@ module Bipbip
       data['slow_queries_time_max'] = slow_queries_status['max']['time']
 
       data['total_index_size'] = total_index_size
-      data['total_index_size_percentage_of_memory'] = (data['total_index_size']/total_system_memory) * 100
+      data['total_index_size_percentage_of_memory'] = (data['total_index_size'] / total_system_memory) * 100
 
       data
     end
@@ -114,7 +114,7 @@ module Bipbip
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
 
       database_list.reduce(0) do |memo, database|
-        results = database.command({'dbstats' => 1})
+        results = database.command('dbstats' => 1)
         memo += results.documents.first['indexSize']
         memo
       end
@@ -122,7 +122,7 @@ module Bipbip
 
     # @return [Integer]
     def total_system_memory
-      %x{free -b}.lines.to_a[1].split[1].to_i
+      `free -b`.lines.to_a[1].split[1].to_i
     end
 
     def fetch_slow_queries_status
