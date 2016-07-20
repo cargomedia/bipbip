@@ -113,11 +113,10 @@ module Bipbip
       database_names_ignore = %w(admin system local)
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
 
-      database_list.reduce(0) do |memo, database|
+      database_list.map do |database|
         results = database.command('dbstats' => 1)
-        memo += results.documents.first['indexSize']
-        memo
-      end
+        results.documents.first['indexSize']
+      end.reduce(:+)
     end
 
     # @return [Integer]
