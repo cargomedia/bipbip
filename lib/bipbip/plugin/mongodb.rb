@@ -21,7 +21,7 @@ module Bipbip
         { name: 'slow_queries_count', type: 'gauge_f', unit: 'Queries' },
         { name: 'slow_queries_time_avg', type: 'gauge_f', unit: 'Seconds' },
         { name: 'slow_queries_time_max', type: 'gauge_f', unit: 'Seconds' },
-        { name: 'total_index_size', type: 'gauge', unit: 'MB' },
+        { name: 'total_index_size', type: 'gauge', unit: 'Bytes' }
       ]
     end
 
