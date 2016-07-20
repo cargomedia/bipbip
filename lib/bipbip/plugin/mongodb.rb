@@ -21,7 +21,8 @@ module Bipbip
         { name: 'slow_queries_count', type: 'gauge_f', unit: 'Queries' },
         { name: 'slow_queries_time_avg', type: 'gauge_f', unit: 'Seconds' },
         { name: 'slow_queries_time_max', type: 'gauge_f', unit: 'Seconds' },
-        { name: 'total_index_size', type: 'gauge', unit: 'Bytes' }
+        { name: 'total_index_size', type: 'gauge', unit: 'Bytes' },
+        { name: 'total_index_size_percentage_of_memory', type: 'gauge', unit: '%' }
       ]
     end
 
@@ -67,6 +68,7 @@ module Bipbip
       data['slow_queries_time_max'] = slow_queries_status['max']['time']
 
       data['total_index_size'] = total_index_size
+      data['total_index_size_percentage_of_memory'] = (data['total_index_size']/total_system_memory) * 100
 
       data
     end
@@ -106,15 +108,21 @@ module Bipbip
       old
     end
 
+    # @return [Integer]
     def total_index_size
       database_names_ignore = %w(admin system local)
       database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
 
-      database_list.reduce('indexSize' => 0) do |memo, database|
+      database_list.reduce(0) do |memo, database|
         results = database.command({'dbstats' => 1})
-        memo['indexSize'] += results.documents.first['indexSize']
+        memo += results.documents.first['indexSize']
         memo
       end
+    end
+
+    # @return [Integer]
+    def total_system_memory
+      %x{free -b}.lines.to_a[1].split[1].to_i
     end
 
     def fetch_slow_queries_status
