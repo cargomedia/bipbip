@@ -20,13 +20,16 @@ module Bipbip
         { name: 'replication_lag', type: 'gauge', unit: 'Seconds' },
         { name: 'slow_queries_count', type: 'gauge_f', unit: 'Queries' },
         { name: 'slow_queries_time_avg', type: 'gauge_f', unit: 'Seconds' },
-        { name: 'slow_queries_time_max', type: 'gauge_f', unit: 'Seconds' }
+        { name: 'slow_queries_time_max', type: 'gauge_f', unit: 'Seconds' },
+        { name: 'total_index_size', type: 'gauge', unit: 'MB' },
+        { name: 'total_index_size_percentage_of_memory', type: 'gauge', unit: '%' }
       ]
     end
 
     def monitor
       status = fetch_server_status
       slow_queries_status = fetch_slow_queries_status
+      all_index_size = total_index_size
 
       data = {}
 
@@ -65,6 +68,9 @@ module Bipbip
       data['slow_queries_time_avg'] = slow_queries_status['total']['time'].to_f / (slow_queries_status['total']['count'].to_f.nonzero? || 1)
       data['slow_queries_time_max'] = slow_queries_status['max']['time']
 
+      data['total_index_size'] = all_index_size / (1024 * 1024)
+      data['total_index_size_percentage_of_memory'] = (all_index_size.to_f / total_system_memory.to_f) * 100
+
       data
     end
 
@@ -101,6 +107,22 @@ module Bipbip
       old = (@slow_query_last_check || Time.now)
       @slow_query_last_check = Time.now
       old
+    end
+
+    # @return [Integer]
+    def total_index_size
+      database_names_ignore = %w(admin system local)
+      database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
+
+      database_list.map do |database|
+        results = database.command('dbstats' => 1)
+        results.count == 0 ? 0 : results.documents.first['indexSize']
+      end.reduce(:+)
+    end
+
+    # @return [Integer]
+    def total_system_memory
+      `free -b`.lines.to_a[1].split[1].to_i
     end
 
     def fetch_slow_queries_status
