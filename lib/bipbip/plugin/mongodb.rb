@@ -29,6 +29,7 @@ module Bipbip
     def monitor
       status = fetch_server_status
       slow_queries_status = fetch_slow_queries_status
+      all_index_size = total_index_size
 
       data = {}
 
@@ -67,8 +68,8 @@ module Bipbip
       data['slow_queries_time_avg'] = slow_queries_status['total']['time'].to_f / (slow_queries_status['total']['count'].to_f.nonzero? || 1)
       data['slow_queries_time_max'] = slow_queries_status['max']['time']
 
-      data['total_index_size'] = total_index_size / (1024 * 1024)
-      data['total_index_size_percentage_of_memory'] = (data['total_index_size'] / total_system_memory) * 100
+      data['total_index_size'] = all_index_size / (1024 * 1024)
+      data['total_index_size_percentage_of_memory'] = (all_index_size.to_f / total_system_memory.to_f) * 100
 
       data
     end
