@@ -24,12 +24,17 @@ describe Bipbip::Plugin::Mongodb do
       }
     )
 
+    plugin.stub(:total_index_size).and_return(50)
+    plugin.stub(:total_index_size_percentage_of_memory).and_return(200)
+
     data = plugin.monitor
     data['connections_current'].should eq(100)
     data['mem_resident'].should eq(1024)
     data['slow_queries_count'].should eq(48.4)
     data['slow_queries_time_avg'].should eq(0.5)
     data['slow_queries_time_max'].should eq(12)
+    data['total_index_size'].should eq(50)
+    data['slow_queries_time_max'].should eq(25)
   end
 
   it 'should collect replication lag' do
@@ -56,6 +61,9 @@ describe Bipbip::Plugin::Mongodb do
         'time' => 12
       }
     )
+
+    plugin.stub(:total_index_size).and_return(100)
+    plugin.stub(:total_index_size_percentage_of_memory).and_return(1000)
 
     data = plugin.monitor
     data['replication_lag'].should eq(3)
