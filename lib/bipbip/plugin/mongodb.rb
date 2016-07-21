@@ -68,8 +68,10 @@ module Bipbip
       data['slow_queries_time_avg'] = slow_queries_status['total']['time'].to_f / (slow_queries_status['total']['count'].to_f.nonzero? || 1)
       data['slow_queries_time_max'] = slow_queries_status['max']['time']
 
-      data['total_index_size'] = all_index_size / (1024 * 1024)
-      data['total_index_size_percentage_of_memory'] = (all_index_size.to_f / total_system_memory.to_f) * 100
+      unless router?
+        data['total_index_size'] = all_index_size / (1024 * 1024)
+        data['total_index_size_percentage_of_memory'] = (all_index_size.to_f / total_system_memory.to_f) * 100
+      end
 
       data
     end
@@ -123,6 +125,10 @@ module Bipbip
     # @return [Integer]
     def total_system_memory
       `free -b`.lines.to_a[1].split[1].to_i
+    end
+
+    def router?
+      fetch_server_status['process'] == 'mongos'
     end
 
     def fetch_slow_queries_status
