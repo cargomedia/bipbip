@@ -115,7 +115,7 @@ module Bipbip
 
       database_list.map do |database|
         results = database.command('dbstats' => 1)
-        results.documents.first['indexSize']
+        results.count == 0 ? 0 : results.documents.first['indexSize']
       end.reduce(:+)
     end
 
