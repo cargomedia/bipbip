@@ -21,7 +21,7 @@ module Bipbip
         { name: 'slow_queries_count', type: 'gauge_f', unit: 'Queries' },
         { name: 'slow_queries_time_avg', type: 'gauge_f', unit: 'Seconds' },
         { name: 'slow_queries_time_max', type: 'gauge_f', unit: 'Seconds' },
-        { name: 'total_index_size', type: 'gauge', unit: 'Bytes' },
+        { name: 'total_index_size', type: 'gauge', unit: 'MB' },
         { name: 'total_index_size_percentage_of_memory', type: 'gauge', unit: '%' }
       ]
     end
@@ -67,7 +67,7 @@ module Bipbip
       data['slow_queries_time_avg'] = slow_queries_status['total']['time'].to_f / (slow_queries_status['total']['count'].to_f.nonzero? || 1)
       data['slow_queries_time_max'] = slow_queries_status['max']['time']
 
-      data['total_index_size'] = total_index_size
+      data['total_index_size'] = total_index_size / (1024*1024)
       data['total_index_size_percentage_of_memory'] = (data['total_index_size'] / total_system_memory) * 100
 
       data
