@@ -110,9 +110,6 @@ module Bipbip
 
     # @return [Integer]
     def total_index_size
-      database_names_ignore = %w(admin system local)
-      database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
-
       database_list.map do |database|
         results = database.command('dbstats' => 1)
         results.count == 0 ? 0 : results.documents.first['indexSize']
@@ -124,12 +121,14 @@ module Bipbip
       `free -b`.lines.to_a[1].split[1].to_i
     end
 
+    def database_list
+      database_names_ignore = %w(admin system local)
+      @database_list ||= (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
+    end
+
     def fetch_slow_queries_status
       timestamp_last_check = slow_query_last_check
       time_period = Time.now - timestamp_last_check
-
-      database_names_ignore = %w(admin system local)
-      database_list = (mongodb_client.database_names - database_names_ignore).map { |name| mongodb_database(name) }
 
       stats = database_list.reduce('total' => { 'count' => 0, 'time' => 0 }, 'max' => { 'time' => 0 }) do |memo, database|
         results = database['system.profile'].find.aggregate(
