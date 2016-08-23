@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'elasticsearch', '~> 1.0.6'
   s.add_runtime_dependency 'janus_gateway', '~> 0.0.10'
   s.add_runtime_dependency 'eventmachine', '~> 1.0.8'
-  s.add_runtime_dependency 'mustermann', '< 1.0.0'
+  s.add_runtime_dependency 'mustermann', '~> 0.2.0'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 2.0'
