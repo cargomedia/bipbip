@@ -27,7 +27,7 @@ module Bipbip
       has_changes = puppet_report.key?('changes')
 
       metrics = {
-        'report_ok' => ((has_events && has_changes && has_resources) ? 1 : 0),
+        'report_ok' => (has_events && has_changes && has_resources ? 1 : 0),
         'last_run_total_time' => puppet_report['time']['total'].to_i,
         'last_run_age' => report_age
       }

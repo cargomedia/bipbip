@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'redis', '~> 3.2.1'
   s.add_runtime_dependency 'gearman-ruby', '~> 4.0.5'
   s.add_runtime_dependency 'resque', '~> 1.25'
+  s.add_runtime_dependency 'sinatra', '~> 1.4.7' # this is workaround for https://github.com/resque/resque/issues/1505
   s.add_runtime_dependency 'monit', '~> 0.3'
   s.add_runtime_dependency 'mongo', '~> 2.0.5'
   s.add_runtime_dependency 'bson', '~> 3.0.3'
@@ -29,5 +30,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 2.0'
   s.add_development_dependency 'webmock', '~> 1.21'
-  s.add_development_dependency 'rubocop', '~> 0.35'
+  s.add_development_dependency 'rubocop', '~> 0.41.2'
 end

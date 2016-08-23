@@ -54,7 +54,7 @@ module Bipbip
       delta_misses = current_stats['misses'].to_f - previous_stats['misses'].to_f
 
       delta_total = delta_hits + delta_misses
-      hit_rate = delta_total == 0 ? 0 : (delta_hits / delta_total) * 100
+      hit_rate = delta_total.zero? ? 0 : (delta_hits / delta_total) * 100
       hit_rate.round(2)
     end
   end

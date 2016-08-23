@@ -32,7 +32,7 @@ module Bipbip
         data['All_Services_ok'] = status.services.any? do |service|
           error_flags_bitmap = service.status.to_i
           monitor_status = service.monitor.to_i
-          (monitor_status == MONITOR_NOT) || (error_flags_bitmap != 0)
+          (monitor_status == MONITOR_NOT) || error_flags_bitmap.nonzero?
         end ? 0 : 1
       rescue
         data['Running'] = 0
