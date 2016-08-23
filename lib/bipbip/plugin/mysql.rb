@@ -67,7 +67,7 @@ module Bipbip
         name = metric[:name]
         unit = metric[:unit]
         data[name] = if 'Boolean' == unit
-                       (('ON' === stats[name] || 'Yes' === stats[name]) ? 1 : 0)
+                       ('ON' === stats[name] || 'Yes' === stats[name] ? 1 : 0)
                      else
                        stats[name].to_i
                      end

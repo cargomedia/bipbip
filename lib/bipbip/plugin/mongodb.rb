@@ -118,7 +118,7 @@ module Bipbip
 
       database_list.map do |database|
         results = database.command('dbstats' => 1)
-        results.count == 0 ? 0 : results.documents.first['indexSize']
+        results.count.zero? ? 0 : results.documents.first['indexSize']
       end.reduce(:+)
     end
 
@@ -151,7 +151,7 @@ module Bipbip
           ]
         )
 
-        unless results.count == 0
+        unless results.count.zero?
           result = results.first
           max_time = result['max_time'].to_f / 1000
 
