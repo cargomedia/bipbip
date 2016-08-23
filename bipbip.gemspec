@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'redis', '~> 3.2.1'
   s.add_runtime_dependency 'gearman-ruby', '~> 4.0.5'
   s.add_runtime_dependency 'resque', '~> 1.25'
+  s.add_runtime_dependency 'sinatra', '~> 1.4.7' # this is workaround to avoid mustermann@1.0.0 installation
   s.add_runtime_dependency 'monit', '~> 0.3'
   s.add_runtime_dependency 'mongo', '~> 2.0.5'
   s.add_runtime_dependency 'bson', '~> 3.0.3'
@@ -25,7 +26,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'elasticsearch', '~> 1.0.6'
   s.add_runtime_dependency 'janus_gateway', '~> 0.0.10'
   s.add_runtime_dependency 'eventmachine', '~> 1.0.8'
-  s.add_runtime_dependency 'mustermann', '~> 0.2.0'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 2.0'
