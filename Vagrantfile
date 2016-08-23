@@ -5,7 +5,7 @@ Vagrant.configure('2') do |config|
     'cd /vagrant',
     'sudo apt-get update',
     'sudo apt-get install -y g++ libsasl2-dev libmysqlclient-dev libxslt1-dev libxml2-dev',
-    # 'sudo gem install bundle',
-    # 'bundle install'
+    'sudo gem install bundle',
+    'bundle install'
   ].join(' && ')
 end
