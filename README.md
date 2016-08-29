@@ -122,13 +122,30 @@ For a complete example see [cargomedia/bipbip-random-example](https://github.com
 
 Development
 -----------
-Start and provision the development-VM with vagrant, then log in:
+
+Install dependencies:
+```
+bundle install
+```
+
+Run tests:
+```
+bundle exec spec
+```
+
+There's also a **Vagrant environment** available with necessary dependencies pre-installed.
+To use it, launch a box:
 ```
 vagrant up
 vagrant ssh
 ```
-
-You can then run `bipbip` from within the mounted projected root directory:
+Then run the `bipbip` binary inside:
 ```
 /vagrant/bin/bipbip
 ```
+
+Release a new version:
+
+1. Bump the version in `lib/bipbip/version.rb`, merge to master.
+2. Push a new tag to master.
+3. Release to RubyGems with `bundle exec rake release`.
