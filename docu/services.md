@@ -15,8 +15,8 @@ Configuration options:
 
 ### mongodb
 Configuration options:
-- **hostname** (optional): Defaults to `localhost`.
-- **port** (optional): Defaults to `27017`.
+- **hostname**
+- **port**
 - **user** (optional)
 - **password** (optional)
 - **database** (optional)

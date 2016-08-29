@@ -84,12 +84,19 @@ module Bipbip
 
     # @return [Mongo::Client]
     def mongodb_client
-      options = {
-        socket_timeout: 2,
-        connect: :direct
-      }.merge(config)
-      options = Hash[options.map { |(k, v)| [k.to_sym, v] }]
-      @mongodb_client ||= Mongo::Client.new([options[:hostname] + ':' + options[:port].to_s], options)
+      if @mongodb_client.nil?
+        address = config['hostname'] + ':' + config['port'].to_s
+        options = {
+          socket_timeout: 2,
+          connect: :direct,
+          logger: Logger.new('/dev/null')
+        }
+        options[:user] = config['user'] if config.key?('user')
+        options[:password] = config['password'] if config.key?('password')
+        options[:database] = config['database'] if config.key?('database')
+        @mongodb_client = Mongo::Client.new([address], options)
+      end
+      @mongodb_client
     end
 
     # @return [Mongo::DB]
@@ -119,7 +126,7 @@ module Bipbip
       database_list.map do |database|
         results = database.command('dbstats' => 1)
         results.count.zero? ? 0 : results.documents.first['indexSize']
-      end.reduce(:+)
+      end.reduce(0, :+)
     end
 
     # @return [Integer]
