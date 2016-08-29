@@ -148,4 +148,4 @@ Release a new version:
 
 1. Bump the version in `lib/bipbip/version.rb`, merge to master.
 2. Push a new tag to master.
-3. Travis will deploy to NPM.
+3. Release to RubyGems with `bundle exec rake release`.
