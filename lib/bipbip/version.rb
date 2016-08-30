@@ -1,3 +1,3 @@
 module Bipbip
-  VERSION = '0.6.26'
+  VERSION = '0.7.0'
 end
