@@ -12,7 +12,7 @@ module Bipbip
 
     def monitor
       main_unit = config['unit_name']
-      Hash.new('all_units_running' => unit_dependencies(main_unit).all? { |unit| unit_is_active(unit) } ? 1 : 0)
+      { 'all_units_running' => unit_dependencies(main_unit).all? { |unit| unit_is_active(unit) } ? 1 : 0 }
     end
 
     # @param [String] main_unit
