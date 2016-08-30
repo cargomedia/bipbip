@@ -188,3 +188,8 @@ Configuration options:
 ### janus-audioroom
 Configuration options:
 - **url** (optional): Will default to `http://localhost:8088/janus`.
+
+
+### systemd-unit
+Configuration options:
+- **unit_name**: Name of the main systemd unit. 
