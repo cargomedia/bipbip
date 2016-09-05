@@ -19,7 +19,7 @@ module Bipbip
     # @return [Array<String>]
     def unit_dependencies(main_unit)
       result = Komenda.run(['systemctl', 'list-dependencies', '--plain', '--full', main_unit], fail_on_fail: true)
-      result.stdout.lines.map do |line|
+      result.stdout.force_encoding('utf-8').lines.map do |line|
         line.strip.gsub(/^● /, '')
       end
     end
