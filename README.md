@@ -131,7 +131,7 @@ bundle install
 
 Run tests:
 ```
-bundle exec spec
+bundle exec rake spec
 ```
 
 There's also a **Vagrant environment** available with necessary dependencies pre-installed.
