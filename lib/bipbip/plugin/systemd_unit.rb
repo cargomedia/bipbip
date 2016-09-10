@@ -20,7 +20,7 @@ module Bipbip
     def unit_dependencies(main_unit)
       result = Komenda.run(['systemctl', 'list-dependencies', '--plain', '--full', main_unit], fail_on_fail: true)
       result.stdout.force_encoding('utf-8').lines.map do |line|
-        line.strip.gsub(/^● /, '')
+        line.strip.gsub(/^[●*]\s+/, '')
       end
     end
 
