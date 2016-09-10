@@ -18,9 +18,17 @@ describe Bipbip::Plugin::SystemdUnit do
     plugin.monitor['all_units_running'].should eq(1)
   end
 
-  it 'should systemctl list-dependencies' do
+  it 'should call `systemctl list-dependencies`' do
     result = double('result')
     allow(result).to receive(:stdout).and_return("foo.target\n● foo-dependency1.service\n● foo-dependency1@5000.service\n")
+
+    allow(Komenda).to receive(:run).with(%w(systemctl list-dependencies --plain --full foo.target), fail_on_fail: true).and_return(result)
+    plugin.unit_dependencies('foo.target').should eq(%w(foo.target foo-dependency1.service foo-dependency1@5000.service))
+  end
+
+  it 'should parse ASCII output of `systemctl list-dependencies`' do
+    result = double('result')
+    allow(result).to receive(:stdout).and_return("foo.target\n* foo-dependency1.service\n* foo-dependency1@5000.service\n")
 
     allow(Komenda).to receive(:run).with(%w(systemctl list-dependencies --plain --full foo.target), fail_on_fail: true).and_return(result)
     plugin.unit_dependencies('foo.target').should eq(%w(foo.target foo-dependency1.service foo-dependency1@5000.service))
@@ -34,6 +42,3 @@ describe Bipbip::Plugin::SystemdUnit do
     plugin.unit_is_active('bar.target').should eq(true)
   end
 end
-
-# bump version
-# docu/readme
