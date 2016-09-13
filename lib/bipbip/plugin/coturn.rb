@@ -33,6 +33,8 @@ module Bipbip
         'Host' => config['hostname'] || 'localhost',
         'Port' => config['port'] || 5766
       )
+
+      coturn.waitfor('Match' => /(.*)\n> (.*)/, 'Timeout' => 5)
       response = coturn.cmd('ps')
       coturn.close
 
