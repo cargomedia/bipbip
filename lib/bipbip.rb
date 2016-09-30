@@ -1,5 +1,4 @@
 module Bipbip
-
   require 'copperegg/revealmetrics'
   require 'yaml'
   require 'json/pure'
