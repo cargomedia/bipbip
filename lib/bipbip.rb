@@ -1,5 +1,4 @@
 module Bipbip
-  require 'rubygems' # For ruby < 1.9
 
   require 'copperegg/revealmetrics'
   require 'yaml'
