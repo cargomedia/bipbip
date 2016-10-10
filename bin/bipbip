@@ -40,7 +40,7 @@ rescue OptionParser::InvalidOption, OptionParser::MissingArgument
 end
 
 begin
-  until Net::Ping::External.new('8.8.8.8').ping? do
+  until Net::Ping::External.new('8.8.8.8').ping?
     Bipbip.logger.fatal 'No internet connection. Sleeping 5 seconds...'
     sleep 5
   end
