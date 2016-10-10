@@ -3,6 +3,7 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 require 'bipbip'
 require 'optparse'
+require 'net/ping'
 
 name = 'bipbip'
 version = Bipbip::VERSION
@@ -39,6 +40,10 @@ rescue OptionParser::InvalidOption, OptionParser::MissingArgument
 end
 
 begin
+  until Net::Ping::External.new('18.8.8.8').ping? do
+    Bipbip.logger.fatal 'No internet connection. Sleeping 5 seconds...'
+    sleep 5
+  end
   config = Bipbip::Config.factory_from_file(options[:config])
   agent = Bipbip::Agent.new(config)
   agent.run
