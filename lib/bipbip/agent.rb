@@ -26,14 +26,13 @@ module Bipbip
       @storages.each do |storage|
         @plugins.each do |plugin|
           Bipbip.logger.info "Setting up plugin #{plugin.name} for storage #{storage.name}"
-          loop do
-            begin
-              storage.setup_plugin(plugin)
-              break
-            rescue => e
-              Bipbip.logger.fatal "Plugins #{plugin.name} setup has failed with `#{e.message}`. Sleeping 5 seconds and re-trying..."
-              sleep 5
-            end
+          begin
+            storage.setup_plugin(plugin)
+            break
+          rescue => e
+            Bipbip.logger.fatal "Failed to setup plugin #{plugin.name} for storage #{storage.name}: `#{e.message}`. Retrying..."
+            sleep 5
+            retry
           end
         end
       end
