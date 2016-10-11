@@ -64,18 +64,14 @@ module Bipbip
     def _load_metric_groups
       log(Logger::INFO, 'Loading metric groups')
       metric_groups = ::Copperegg::Revealmetrics::MetricGroup.find
-      if metric_groups.nil?
-        raise('Cannot load metric groups')
-      end
+      raise('Cannot load metric groups') if metric_groups.nil?
       metric_groups
     end
 
     def _load_dashboards
       log(Logger::INFO, 'Loading dashboards')
       dashboards = ::Copperegg::Revealmetrics::CustomDashboard.find
-      if dashboards.nil?
-        raise('Cannot load dashboards')
-      end
+      raise('Cannot load dashboards') if dashboards.nil?
       dashboards
     end
 
@@ -83,9 +79,7 @@ module Bipbip
     def _load_tags
       log(Logger::INFO, 'Loading tags')
       tags = ::Copperegg::Revealmetrics::Tag.find
-      if tags.nil?
-        raise('Cannot load tags')
-      end
+      raise('Cannot load tags') if tags.nil?
       tags
     end
   end

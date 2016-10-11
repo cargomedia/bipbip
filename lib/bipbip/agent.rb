@@ -26,7 +26,7 @@ module Bipbip
       @storages.each do |storage|
         @plugins.each do |plugin|
           Bipbip.logger.info "Setting up plugin #{plugin.name} for storage #{storage.name}"
-          begin
+          loop do
             begin
               storage.setup_plugin(plugin)
               break
@@ -34,7 +34,7 @@ module Bipbip
               Bipbip.logger.error "Plugins #{plugin.name} setup has failed with `#{e.message}`. Sleeping 5 seconds and re-trying..."
               sleep 5
             end
-          end while true
+          end
         end
       end
 
