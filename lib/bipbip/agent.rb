@@ -28,7 +28,6 @@ module Bipbip
           Bipbip.logger.info "Setting up plugin #{plugin.name} for storage #{storage.name}"
           begin
             storage.setup_plugin(plugin)
-            break
           rescue => e
             Bipbip.logger.fatal "Failed to setup plugin #{plugin.name} for storage #{storage.name}: `#{e.message}`. Retrying..."
             sleep 5
