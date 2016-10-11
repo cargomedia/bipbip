@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'janus_gateway', '~> 0.0.13'
   s.add_runtime_dependency 'eventmachine', '~> 1.2.0'
   s.add_runtime_dependency 'komenda', '~> 0.1.6'
-  s.add_runtime_dependency 'net-ping', '~> 2.0.1'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 2.0'
