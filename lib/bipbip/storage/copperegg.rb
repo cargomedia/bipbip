@@ -11,7 +11,7 @@ module Bipbip
       @tags ||= _load_tags
 
       unless [5, 15, 60, 300, 900, 3600, 21_600].include?(plugin.frequency)
-        raise("Cannot use frequency #{plugin.frequency}")
+        raise "Cannot use frequency #{plugin.frequency}"
       end
 
       metric_group = @metric_groups.detect { |m| m.name == plugin.metric_group }
@@ -64,14 +64,14 @@ module Bipbip
     def _load_metric_groups
       log(Logger::INFO, 'Loading metric groups')
       metric_groups = ::Copperegg::Revealmetrics::MetricGroup.find
-      raise('Cannot load metric groups') if metric_groups.nil?
+      raise 'Cannot load metric groups' if metric_groups.nil?
       metric_groups
     end
 
     def _load_dashboards
       log(Logger::INFO, 'Loading dashboards')
       dashboards = ::Copperegg::Revealmetrics::CustomDashboard.find
-      raise('Cannot load dashboards') if dashboards.nil?
+      raise 'Cannot load dashboards' if dashboards.nil?
       dashboards
     end
 
@@ -79,7 +79,7 @@ module Bipbip
     def _load_tags
       log(Logger::INFO, 'Loading tags')
       tags = ::Copperegg::Revealmetrics::Tag.find
-      raise('Cannot load tags') if tags.nil?
+      raise 'Cannot load tags' if tags.nil?
       tags
     end
   end
