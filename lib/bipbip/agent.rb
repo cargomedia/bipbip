@@ -31,7 +31,7 @@ module Bipbip
               storage.setup_plugin(plugin)
               break
             rescue => e
-              Bipbip.logger.error "Plugins #{plugin.name} setup has failed with `#{e.message}`. Sleeping 5 seconds and re-trying..."
+              Bipbip.logger.fatal "Plugins #{plugin.name} setup has failed with `#{e.message}`. Sleeping 5 seconds and re-trying..."
               sleep 5
             end
           end
