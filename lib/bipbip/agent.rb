@@ -26,7 +26,13 @@ module Bipbip
       @storages.each do |storage|
         @plugins.each do |plugin|
           Bipbip.logger.info "Setting up plugin #{plugin.name} for storage #{storage.name}"
-          storage.setup_plugin(plugin)
+          begin
+            storage.setup_plugin(plugin)
+          rescue => e
+            Bipbip.logger.fatal "Failed to setup plugin #{plugin.name} for storage #{storage.name}: `#{e.message}`. Retrying..."
+            sleep 5
+            retry
+          end
         end
       end
 
