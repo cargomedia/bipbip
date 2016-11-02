@@ -7,7 +7,8 @@ module Bipbip
     def metrics_schema
       [
         { name: 'jobs_queued_total', type: 'gauge', unit: 'Jobs' },
-        { name: 'jobs_active_total', type: 'gauge', unit: 'Jobs' }
+        { name: 'jobs_active_total', type: 'gauge', unit: 'Jobs' },
+        { name: 'jobs_waiting_total', type: 'gauge', unit: 'Jobs' }
       ]
     end
 
@@ -24,7 +25,8 @@ module Bipbip
 
       {
         jobs_queued_total: jobs_queued_total,
-        jobs_active_total: jobs_active_total
+        jobs_active_total: jobs_active_total,
+        jobs_waiting_total: (jobs_queued_total - jobs_active_total)
       }
     end
   end
