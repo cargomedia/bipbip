@@ -21,13 +21,12 @@ module Bipbip
       stats.each do |_function_name, data|
         jobs_queued_total += data[:queue].to_i
         jobs_active_total += data[:active].to_i
-        jobs_waiting_total += (jobs_queued_total - jobs_active_total)
       end
 
       {
         jobs_queued_total: jobs_queued_total,
         jobs_active_total: jobs_active_total,
-        jobs_waiting_total: jobs_waiting_total
+        jobs_waiting_total: (jobs_queued_total - jobs_active_total)
       }
     end
   end
