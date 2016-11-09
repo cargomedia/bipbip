@@ -37,9 +37,9 @@ module Bipbip
       if config['persistence'] == 'mysql'
         stats = _mysql_priority_stats(config)
         priority_stats = {
-          jobs_low_priority_total: stats[0],
-          jobs_normal_priority_total: stats[1],
-          jobs_high_priority_total: stats[2],
+          jobs_low_priority_total: stats[PRIORITY_LOW],
+          jobs_normal_priority_total: stats[PRIORITY_NORMAL],
+          jobs_high_priority_total: stats[PRIORITY_HIGH],
         }
       end
 
