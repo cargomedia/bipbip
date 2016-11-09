@@ -23,8 +23,7 @@ module Bipbip
     end
 
     def monitor
-      gearman = GearmanServer.new(config['hostname'] + ':' + config['port'].to_s)
-      stats = gearman.status
+      stats = _fetch_gearman_status
 
       jobs_queued_total = 0
       jobs_active_total = 0
@@ -35,7 +34,7 @@ module Bipbip
 
       priority_stats = {}
       if config['persistence'] == 'mysql'
-        stats = _mysql_priority_stats(config)
+        stats = _fetch_mysql_priority_stats(config)
         priority_stats = {
           jobs_low_priority_total: stats[PRIORITY_LOW],
           jobs_normal_priority_total: stats[PRIORITY_NORMAL],
@@ -52,7 +51,12 @@ module Bipbip
 
     private
 
-    def _mysql_priority_stats(config)
+    def _fetch_gearman_status
+      gearman = GearmanServer.new(config['hostname'] + ':' + config['port'].to_s)
+      gearman.status
+    end
+
+    def _fetch_mysql_priority_stats(config)
       mysql = Mysql2::Client.new(
           host: config['mysql_hostname'] || 'localhost',
           port: config['mysql_port'] || 3306,
