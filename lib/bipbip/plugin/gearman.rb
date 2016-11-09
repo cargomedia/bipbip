@@ -5,7 +5,6 @@ end
 
 module Bipbip
   class Plugin::Gearman < Plugin
-
     PRIORITY_LOW = 0
     PRIORITY_NORMAL = 1
     PRIORITY_HIGH = 2
@@ -38,7 +37,7 @@ module Bipbip
         priority_stats = {
           jobs_low_priority_total: stats[PRIORITY_LOW],
           jobs_normal_priority_total: stats[PRIORITY_NORMAL],
-          jobs_high_priority_total: stats[PRIORITY_HIGH],
+          jobs_high_priority_total: stats[PRIORITY_HIGH]
         }
       end
 
@@ -58,11 +57,11 @@ module Bipbip
 
     def _fetch_mysql_priority_stats(config)
       mysql = Mysql2::Client.new(
-          host: config['mysql_hostname'] || 'localhost',
-          port: config['mysql_port'] || 3306,
-          username: config['mysql_username'] || nil,
-          password: config['mysql_password'] || nil,
-          database: config['mysql_database'] || 'gearman',
+        host: config['mysql_hostname'] || 'localhost',
+        port: config['mysql_port'] || 3306,
+        username: config['mysql_username'] || nil,
+        password: config['mysql_password'] || nil,
+        database: config['mysql_database'] || 'gearman'
       )
 
       stats = Hash.new(0)
