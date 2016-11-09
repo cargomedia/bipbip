@@ -13,11 +13,11 @@ describe Bipbip::Plugin::Gearman do
     )
 
     plugin.stub(:_fetch_mysql_priority_stats).and_return(
-      {
-          0 => 5,
-          1 => 5,
-          2 => 5
-      }
+        {
+            Bipbip::Plugin::Gearman::PRIORITY_LOW => 5,
+            Bipbip::Plugin::Gearman::PRIORITY_NORMAL => 5,
+            Bipbip::Plugin::Gearman::PRIORITY_HIGH => 5
+        }
     )
 
     data = plugin.monitor
