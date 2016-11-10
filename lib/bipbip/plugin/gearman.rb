@@ -66,7 +66,8 @@ module Bipbip
 
       stats = Hash.new(0)
 
-      mysql.query('SELECT priority, count(priority) as jobs_count FROM gearman_queue GROUP by priority').each do |row|
+      mysql_table = config['mysql_table'] || 'gearman_queue'
+      mysql.query("SELECT priority, count(priority) as jobs_count FROM #{mysql_table} GROUP by priority").each do |row|
         stats[row['priority']] = row['jobs_count']
       end
 
