@@ -38,11 +38,12 @@ Configuration options:
 - **hostname**
 - **port**
 - **persistence** (optional): Allows to read additional stats like: jobs count by priority. It support `mysql` adapter only.
-- **mysql_host** (optional): Used only with `persistence=mysql`. By default to `localhost`.
+- **mysql_hostname** (optional): Used only with `persistence=mysql`. By default to `localhost`.
 - **mysql_port** (optional): Used only with `persistence=mysql`. By default to `3306`.
 - **mysql_username** (optional): Used only with `persistence=mysql`. By default to `root`.
 - **mysql_password** (optional): Used only with `persistence=mysql`. By default to `nil`.
 - **mysql_database** (optional): Used only with `persistence=mysql`. By default to `gearman`.
+- **mysql_table** (optional): Used only with `persistence=mysql`. By default to `gearman_queue`.
 
 ### apache2
 Configuration options:
