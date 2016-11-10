@@ -22,8 +22,8 @@ describe Bipbip::Plugin::Gearman do
     data[:jobs_queued_total].should eq(30)
     data[:jobs_active_total].should eq(6)
     data[:jobs_waiting_total].should eq(24)
-    data[:jobs_low_priority_total].should eq(5)
-    data[:jobs_normal_priority_total].should eq(10)
-    data[:jobs_high_priority_total].should eq(15)
+    data[:jobs_queued_total_low].should eq(5)
+    data[:jobs_queued_total_normal].should eq(10)
+    data[:jobs_queued_total_high].should eq(15)
   end
 end

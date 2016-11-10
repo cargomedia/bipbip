@@ -15,9 +15,9 @@ module Bipbip
         { name: 'jobs_active_total', type: 'gauge', unit: 'Jobs' },
         { name: 'jobs_waiting_total', type: 'gauge', unit: 'Jobs' },
 
-        { name: 'jobs_low_priority_total', type: 'gauge', unit: 'Jobs' },
-        { name: 'jobs_normal_priority_total', type: 'gauge', unit: 'Jobs' },
-        { name: 'jobs_high_priority_total', type: 'gauge', unit: 'Jobs' }
+        { name: 'jobs_queued_total_low', type: 'gauge', unit: 'Jobs' },
+        { name: 'jobs_queued_total_normal', type: 'gauge', unit: 'Jobs' },
+        { name: 'jobs_queued_total_high', type: 'gauge', unit: 'Jobs' }
       ]
     end
 
@@ -35,9 +35,9 @@ module Bipbip
       if config['persistence'] == 'mysql'
         stats = _fetch_mysql_priority_stats(config)
         priority_stats = {
-          jobs_low_priority_total: stats[PRIORITY_LOW],
-          jobs_normal_priority_total: stats[PRIORITY_NORMAL],
-          jobs_high_priority_total: stats[PRIORITY_HIGH]
+          jobs_queued_total_low: stats[PRIORITY_LOW],
+          jobs_queued_total_normal: stats[PRIORITY_NORMAL],
+          jobs_queued_total_high: stats[PRIORITY_HIGH]
         }
       end
 
