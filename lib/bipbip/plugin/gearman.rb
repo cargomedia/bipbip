@@ -5,9 +5,9 @@ end
 
 module Bipbip
   class Plugin::Gearman < Plugin
-    PRIORITY_LOW = 0
-    PRIORITY_NORMAL = 1
-    PRIORITY_HIGH = 2
+    JOB_PRIORITY_HIGH = 0
+    JOB_PRIORITY_NORMAL = 1
+    JOB_PRIORITY_LOW = 2
 
     def metrics_schema
       [
@@ -35,9 +35,9 @@ module Bipbip
       if config['persistence'] == 'mysql'
         stats = _fetch_mysql_priority_stats(config)
         priority_stats = {
-          jobs_queued_total_low: stats[PRIORITY_LOW],
-          jobs_queued_total_normal: stats[PRIORITY_NORMAL],
-          jobs_queued_total_high: stats[PRIORITY_HIGH]
+          jobs_queued_total_high: stats[JOB_PRIORITY_HIGH],
+          jobs_queued_total_normal: stats[JOB_PRIORITY_NORMAL],
+          jobs_queued_total_low: stats[JOB_PRIORITY_LOW]
         }
       end
 
