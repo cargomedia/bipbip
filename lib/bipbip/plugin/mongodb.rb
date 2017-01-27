@@ -28,8 +28,6 @@ module Bipbip
 
     def monitor
       status = fetch_server_status
-      slow_queries_status = fetch_slow_queries_status
-      all_index_size = total_index_size
 
       data = {}
 
@@ -64,13 +62,18 @@ module Bipbip
         data['replication_lag'] = replication_lag
       end
 
-      data['slow_queries_count'] = slow_queries_status['total']['count']
-      data['slow_queries_time_avg'] = slow_queries_status['total']['time'].to_f / (slow_queries_status['total']['count'].to_f.nonzero? || 1)
-      data['slow_queries_time_max'] = slow_queries_status['max']['time']
+      if status['repl'] && status['repl']['ismaster'] == true
+        slow_queries_status = fetch_slow_queries_status
+        all_index_size = total_index_size
 
-      unless router?
-        data['total_index_size'] = all_index_size / (1024 * 1024)
-        data['total_index_size_percentage_of_memory'] = (all_index_size.to_f / total_system_memory.to_f) * 100
+        data['slow_queries_count'] = slow_queries_status['total']['count']
+        data['slow_queries_time_avg'] = slow_queries_status['total']['time'].to_f / (slow_queries_status['total']['count'].to_f.nonzero? || 1)
+        data['slow_queries_time_max'] = slow_queries_status['max']['time']
+
+        unless router?
+          data['total_index_size'] = all_index_size / (1024 * 1024)
+          data['total_index_size_percentage_of_memory'] = (all_index_size.to_f / total_system_memory.to_f) * 100
+        end
       end
 
       data
