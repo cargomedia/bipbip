@@ -4,8 +4,6 @@ module Bipbip
   class Plugin::Mongodb < Plugin
     def metrics_schema
       [
-        { name: 'flushing_last_ms', type: 'gauge', unit: 'ms' },
-        { name: 'btree_misses', type: 'gauge', unit: 'misses' },
         { name: 'op_inserts', type: 'counter' },
         { name: 'op_queries', type: 'counter' },
         { name: 'op_updates', type: 'counter' },
@@ -28,17 +26,10 @@ module Bipbip
 
     def monitor
       status = fetch_server_status
-      slow_queries_status = fetch_slow_queries_status
       all_index_size = total_index_size
 
       data = {}
 
-      if status['indexCounters']
-        data['btree_misses'] = status['indexCounters']['misses'].to_i
-      end
-      if status['backgroundFlushing']
-        data['flushing_last_ms'] = status['backgroundFlushing']['last_ms'].to_i
-      end
       if status['opcounters']
         data['op_inserts'] = status['opcounters']['insert'].to_i
         data['op_queries'] = status['opcounters']['query'].to_i
@@ -64,9 +55,13 @@ module Bipbip
         data['replication_lag'] = replication_lag
       end
 
-      data['slow_queries_count'] = slow_queries_status['total']['count']
-      data['slow_queries_time_avg'] = slow_queries_status['total']['time'].to_f / (slow_queries_status['total']['count'].to_f.nonzero? || 1)
-      data['slow_queries_time_max'] = slow_queries_status['max']['time']
+      if status['repl'] && status['repl']['ismaster'] == true
+        slow_queries_status = fetch_slow_queries_status
+
+        data['slow_queries_count'] = slow_queries_status['total']['count']
+        data['slow_queries_time_avg'] = slow_queries_status['total']['time'].to_f / (slow_queries_status['total']['count'].to_f.nonzero? || 1)
+        data['slow_queries_time_max'] = slow_queries_status['max']['time']
+      end
 
       unless router?
         data['total_index_size'] = all_index_size / (1024 * 1024)
