@@ -4,8 +4,6 @@ module Bipbip
   class Plugin::Mongodb < Plugin
     def metrics_schema
       [
-        { name: 'flushing_last_ms', type: 'gauge', unit: 'ms' },
-        { name: 'btree_misses', type: 'gauge', unit: 'misses' },
         { name: 'op_inserts', type: 'counter' },
         { name: 'op_queries', type: 'counter' },
         { name: 'op_updates', type: 'counter' },
@@ -32,12 +30,6 @@ module Bipbip
 
       data = {}
 
-      if status['indexCounters']
-        data['btree_misses'] = status['indexCounters']['misses'].to_i
-      end
-      if status['backgroundFlushing']
-        data['flushing_last_ms'] = status['backgroundFlushing']['last_ms'].to_i
-      end
       if status['opcounters']
         data['op_inserts'] = status['opcounters']['insert'].to_i
         data['op_queries'] = status['opcounters']['query'].to_i
