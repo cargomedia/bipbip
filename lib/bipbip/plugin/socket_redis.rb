@@ -26,9 +26,9 @@ module Bipbip
       request = Net::HTTP::Get.new(uri)
       request['authorization'] = "token #{config['status_token']}"
 
-      response = Net::HTTP.start(uri.hostname, uri.port) { |http|
+      response = Net::HTTP.start(uri.hostname, uri.port) do |http|
         http.request(request)
-      }
+      end
 
       unless response.code == '200'
         raise "Invalid response from server at `#{url}`. Response code `#{response.code}`, message `#{response.message}`, body `#{response.body}`"
