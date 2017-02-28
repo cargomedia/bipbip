@@ -182,7 +182,7 @@ Boolean values `true`, `false` will be replaced with `1`, `0` for both modes.
 ### socket-redis
 Configuration options:
 - **url**: URL of `socket-redis` [status](https://github.com/cargomedia/socket-redis#status-request). Defaults to `http://localhost:8085/status`
-- **status_token**: Secret token for status end-point authentication 
+- **status_token** (optional): Secret token for status end-point authentication 
 
 ### coturn
 Configuration options:
