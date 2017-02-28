@@ -24,7 +24,7 @@ module Bipbip
       uri = URI.parse(url)
 
       request = Net::HTTP::Get.new(uri)
-      request['authorization'] = "token #{config['status_token']}"
+      request['authorization'] = "token #{config['status_token']}" if config['status_token']
 
       response = Net::HTTP.start(uri.hostname, uri.port) do |http|
         http.request(request)
