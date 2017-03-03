@@ -28,9 +28,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'eventmachine', '~> 1.2.0'
   s.add_runtime_dependency 'komenda', '~> 0.1.6'
 
-  # Pinned rake to version < v12 due to bug http://stackoverflow.com/q/35893584
-  s.add_development_dependency 'rake', '~> 11.1.0'
-  s.add_development_dependency 'rspec', '~> 2.0'
+  s.add_development_dependency 'rake', '~> 12.0.0'
+  s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'webmock', '~> 1.21'
   s.add_development_dependency 'rubocop', '~> 0.41.2'
 end
