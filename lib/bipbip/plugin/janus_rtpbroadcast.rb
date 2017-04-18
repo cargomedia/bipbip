@@ -13,10 +13,10 @@ module Bipbip
         { name: 'streams_zero_bitrate_count', type: 'gauge', unit: 'Streams' },
         { name: 'streams_packet_loss_audio_max', type: 'gauge', unit: '%' },
         { name: 'streams_packet_loss_audio_avg', type: 'gauge', unit: '%' },
-        { name: 'streams_packet_loss_audio_count', type: 'counter', unit: 'Packets' },
+        { name: 'streams_packet_loss_audio_count', type: 'gauge', unit: 'Packets' },
         { name: 'streams_packet_loss_video_max', type: 'gauge', unit: '%' },
         { name: 'streams_packet_loss_video_avg', type: 'gauge', unit: '%' },
-        { name: 'streams_packet_loss_video_count', type: 'counter', unit: 'Packets' }
+        { name: 'streams_packet_loss_video_count', type: 'gauge', unit: 'Packets' }
       ]
     end
 

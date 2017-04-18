@@ -3,10 +3,10 @@ module Bipbip
     def metrics_schema
       [
         { name: 'connections_total', type: 'gauge', unit: 'Connections' },
-        { name: 'rx_errors', type: 'counter', unit: 'Errors' },
-        { name: 'rx_dropped', type: 'counter', unit: 'Packets' },
-        { name: 'tx_errors', type: 'counter', unit: 'Errors' },
-        { name: 'tx_dropped', type: 'counter', unit: 'Packets' }
+        { name: 'rx_errors', type: 'gauge', unit: 'Errors' },
+        { name: 'rx_dropped', type: 'gauge', unit: 'Packets' },
+        { name: 'tx_errors', type: 'gauge', unit: 'Errors' },
+        { name: 'tx_dropped', type: 'gauge', unit: 'Packets' }
       ]
     end
 
