@@ -2,7 +2,7 @@ module Bipbip
   class Plugin::FastcgiPhpFpm < Plugin
     def metrics_schema
       [
-        { name: 'accepted conn', type: 'counter', unit: 'Connections' },
+        { name: 'accepted conn', type: 'gauge', unit: 'Connections' },
         { name: 'listen queue', type: 'gauge', unit: 'Connections' },
         { name: 'active processes', type: 'gauge', unit: 'Processes' }
       ]
