@@ -5,10 +5,10 @@ module Bipbip
   class Plugin::Resque < Plugin
     def metrics_schema
       schema_list = [
-        { name: 'num_workers', type: 'gauge', unit: 'Workers' },
-        { name: 'num_idle_workers', type: 'gauge', unit: 'Workers' },
-        { name: 'num_active_workers', type: 'gauge', unit: 'Workers' },
-        { name: 'num_failures', type: 'gauge', unit: 'Jobs' }
+        { name: 'num_workers', type: 'counter', unit: 'Workers' },
+        { name: 'num_idle_workers', type: 'counter', unit: 'Workers' },
+        { name: 'num_active_workers', type: 'counter', unit: 'Workers' },
+        { name: 'num_failures', type: 'counter', unit: 'Jobs' }
       ]
 
       with_resque_connection do

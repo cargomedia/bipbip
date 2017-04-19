@@ -5,28 +5,28 @@ module Bipbip
     def metrics_schema
       [
         { name: 'Max_used_connections', type: 'gauge', unit: 'Connections' },
-        { name: 'Connections', type: 'gauge', unit: 'Connections' },
+        { name: 'Connections', type: 'counter', unit: 'Connections' },
         { name: 'Threads_connected', type: 'gauge', unit: 'Threads' },
 
         { name: 'Slave_running', type: 'gauge', unit: 'Boolean' },
         { name: 'Seconds_Behind_Master', type: 'gauge', unit: 'Seconds' },
 
-        { name: 'Created_tmp_disk_tables', type: 'gauge', unit: 'Tables' },
+        { name: 'Created_tmp_disk_tables', type: 'counter', unit: 'Tables' },
 
-        { name: 'Queries', type: 'gauge', unit: 'Queries' },
-        { name: 'Slow_queries', type: 'gauge', unit: 'Queries' },
+        { name: 'Queries', type: 'counter', unit: 'Queries' },
+        { name: 'Slow_queries', type: 'counter', unit: 'Queries' },
 
-        { name: 'Table_locks_immediate', type: 'gauge', unit: 'Locks' },
-        { name: 'Table_locks_waited', type: 'gauge', unit: 'Locks' },
+        { name: 'Table_locks_immediate', type: 'counter', unit: 'Locks' },
+        { name: 'Table_locks_waited', type: 'counter', unit: 'Locks' },
 
         { name: 'Processlist', type: 'gauge', unit: 'Processes' },
         { name: 'Processlist_Locked', type: 'gauge', unit: 'Processes' },
 
-        { name: 'Com_select', type: 'gauge', unit: 'Commands' },
-        { name: 'Com_delete', type: 'gauge', unit: 'Commands' },
-        { name: 'Com_insert', type: 'gauge', unit: 'Commands' },
-        { name: 'Com_update', type: 'gauge', unit: 'Commands' },
-        { name: 'Com_replace', type: 'gauge', unit: 'Commands' }
+        { name: 'Com_select', type: 'counter', unit: 'Commands' },
+        { name: 'Com_delete', type: 'counter', unit: 'Commands' },
+        { name: 'Com_insert', type: 'counter', unit: 'Commands' },
+        { name: 'Com_update', type: 'counter', unit: 'Commands' },
+        { name: 'Com_replace', type: 'counter', unit: 'Commands' }
       ]
     end
 
