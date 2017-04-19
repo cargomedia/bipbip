@@ -6,7 +6,7 @@ module Bipbip
   class Plugin::Redis < Plugin
     def metrics_schema
       [
-        { name: 'total_commands_processed', type: 'gauge', unit: 'Commands' },
+        { name: 'total_commands_processed', type: 'counter', unit: 'Commands' },
         { name: 'used_memory', type: 'gauge', unit: 'b' },
         { name: 'used_memory_rss', type: 'gauge', unit: 'b' },
         { name: 'mem_fragmentation_ratio', type: 'gauge', unit: 'Frag' },

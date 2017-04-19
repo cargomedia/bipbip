@@ -4,16 +4,16 @@ module Bipbip
   class Plugin::Mongodb < Plugin
     def metrics_schema
       [
-        { name: 'op_inserts', type: 'gauge' },
-        { name: 'op_queries', type: 'gauge' },
-        { name: 'op_updates', type: 'gauge' },
-        { name: 'op_deletes', type: 'gauge' },
-        { name: 'op_getmores', type: 'gauge' },
-        { name: 'op_commands', type: 'gauge' },
+        { name: 'op_inserts', type: 'counter' },
+        { name: 'op_queries', type: 'counter' },
+        { name: 'op_updates', type: 'counter' },
+        { name: 'op_deletes', type: 'counter' },
+        { name: 'op_getmores', type: 'counter' },
+        { name: 'op_commands', type: 'counter' },
         { name: 'connections_current', type: 'gauge' },
         { name: 'mem_resident', type: 'gauge', unit: 'MB' },
         { name: 'mem_mapped', type: 'gauge', unit: 'MB' },
-        { name: 'mem_pagefaults', type: 'gauge', unit: 'faults' },
+        { name: 'mem_pagefaults', type: 'counter', unit: 'faults' },
         { name: 'globalLock_currentQueue', type: 'gauge' },
         { name: 'replication_lag', type: 'gauge', unit: 'Seconds' },
         { name: 'slow_queries_count', type: 'gauge_f', unit: 'Queries' },

@@ -2,10 +2,10 @@ module Bipbip
   class Plugin::Nginx < Plugin
     def metrics_schema
       [
-        { name: 'connections_accepts', type: 'gauge', unit: 'Connections' },
-        { name: 'connections_handled', type: 'gauge', unit: 'Connections' },
-        { name: 'connections_dropped', type: 'gauge', unit: 'Connections' },
-        { name: 'connections_requests', type: 'gauge', unit: 'Requests' },
+        { name: 'connections_accepts', type: 'counter', unit: 'Connections' },
+        { name: 'connections_handled', type: 'counter', unit: 'Connections' },
+        { name: 'connections_dropped', type: 'counter', unit: 'Connections' },
+        { name: 'connections_requests', type: 'counter', unit: 'Requests' },
         { name: 'active_total', type: 'gauge', unit: 'Connections' },
         { name: 'active_reading', type: 'gauge', unit: 'Connections' },
         { name: 'active_writing', type: 'gauge', unit: 'Connections' },
