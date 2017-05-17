@@ -15,7 +15,7 @@ module Bipbip
     end
 
     # @return [Hash]
-    def _fetch_apc_data
+    def _fetch_apc_stats
       authority = config['host'].to_s + ':' + config['port'].to_s
       path = File.join(Bipbip::Helper.data_path, 'apc-status.php')
 
@@ -32,13 +32,13 @@ module Bipbip
     end
 
     def monitor
-      stats = _fetch_apc_data
-      data = {}
-      data['opcode_mem_size'] = stats['opcode_mem_size'].to_i
-      data['user_mem_size'] = stats['user_mem_size'].to_i
-      data['avail_mem_size'] = stats['avail_mem_size'].to_i
-      data['mem_used_percentage'] = ((_total_system_memory.to_f - data['avail_mem_size'].to_f) / _total_system_memory.to_f) * 100
-      data
+      stats = _fetch_apc_stats
+      {
+        'opcode_mem_size' => stats['opcode_mem_size'].to_i,
+        'user_mem_size' => stats['user_mem_size'].to_i,
+        'avail_mem_size' => stats['avail_mem_size'].to_i,
+        'mem_used_percentage' => ((_total_system_memory.to_f - stats['avail_mem_size'].to_f) / _total_system_memory.to_f) * 100
+      }
     end
   end
 end
