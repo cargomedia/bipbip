@@ -2,7 +2,7 @@ require 'bipbip'
 require 'bipbip/plugin/fastcgi_php_apc'
 
 describe Bipbip::Plugin::FastcgiPhpApc do
-  let(:plugin) {Bipbip::Plugin::FastcgiPhpApc.new('php5-fpm-apc', { 'host' => 'localhost', 'port' => 9_999 }, 10)}
+  let(:plugin) { Bipbip::Plugin::FastcgiPhpApc.new('php5-fpm-apc', { 'host' => 'localhost', 'port' => 9_999 }, 10) }
 
   it 'should collect data' do
     plugin.stub(:_fetch_apc_stats).and_return(
