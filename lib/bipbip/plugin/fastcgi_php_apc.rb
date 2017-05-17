@@ -3,8 +3,15 @@ module Bipbip
     def metrics_schema
       [
         { name: 'opcode_mem_size', type: 'gauge', unit: 'b' },
-        { name: 'user_mem_size', type: 'gauge', unit: 'b' }
+        { name: 'user_mem_size', type: 'gauge', unit: 'b' },
+        { name: 'avail_mem_size', type: 'gauge', unit: 'b' },
+        { name: 'mem_used_pourcentage', type: 'gauge', unit: '%' }
       ]
+    end
+
+    # @return [Integer]
+    def total_system_memory
+      `free -b`.lines.to_a[1].split[1].to_i
     end
 
     def monitor
@@ -22,7 +29,12 @@ module Bipbip
       raise "FastCGI response has no body: #{response}" unless body
       stats = JSON.parse(body)
 
-      { opcode_mem_size: stats['opcode_mem_size'].to_i, user_mem_size: stats['user_mem_size'].to_i }
+      data = {}
+      data['opcode_mem_size'] = stats['opcode_mem_size'].to_i
+      data['user_mem_size'] = stats['user_mem_size'].to_i
+      data['avail_mem_size'] = stats['avail_mem_size'].to_i
+      data['mem_used_pourcentage'] = ((total_system_memory.to_f - data['avail_mem_size'].to_f) / total_system_memory.to_f) * 100
+      data
     end
   end
 end
