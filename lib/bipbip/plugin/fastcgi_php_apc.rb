@@ -29,10 +29,10 @@ module Bipbip
     def monitor
       stats = _fetch_apc_stats
       {
-        'opcode_mem_size' => stats['opcode_mem_size'].to_i,
-        'user_mem_size' => stats['user_mem_size'].to_i,
-        'avail_mem_size' => stats['avail_mem_size'].to_i,
-        'mem_used_percentage' => (stats['used_mem_size'].to_f / stats['total_mem_size'].to_f) * 100
+        opcode_mem_size: stats['opcode_mem_size'].to_i,
+        user_mem_size: stats['user_mem_size'].to_i,
+        avail_mem_size: stats['avail_mem_size'].to_i,
+        mem_used_percentage: (stats['used_mem_size'].to_f / stats['total_mem_size'].to_f) * 100
       }
     end
   end
