@@ -8,9 +8,10 @@ describe Bipbip::Plugin::FastcgiPhpApc do
     plugin.stub(:_fetch_apc_stats).and_return(
       'opcode_mem_size' => 100_000,
       'user_mem_size' => 50_000,
-      'avail_mem_size' => 1_490_000
+      'total_mem_size' => 2_000_000,
+      'avail_mem_size' => 1_490_000,
+      'used_mem_size' => 510_000
     )
-    plugin.stub(:_total_system_memory).and_return(2_000_000)
 
     data = plugin.monitor
     data['opcode_mem_size'].should eq(100_000)

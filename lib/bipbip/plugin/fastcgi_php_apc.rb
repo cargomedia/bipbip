@@ -9,11 +9,6 @@ module Bipbip
       ]
     end
 
-    # @return [Integer]
-    def _total_system_memory
-      `free -b`.lines.to_a[1].split[1].to_i
-    end
-
     # @return [Hash]
     def _fetch_apc_stats
       authority = config['host'].to_s + ':' + config['port'].to_s
@@ -37,7 +32,7 @@ module Bipbip
         'opcode_mem_size' => stats['opcode_mem_size'].to_i,
         'user_mem_size' => stats['user_mem_size'].to_i,
         'avail_mem_size' => stats['avail_mem_size'].to_i,
-        'mem_used_percentage' => ((_total_system_memory.to_f - stats['avail_mem_size'].to_f) / _total_system_memory.to_f) * 100
+        'mem_used_percentage' => (stats['used_mem_size'].to_f / stats['total_mem_size'].to_f) * 100
       }
     end
   end
