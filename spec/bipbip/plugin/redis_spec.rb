@@ -7,8 +7,8 @@ describe Bipbip::Plugin::Redis do
   it 'should collect data' do
     data = plugin.monitor
 
-    data['total_commands_processed'].should be_instance_of(Integer)
-    data['used_memory'].should be_instance_of(Integer)
+    data['total_commands_processed'].should be_kind_of(Integer)
+    data['used_memory'].should be_kind_of(Integer)
     data['mem_fragmentation_ratio'].should be_instance_of(Float)
   end
 end

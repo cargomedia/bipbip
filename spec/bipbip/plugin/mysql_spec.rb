@@ -7,9 +7,9 @@ describe Bipbip::Plugin::Mysql do
   it 'should collect data' do
     data = plugin.monitor
 
-    data['Com_select'].should be_instance_of(Integer)
-    data['Processlist_Locked'].should be_instance_of(Integer)
-    data['Seconds_Behind_Master'].should be_instance_of(Integer)
-    data['Slave_running'].should be_instance_of(Integer)
+    data['Com_select'].should be_kind_of(Integer)
+    data['Processlist_Locked'].should be_kind_of(Integer)
+    data['Seconds_Behind_Master'].should be_kind_of(Integer)
+    data['Slave_running'].should be_kind_of(Integer)
   end
 end

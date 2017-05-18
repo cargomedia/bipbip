@@ -7,10 +7,10 @@ describe Bipbip::Plugin::Network do
   it 'should collect data' do
     data = plugin1.monitor
 
-    data['connections_total'].should be_instance_of(Integer)
-    data['rx_errors'].should be_instance_of(Integer)
-    data['rx_dropped'].should be_instance_of(Integer)
-    data['tx_errors'].should be_instance_of(Integer)
-    data['tx_dropped'].should be_instance_of(Integer)
+    data['connections_total'].should be_kind_of(Integer)
+    data['rx_errors'].should be_kind_of(Integer)
+    data['rx_dropped'].should be_kind_of(Integer)
+    data['tx_errors'].should be_kind_of(Integer)
+    data['tx_dropped'].should be_kind_of(Integer)
   end
 end
