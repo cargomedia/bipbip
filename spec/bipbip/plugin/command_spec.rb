@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'bipbip'
 require 'bipbip/plugin/command'
 
@@ -6,12 +7,13 @@ describe Bipbip::Plugin::Command do
   let(:plugin2) { Bipbip::Plugin::Command.new('command', { 'command' => "ruby -e 'puts \"{\\\"file_count\\\": 5}\"'" }, 10) }
 
   it 'should collect data for simple mode' do
-    plugin1.stub(:exec_command).and_return(
+    expect(plugin1).to receive(:exec_command).and_return(
       <<DATA
 {
   "common_ok": true,
   "router_ok": false,
   "config_ok": true,
+
   "replica_ok": true,
   "mms_ok": true,
   "cluster_ok": false
@@ -27,7 +29,7 @@ DATA
   end
 
   it 'should collect data for advanced mode' do
-    plugin1.stub(:exec_command).and_return(
+    expect(plugin1).to receive(:exec_command).and_return(
       <<DATA
 {
   "common_ok": {"value": false, "type": "gauge", "unit": "Boolean"},

@@ -5,13 +5,13 @@ describe Bipbip::Plugin::Gearman do
   let(:plugin) { Bipbip::Plugin::Gearman.new('mysql', { 'hostname' => 'localhost', 'port' => 4730, 'persistence' => 'mysql' }, 10) }
 
   it 'should collect data' do
-    plugin.stub(:_fetch_gearman_status).and_return(
+    allow(plugin).to receive(:_fetch_gearman_status).and_return(
       function1: { queue: 5, active: 1 },
       function2: { queue: 10, active: 2 },
       function3: { queue: 15, active: 3 }
     )
 
-    plugin.stub(:_fetch_mysql_priority_stats).and_return(
+    allow(plugin).to receive(:_fetch_mysql_priority_stats).and_return(
       Bipbip::Plugin::Gearman::JOB_PRIORITY_LOW => 5,
       Bipbip::Plugin::Gearman::JOB_PRIORITY_NORMAL => 10,
       Bipbip::Plugin::Gearman::JOB_PRIORITY_HIGH => 15

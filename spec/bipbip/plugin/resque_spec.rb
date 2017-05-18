@@ -6,7 +6,7 @@ describe Bipbip::Plugin::Resque do
 
   it 'should collect data' do
     # set up some mock workers - we just track whether they're idle or not
-    ::Resque.stub(:workers).and_return(
+    allow(::Resque).to receive(:workers).and_return(
       [
         double(idle?: false),
         double(idle?: true),
@@ -23,12 +23,12 @@ describe Bipbip::Plugin::Resque do
       'critical' => 0
     }
 
-    ::Resque.stub(:queues).and_return(mock_queues.keys)
-    ::Resque.stub(:size) do |queue|
+    allow(::Resque).to receive(:queues).and_return(mock_queues.keys)
+    allow(::Resque).to receive(:size) do |queue|
       mock_queues[queue]
     end
 
-    ::Resque::Failure.stub(:count).and_return(234)
+    allow(::Resque::Failure).to receive(:count).and_return(234)
 
     data = plugin.monitor
 

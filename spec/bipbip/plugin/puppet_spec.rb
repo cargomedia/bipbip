@@ -50,7 +50,7 @@ describe Bipbip::Plugin::Puppet do
         total: 108
 YAML
 
-    plugin.stub(:last_run_summary).and_return(YAML.load(puppet_yaml))
+    allow(plugin).to receive(:last_run_summary).and_return(YAML.load(puppet_yaml))
 
     data = plugin.monitor
 
