@@ -32,9 +32,9 @@ describe Bipbip::Plugin::Resque do
 
     data = plugin.monitor
 
-    data['num_workers'].should be_instance_of(Fixnum)
-    data['num_idle_workers'].should be_instance_of(Fixnum)
-    data['num_active_workers'].should be_instance_of(Fixnum)
+    data['num_workers'].should be_instance_of(Integer)
+    data['num_idle_workers'].should be_instance_of(Integer)
+    data['num_active_workers'].should be_instance_of(Integer)
     data['num_workers'].should eq(5)
     data['num_idle_workers'].should eq(2)
     data['num_active_workers'].should eq(3)

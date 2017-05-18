@@ -56,7 +56,7 @@ YAML
 
     data['report_ok'].should eq(1)
     data['last_run_total_time'].should eq(99)
-    data['last_run_age'].should be_instance_of(Fixnum)
+    data['last_run_age'].should be_instance_of(Integer)
 
     data['events_total_count'].should eq(108)
     data['resources_total_count'].should eq(999)
