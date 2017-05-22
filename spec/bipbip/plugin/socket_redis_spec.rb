@@ -5,7 +5,7 @@ describe Bipbip::Plugin::SocketRedis do
   let(:plugin) { Bipbip::Plugin::SocketRedis.new('socket-redis', {}, 10) }
 
   it 'should collect data' do
-    plugin.stub(:fetch_socket_redis_status).and_return(
+    allow(plugin).to receive(:fetch_socket_redis_status).and_return(
       'channel1' => {
         'subscribers' => {
           'sub1' => {},
@@ -29,7 +29,7 @@ describe Bipbip::Plugin::SocketRedis do
   end
 
   it 'should collect data for empty server response' do
-    plugin.stub(:fetch_socket_redis_status).and_return({})
+    allow(plugin).to receive(:fetch_socket_redis_status).and_return({})
 
     data = plugin.monitor
 

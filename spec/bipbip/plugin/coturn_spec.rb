@@ -10,7 +10,7 @@ describe Bipbip::Plugin::Coturn do
     Total sessions: 0
 EOS
 
-    plugin.stub(:_fetch_session_data).and_return(response)
+    allow(plugin).to receive(:_fetch_session_data).and_return(response)
 
     data = plugin.monitor
 
@@ -60,7 +60,7 @@ EOS
     Total sessions: 3
 EOS
 
-    plugin.stub(:_fetch_session_data).and_return(response)
+    allow(plugin).to receive(:_fetch_session_data).and_return(response)
 
     data = plugin.monitor
 
@@ -78,7 +78,7 @@ EOS
     >
 EOS
 
-    plugin.stub(:_fetch_session_data).and_return(response)
+    allow(plugin).to receive(:_fetch_session_data).and_return(response)
 
     expect { plugin.monitor }.to raise_error(/Cannot prepare metrics for malformed response:/)
   end

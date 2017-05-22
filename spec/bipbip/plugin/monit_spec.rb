@@ -19,7 +19,7 @@ describe Bipbip::Plugin::Monit do
     allow(status).to receive(:get).and_return(true)
     allow(status).to receive(:services).and_return([status_service1, status_service2])
 
-    ::Monit::Status.stub(:new).and_return(status)
+    allow(::Monit::Status).to receive(:new).and_return(status)
 
     data = plugin.monitor
 

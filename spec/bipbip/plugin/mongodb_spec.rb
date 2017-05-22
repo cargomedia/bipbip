@@ -5,7 +5,7 @@ describe Bipbip::Plugin::Mongodb do
   let(:plugin) { Bipbip::Plugin::Mongodb.new('mongodb', { 'hostname' => 'localhost', 'port' => 27_017 }, 10) }
 
   it 'should collect data' do
-    plugin.stub(:fetch_server_status).and_return(
+    allow(plugin).to receive(:fetch_server_status).and_return(
       'connections' => {
         'current' => 100
       },
@@ -14,8 +14,8 @@ describe Bipbip::Plugin::Mongodb do
       }
     )
 
-    plugin.stub(:total_index_size).and_return(50 * 1024 * 1024)
-    plugin.stub(:total_system_memory).and_return(200 * 1024 * 1024)
+    allow(plugin).to receive(:total_index_size).and_return(50 * 1024 * 1024)
+    allow(plugin).to receive(:total_system_memory).and_return(200 * 1024 * 1024)
 
     data = plugin.monitor
     data['replication_lag'].should eq(nil)
@@ -27,13 +27,13 @@ describe Bipbip::Plugin::Mongodb do
   end
 
   it 'should collect replication lag' do
-    plugin.stub(:fetch_server_status).and_return(
+    allow(plugin).to receive(:fetch_server_status).and_return(
       'repl' => {
         'secondary' => true
       }
     )
 
-    plugin.stub(:fetch_replica_status).and_return(
+    allow(plugin).to receive(:fetch_replica_status).and_return(
       'set' => 'rep1',
       'members' => [
         { 'stateStr' => 'PRIMARY', 'optime' => BSON::Timestamp.new(1000, 1) },
@@ -41,8 +41,8 @@ describe Bipbip::Plugin::Mongodb do
       ]
     )
 
-    plugin.stub(:total_index_size).and_return(50 * 1024 * 1024)
-    plugin.stub(:total_system_memory).and_return(200 * 1024 * 1024)
+    allow(plugin).to receive(:total_index_size).and_return(50 * 1024 * 1024)
+    allow(plugin).to receive(:total_system_memory).and_return(200 * 1024 * 1024)
 
     data = plugin.monitor
     data['replication_lag'].should eq(3)
@@ -50,13 +50,13 @@ describe Bipbip::Plugin::Mongodb do
   end
 
   it 'should collect slow queries' do
-    plugin.stub(:fetch_server_status).and_return(
+    allow(plugin).to receive(:fetch_server_status).and_return(
       'repl' => {
         'ismaster' => true
       }
     )
 
-    plugin.stub(:fetch_replica_status).and_return(
+    allow(plugin).to receive(:fetch_replica_status).and_return(
       'set' => 'rep1',
       'members' => [
         { 'stateStr' => 'PRIMARY', 'optime' => BSON::Timestamp.new(1000, 1) },
@@ -64,7 +64,7 @@ describe Bipbip::Plugin::Mongodb do
       ]
     )
 
-    plugin.stub(:fetch_slow_queries_status).and_return(
+    allow(plugin).to receive(:fetch_slow_queries_status).and_return(
       'total' => {
         'count' => 48.4,
         'time' => 24.2
@@ -74,8 +74,8 @@ describe Bipbip::Plugin::Mongodb do
       }
     )
 
-    plugin.stub(:total_index_size).and_return(50 * 1024 * 1024)
-    plugin.stub(:total_system_memory).and_return(200 * 1024 * 1024)
+    allow(plugin).to receive(:total_index_size).and_return(50 * 1024 * 1024)
+    allow(plugin).to receive(:total_system_memory).and_return(200 * 1024 * 1024)
 
     data = plugin.monitor
     data['replication_lag'].should eq(nil)

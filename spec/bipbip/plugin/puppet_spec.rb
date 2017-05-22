@@ -50,13 +50,13 @@ describe Bipbip::Plugin::Puppet do
         total: 108
 YAML
 
-    plugin.stub(:last_run_summary).and_return(YAML.load(puppet_yaml))
+    allow(plugin).to receive(:last_run_summary).and_return(YAML.load(puppet_yaml))
 
     data = plugin.monitor
 
     data['report_ok'].should eq(1)
     data['last_run_total_time'].should eq(99)
-    data['last_run_age'].should be_instance_of(Fixnum)
+    data['last_run_age'].should be_kind_of(Integer)
 
     data['events_total_count'].should eq(108)
     data['resources_total_count'].should eq(999)

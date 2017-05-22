@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'copperegg-revealmetrics', '~> 0.8.1'
   s.add_runtime_dependency 'memcached', '~> 1.8.0'
   s.add_runtime_dependency 'mysql2', '~> 0.3.18'
-  s.add_runtime_dependency 'redis', '~> 3.2.1'
+  s.add_runtime_dependency 'redis', '~> 3.3.3'
   s.add_runtime_dependency 'gearman-ruby', '~> 4.0.5'
   s.add_runtime_dependency 'resque', '~> 1.25'
   s.add_runtime_dependency 'sinatra', '~> 1.4.7' # this is workaround for https://github.com/resque/resque/issues/1505
@@ -27,9 +27,10 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'janus_gateway', '~> 0.0.13'
   s.add_runtime_dependency 'eventmachine', '~> 1.2.0'
   s.add_runtime_dependency 'komenda', '~> 0.1.6'
+  s.add_runtime_dependency 'net-telnet', '~> 0.1.1'
 
   s.add_development_dependency 'rake', '~> 12.0.0'
   s.add_development_dependency 'rspec', '~> 3.0'
-  s.add_development_dependency 'webmock', '~> 1.21'
+  s.add_development_dependency 'webmock', '~> 3.0.1'
   s.add_development_dependency 'rubocop', '~> 0.41.2'
 end

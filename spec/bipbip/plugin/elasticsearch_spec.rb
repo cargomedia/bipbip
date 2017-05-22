@@ -5,7 +5,7 @@ describe Bipbip::Plugin::Elasticsearch do
   let(:plugin) { Bipbip::Plugin::Elasticsearch.new('elasticsearch', { 'hostname' => 'localhost', 'port' => '9200' }, 10) }
 
   it 'should collect data for 2 nodes cluster' do
-    plugin.stub(:nodes_stats).and_return(
+    allow(plugin).to receive(:nodes_stats).and_return(
       'nodes' => {
         'node-1' => {
           'indices' => {

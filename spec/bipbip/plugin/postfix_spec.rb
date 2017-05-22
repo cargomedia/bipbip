@@ -31,7 +31,7 @@ E54C738334B*    7504 Mon Dec  1 10:05:13  noreply@example.com
 -- 54 Kbytes in 7 Requests.
 EOS
 
-    plugin.stub(:postqueue).and_return(postqueue)
+    allow(plugin).to receive(:postqueue).and_return(postqueue)
 
     data = plugin.monitor
     data['mails_queued_total'].should eq(7)
@@ -46,14 +46,14 @@ EOS
 -- 14 Kbytes in 1 Request.
 EOS
 
-    plugin.stub(:postqueue).and_return(postqueue)
+    allow(plugin).to receive(:postqueue).and_return(postqueue)
 
     data = plugin.monitor
     data['mails_queued_total'].should eq(1)
   end
 
   it 'should return zero' do
-    plugin.stub(:postqueue).and_return('Mail queue is empty')
+    allow(plugin).to receive(:postqueue).and_return('Mail queue is empty')
 
     data = plugin.monitor
     data['mails_queued_total'].should eq(0)

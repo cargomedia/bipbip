@@ -97,7 +97,7 @@ describe Bipbip::Plugin::JanusRtpbroadcast do
 }
 EOS
 
-    plugin.stub(:_fetch_data).and_return(JSON.parse(response))
+    allow(plugin).to receive(:_fetch_data).and_return(JSON.parse(response))
 
     data = plugin.monitor
 
@@ -126,7 +126,7 @@ EOS
 }
 EOS
 
-    plugin.stub(:_fetch_data).and_return(JSON.parse(response))
+    allow(plugin).to receive(:_fetch_data).and_return(JSON.parse(response))
 
     data = plugin.monitor
 
@@ -175,7 +175,7 @@ EOS
 }
 EOS
 
-    plugin.stub(:_fetch_data).and_return(JSON.parse(response))
+    allow(plugin).to receive(:_fetch_data).and_return(JSON.parse(response))
 
     data = plugin.monitor
 
