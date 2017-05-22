@@ -31,7 +31,7 @@ module Bipbip
       {
         opcode_mem_size: stats['opcode_mem_size'].to_i,
         user_mem_size: stats['user_mem_size'].to_i,
-        avail_mem_size: stats['avail_mem_size'].to_i,
+        used_mem_size: stats['used_mem_size'].to_i,
         mem_used_percentage: (stats['used_mem_size'].to_f / stats['total_mem_size'].to_f) * 100
       }
     end

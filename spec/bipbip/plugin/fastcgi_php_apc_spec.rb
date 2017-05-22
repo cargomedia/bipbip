@@ -16,7 +16,7 @@ describe Bipbip::Plugin::FastcgiPhpApc do
     data = plugin.monitor
     data[:opcode_mem_size].should eq(100_000)
     data[:user_mem_size].should eq(50_000)
-    data[:avail_mem_size].should eq(1_490_000)
+    data[:used_mem_size].should eq(510_000)
     data[:mem_used_percentage].should eq(25.5)
   end
 end
