@@ -3,11 +3,14 @@ module Bipbip
     def metrics_schema
       [
         { name: 'opcode_mem_size', type: 'gauge', unit: 'b' },
-        { name: 'user_mem_size', type: 'gauge', unit: 'b' }
+        { name: 'user_mem_size', type: 'gauge', unit: 'b' },
+        { name: 'used_mem_size', type: 'gauge', unit: 'b' },
+        { name: 'used_mem_percentage', type: 'gauge', unit: '%' }
       ]
     end
 
-    def monitor
+    # @return [Hash]
+    def _fetch_apc_stats
       authority = config['host'].to_s + ':' + config['port'].to_s
       path = File.join(Bipbip::Helper.data_path, 'apc-status.php')
 
@@ -20,9 +23,17 @@ module Bipbip
 
       body = response.split(/\r?\n\r?\n/)[1]
       raise "FastCGI response has no body: #{response}" unless body
-      stats = JSON.parse(body)
+      JSON.parse(body)
+    end
 
-      { opcode_mem_size: stats['opcode_mem_size'].to_i, user_mem_size: stats['user_mem_size'].to_i }
+    def monitor
+      stats = _fetch_apc_stats
+      {
+        opcode_mem_size: stats['opcode_mem_size'].to_i,
+        user_mem_size: stats['user_mem_size'].to_i,
+        used_mem_size: stats['used_mem_size'].to_i,
+        used_mem_percentage: (stats['used_mem_size'].to_f / stats['total_mem_size'].to_f) * 100
+      }
     end
   end
 end
