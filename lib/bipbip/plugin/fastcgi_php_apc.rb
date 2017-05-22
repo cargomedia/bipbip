@@ -4,8 +4,8 @@ module Bipbip
       [
         { name: 'opcode_mem_size', type: 'gauge', unit: 'b' },
         { name: 'user_mem_size', type: 'gauge', unit: 'b' },
-        { name: 'avail_mem_size', type: 'gauge', unit: 'b' },
-        { name: 'mem_used_percentage', type: 'gauge', unit: '%' }
+        { name: 'used_mem_size', type: 'gauge', unit: 'b' },
+        { name: 'used_mem_percentage', type: 'gauge', unit: '%' }
       ]
     end
 
@@ -32,7 +32,7 @@ module Bipbip
         opcode_mem_size: stats['opcode_mem_size'].to_i,
         user_mem_size: stats['user_mem_size'].to_i,
         used_mem_size: stats['used_mem_size'].to_i,
-        mem_used_percentage: (stats['used_mem_size'].to_f / stats['total_mem_size'].to_f) * 100
+        used_mem_percentage: (stats['used_mem_size'].to_f / stats['total_mem_size'].to_f) * 100
       }
     end
   end
