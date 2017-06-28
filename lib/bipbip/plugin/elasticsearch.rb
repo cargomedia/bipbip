@@ -8,7 +8,7 @@ module Bipbip
       [
         { name: 'store_size', type: 'gauge', unit: 'b' },
         { name: 'docs_count', type: 'gauge', unit: 'Docs' },
-        { name: 'docs_deleted', type: 'counter', unit: 'Deleted' },
+        { name: 'docs_deleted', type: 'gauge', unit: 'Deleted' },
         { name: 'segments_count', type: 'gauge', unit: 'Segments' },
 
         { name: 'search_query_total', type: 'counter', unit: 'Queries' },
