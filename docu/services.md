@@ -179,6 +179,17 @@ There is also possibility to mix metric entries of type `simple` and `advanced`
 
 Boolean values `true`, `false` will be replaced with `1`, `0` for both modes.
 
+### command-status
+Capture the exit code of a command as a metric entry.
+
+Configuration options:
+- **command** Command to execute
+```
+{
+  "status": 1
+}
+```
+
 ### socket-redis
 Configuration options:
 - **url**: URL of `socket-redis` [status](https://github.com/cargomedia/socket-redis#status-request). Defaults to `http://localhost:8085/status`
