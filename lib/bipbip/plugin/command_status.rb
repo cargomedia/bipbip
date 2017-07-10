@@ -1,5 +1,4 @@
 require 'open3'
-require 'json'
 
 module Bipbip
   class Plugin::CommandStatus < Plugin
@@ -18,8 +17,8 @@ module Bipbip
         exit_code = wait_thr.value
       end
 
-      puts output_stdout unless output_stdout.empty?
-      puts output_stderr unless output_stderr.empty?
+      log(Logger::INFO, output_stdout) unless output_stdout.empty?
+      log(Logger::ERROR, output_stderr) unless output_stderr.empty?
       {
         status: exit_code.exitstatus
       }
