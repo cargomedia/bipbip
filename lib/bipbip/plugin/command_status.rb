@@ -5,7 +5,7 @@ module Bipbip
   class Plugin::CommandStatus < Plugin
     def metrics_schema
       [
-        { name: 'status', type: 'gauge', unit: '' },
+        { name: 'status', type: 'gauge', unit: '' }
       ]
     end
 
@@ -21,7 +21,7 @@ module Bipbip
       puts output_stdout unless output_stdout.empty?
       puts output_stderr unless output_stderr.empty?
       {
-        status: exit_code.exitstatus,
+        status: exit_code.exitstatus
       }
     end
   end
