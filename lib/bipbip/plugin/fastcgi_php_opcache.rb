@@ -26,6 +26,8 @@ module Bipbip
       body = response.split(/\r?\n\r?\n/)[1]
       raise "FastCGI response has no body: #{response}" unless body
       stats = JSON.parse(body)
+      raise "FastCGI response has no stats (opcache disabled?): #{stats.inspect}" unless stats
+
       @data_previous ||= stats
 
       stats_memory = stats['memory_usage']
