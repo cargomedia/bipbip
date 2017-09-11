@@ -10,7 +10,7 @@ describe Bipbip::Plugin::SystemdUnit do
 
   it 'should collect data' do
     messages = []
-    plugin.stub(:log) do |level, message|
+    plugin.stub(:log) do |_level, message|
       messages.push(message)
     end
 
@@ -20,29 +20,29 @@ describe Bipbip::Plugin::SystemdUnit do
 
     allow(plugin).to receive(:unit_is_active).with('unit2').and_return(true)
     allow(plugin).to receive(:unit_is_failed).with('unit2').and_return(false)
-    plugin.monitor.should eq({
-                               'all_units_active' => 1,
-                               'any_unit_stopped' => 0,
-                               'any_unit_failed' => 0
-                             })
+    plugin.monitor.should eq(
+      'all_units_active' => 1,
+      'any_unit_stopped' => 0,
+      'any_unit_failed' => 0
+    )
     messages.should eq([])
 
     messages = []
     allow(plugin).to receive(:unit_is_active).with('unit2').and_return(false)
-    plugin.monitor.should eq({
-                               'all_units_active' => 0,
-                               'any_unit_stopped' => 1,
-                               'any_unit_failed' => 0
-                             })
+    plugin.monitor.should eq(
+      'all_units_active' => 0,
+      'any_unit_stopped' => 1,
+      'any_unit_failed' => 0
+    )
     messages.should eq(['foo.target unit stopped: unit2'])
 
     messages = []
     allow(plugin).to receive(:unit_is_failed).with('unit2').and_return(true)
-    plugin.monitor.should eq({
-                               'all_units_active' => 0,
-                               'any_unit_stopped' => 0,
-                               'any_unit_failed' => 1
-                             })
+    plugin.monitor.should eq(
+      'all_units_active' => 0,
+      'any_unit_stopped' => 0,
+      'any_unit_failed' => 1
+    )
     messages.should eq(['foo.target unit failed: unit2'])
   end
 

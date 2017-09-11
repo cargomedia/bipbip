@@ -17,7 +17,6 @@ module Bipbip
       failed_units = []
       stopped_units = []
       status_list = unit_dependencies(main_unit).map do |unit|
-
         is_active = unit_is_active(unit)
         is_failed = unit_is_failed(unit)
         is_stopped = !is_active && !is_failed
