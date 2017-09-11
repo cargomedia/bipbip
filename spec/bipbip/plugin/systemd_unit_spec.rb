@@ -9,13 +9,41 @@ describe Bipbip::Plugin::SystemdUnit do
   end
 
   it 'should collect data' do
+    messages = []
+    plugin.stub(:log) do |_level, message|
+      messages.push(message)
+    end
+
     allow(plugin).to receive(:unit_dependencies).with('foo.target').and_return(%w(unit1 unit2))
     allow(plugin).to receive(:unit_is_active).with('unit1').and_return(true)
-    allow(plugin).to receive(:unit_is_active).with('unit2').and_return(false)
-    plugin.monitor['all_units_running'].should eq(0)
+    allow(plugin).to receive(:unit_is_failed).with('unit1').and_return(false)
 
     allow(plugin).to receive(:unit_is_active).with('unit2').and_return(true)
-    plugin.monitor['all_units_running'].should eq(1)
+    allow(plugin).to receive(:unit_is_failed).with('unit2').and_return(false)
+    plugin.monitor.should eq(
+      'all_units_active' => 1,
+      'any_unit_stopped' => 0,
+      'any_unit_failed' => 0
+    )
+    messages.should eq([])
+
+    messages = []
+    allow(plugin).to receive(:unit_is_active).with('unit2').and_return(false)
+    plugin.monitor.should eq(
+      'all_units_active' => 0,
+      'any_unit_stopped' => 1,
+      'any_unit_failed' => 0
+    )
+    messages.should eq(['foo.target unit stopped: unit2'])
+
+    messages = []
+    allow(plugin).to receive(:unit_is_failed).with('unit2').and_return(true)
+    plugin.monitor.should eq(
+      'all_units_active' => 0,
+      'any_unit_stopped' => 0,
+      'any_unit_failed' => 1
+    )
+    messages.should eq(['foo.target unit failed: unit2'])
   end
 
   it 'should call `systemctl list-dependencies`' do
@@ -40,5 +68,13 @@ describe Bipbip::Plugin::SystemdUnit do
 
     allow(Komenda).to receive(:run).with(%w(systemctl is-active bar.target)).and_return(result)
     plugin.unit_is_active('bar.target').should eq(true)
+  end
+
+  it 'should systemctl is-failed' do
+    result = double('result')
+    allow(result).to receive(:success?).and_return(true)
+
+    allow(Komenda).to receive(:run).with(%w(systemctl is-failed bar.target)).and_return(result)
+    plugin.unit_is_failed('bar.target').should eq(true)
   end
 end
