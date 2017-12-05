@@ -63,6 +63,11 @@ module Bipbip
       mysql.close
 
       data = {}
+
+      if stats.key?('Slave_IO_Running') && stats.key?('Slave_SQL_Running')
+        stats['Slave_running'] = ('Yes' === stats['Slave_IO_running'] && 'Yes' === stats['Slave_SQL_running']) ? 'Yes' : 'No'
+      end
+
       metrics_schema.each do |metric|
         name = metric[:name]
         unit = metric[:unit]
@@ -71,10 +76,6 @@ module Bipbip
                      else
                        stats[name].to_i
                      end
-      end
-
-      if data.key?('Slave_IO_running') && data.key?('Slave_SQL_running')
-        data['Slave_running'] = [data['Slave_IO_running'], data['Slave_SQL_running']].max
       end
       data
     end
