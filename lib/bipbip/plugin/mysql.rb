@@ -72,6 +72,10 @@ module Bipbip
                        stats[name].to_i
                      end
       end
+
+      if data.key?('Slave_IO_running') && data.key?('Slave_SQL_running')
+        data['Slave_running'] = [data['Slave_IO_running'], data['Slave_SQL_running']].max
+      end
       data
     end
   end
