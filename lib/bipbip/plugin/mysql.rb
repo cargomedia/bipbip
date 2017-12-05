@@ -64,8 +64,12 @@ module Bipbip
 
       data = {}
 
-      if stats.key?('Slave_SQL_Running') && stats.key?('Slave_SQL_Running')
-        stats['Slave_running'] = ('Yes' === stats['Slave_SQL_Running'] && 'Yes' === stats['Slave_SQL_Running']) ? 'Yes' : 'No'
+
+      if stats.key?('Slave_IO_Running') && stats.key?('Slave_SQL_Running')
+        stats['Slave_running'] = ('Yes' === stats['Slave_IO_Running'] && 'Yes' === stats['Slave_SQL_Running']) ? 'Yes' : 'No'
+        log(Logger::INFO, "Slave_running: #{stats['Slave_running']}, Slave_IO_Running: #{stats['Slave_IO_Running']}, Slave_SQL_Running: #{stats['Slave_SQL_Running']}")
+      else
+        log(Logger::INFO, "Slave_running: #{stats['Slave_running']}")
       end
 
       metrics_schema.each do |metric|
