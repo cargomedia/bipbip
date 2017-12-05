@@ -73,7 +73,7 @@ module Bipbip
                      end
       end
 
-      if defined? data['Slave_IO_running'] and defined? data['Slave_SQL_running']
+      if defined? data['Slave_IO_running'] && defined? data['Slave_SQL_running']
         data['Slave_running'] = [data['Slave_IO_running'], data['Slave_SQL_running']].max
       end
       data
