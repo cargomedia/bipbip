@@ -1,3 +1,3 @@
 module Bipbip
-  VERSION = '0.7.23'.freeze
+  VERSION = '0.7.24'.freeze
 end
