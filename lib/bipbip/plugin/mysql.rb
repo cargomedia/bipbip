@@ -51,6 +51,10 @@ module Bipbip
       slave_status = mysql.query('SHOW SLAVE STATUS').first
       if slave_status
         stats['Seconds_Behind_Master'] = slave_status['Seconds_Behind_Master']
+
+        if slave_status.key?('Slave_IO_Running') && slave_status.key?('Slave_SQL_Running')
+          stats['Slave_running'] = ('Yes' === slave_status['Slave_IO_Running'] && 'Yes' === slave_status['Slave_SQL_Running']) ? 'Yes' : 'No'
+        end
       end
 
       processlist = mysql.query('SHOW PROCESSLIST')
@@ -63,16 +67,6 @@ module Bipbip
       mysql.close
 
       data = {}
-
-      if stats.key?('Slave_IO_Running') && stats.key?('Slave_SQL_Running')
-        stats['Slave_running'] = ('Yes' === stats['Slave_IO_Running'] && 'Yes' === stats['Slave_SQL_Running']) ? 'Yes' : 'No'
-        log(Logger::INFO, "Slave_running: #{stats['Slave_running']},  \
-                          Slave_IO_Running: #{stats['Slave_IO_Running']}, \
-                          Slave_SQL_Running: #{stats['Slave_SQL_Running']}")
-      else
-        log(Logger::INFO, "Slave_running: #{stats['Slave_running']}")
-      end
-
       metrics_schema.each do |metric|
         name = metric[:name]
         unit = metric[:unit]
