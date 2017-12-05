@@ -65,11 +65,7 @@ module Bipbip
       data = {}
 
       if stats.key?('Slave_IO_Running') && stats.key?('Slave_SQL_Running')
-        if stats['Slave_IO_running'] == 'Yes' && stats['Slave_SQL_running'] == 'Yes'
-          stats['Slave_running'] = 'Yes'
-        else
-          stats['Slave_running'] = 'No'
-        end
+        stats['Slave_running'] = ('Yes' === stats['Slave_IO_running'] && 'Yes' === stats['Slave_SQL_running']) ? 'Yes' : 'No'
       end
 
       metrics_schema.each do |metric|
