@@ -1,20 +1,23 @@
-language: ruby
-sudo: false
-
-rvm:
-  - 2.4
-  - 2.3
-  - 2.2
-  - 2.1
-
+sudo: required
 services:
-  - memcached
-  - mysql
-  - redis-server
+  - docker
 
 notifications:
   email: false
 
-# to avoid travis-ci issue since 2015-12-25
-before_install:
-  - gem update bundler
+install:
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - docker --version
+
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - docker-compose pull --ignore-pull-failures
+  - docker-compose build
+
+script:
+  - docker-compose run bipbip bundle exec rake
