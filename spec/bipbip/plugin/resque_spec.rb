@@ -2,7 +2,7 @@ require 'bipbip'
 require 'bipbip/plugin/resque'
 
 describe Bipbip::Plugin::Resque do
-  let(:plugin) { Bipbip::Plugin::Resque.new('resque', { 'hostname' => 'localhost', 'port' => 6379, 'namespace' => 'bipresquetest:', 'database' => 10 }, 10) }
+  let(:plugin) { Bipbip::Plugin::Resque.new('resque', { 'hostname' => 'redis', 'port' => 6379, 'namespace' => 'bipresquetest:', 'database' => 10 }, 10) }
 
   it 'should collect data' do
     # set up some mock workers - we just track whether they're idle or not
