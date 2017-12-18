@@ -12,7 +12,11 @@ module Bipbip
     # @return [Hash]
     def _fetch_apc_stats
       authority = config['host'].to_s + ':' + config['port'].to_s
-      path = File.join(Bipbip::Helper.data_path, 'apc-status.php')
+      if config['path']
+        path = config['path'].to_s
+      else
+        path = File.join(Bipbip::Helper.data_path, 'apc-status.php')
+      end
 
       env_backup = ENV.to_hash
       ENV['REQUEST_METHOD'] = 'GET'
