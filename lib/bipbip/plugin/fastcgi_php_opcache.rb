@@ -14,11 +14,11 @@ module Bipbip
 
     def monitor
       authority = config['host'].to_s + ':' + config['port'].to_s
-      if config['path']
-        path = config['path'].to_s
-      else
-        path = File.join(Bipbip::Helper.data_path, 'php-opcache-status.php')
-      end
+      path = if config.key?('path')
+               config['path'].to_s
+             else
+               File.join(Bipbip::Helper.data_path, 'php-opcache-status.php')
+             end
 
       env_backup = ENV.to_hash
       ENV['REQUEST_METHOD'] = 'GET'
