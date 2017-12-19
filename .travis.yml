@@ -13,7 +13,7 @@ install:
 
 script:
 - docker-compose build bipbip
-- docker-compose run bipbip bundle exec rake
+- docker-compose run bipbip bin/test.sh
 
 deploy:
   provider: script
