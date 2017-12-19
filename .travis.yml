@@ -12,7 +12,7 @@ install:
 - docker --version
 
 script:
-- docker-compose run build
+- docker-compose build bipbip
 - docker-compose run bipbip bundle exec rake
 
 deploy:
