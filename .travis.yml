@@ -1,18 +1,27 @@
 sudo: required
 services:
-  - docker
-
-notifications:
-  email: false
-
+- docker
 env:
-  DOCKER_COMPOSE_VERSION: 1.13.0
+  global:
+  - DOCKER_USERNAME=cargomediabot
+  - secure: dp4mSHiuvuIWNtewMRyAw3cfMBtL6xS94K7oUk/0o1mUQ/jjBKnh8b/V4863wPwISb2FDBjLl6o0beJvOtkBI9xx+G2xXCWhPTiKBb7cWLMfIBxDm1sPas1b3GlIAAE/MM4TLo0na7GLqitiMnM0zP8zSa8ihZ7Z+6Vi5nzGerw=
 
 install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
+- sudo apt-get update
+- sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+- docker --version
 
 script:
-  - docker-compose run bipbip bundle exec rake
+- docker-compose run build
+- docker-compose run bipbip bundle exec rake
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: |
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" &&\
+    export VERSION=$(docker run cargomedia/bipbip bipbip -v | grep -o v.* &&\
+    docker tag cargomedia/bipbip:latest cargomedia/bipbip:${VERSION} &&\
+    docker push cargomedia/bipbip:${VERSION}
+  on:
+    branch: master
