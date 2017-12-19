@@ -10,5 +10,4 @@ WORKDIR /opt/bipbip
 RUN bundle install
 COPY . /opt/bipbip
 
-ENTRYPOINT /opt/bipbip/bin/bipbip
-CMD  -c /etc/bipbip.yml
+CMD /opt/bipbip/bin/bipbip -c /opt/bipbip/etc/config.yml

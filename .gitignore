@@ -1,4 +1,3 @@
-/Gemfile.lock
-/.rvmrc
-/pkg
-/.vagrant
+Gemfile.lock
+.rvmrc
+pkg

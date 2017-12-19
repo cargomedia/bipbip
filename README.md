@@ -9,11 +9,22 @@ Plugins for different metrics available.
 
 Installation
 ------------
+
+### Gem 
 ```
 gem install bipbip
 ```
 
+### Docker
+```
+docker run cargomedia/bipbip
+```
+Containerized bipbip runs on default with `/opt/bipbip/etc/config,yml`. Replace it by mounting or copying custom one.
+
+### Puppet
 There's a [puppet module for Debian](https://github.com/cargomedia/puppet-packages/tree/master/modules/bipbip) available to install *bipbip* as a system daemon.
+
+
 
 ### Configuration
 Pass the path to your configuration file to `bipbip` using the `-c` command line argument.
@@ -123,30 +134,17 @@ For a complete example see [cargomedia/bipbip-random-example](https://github.com
 
 Development
 -----------
-
-Install dependencies:
+*Currently specs depends on live services (mysql, memcache, redis)*
 ```
+docker-compose build bipbip
+docker-compose run --volume $(pwd):/opt/bipbip bash
 bundle install
+bundle exec rake
 ```
 
-Run tests:
-```
-bundle exec rake spec
-```
+Release new version
+-------------------
 
-There's also a **Vagrant environment** available with necessary dependencies pre-installed.
-To use it, launch a box:
-```
-vagrant up
-vagrant ssh
-```
-Then run the `bipbip` binary inside:
-```
-/vagrant/bin/bipbip
-```
-
-Release a new version:
-
-1. Bump the version in `lib/bipbip/version.rb`, merge to master.
-2. Push a new tag to master.
-3. Release to RubyGems with `bundle exec rake release`.
+1. Bump the version in `lib/bipbip/version.rb`, get it merged to master.
+2. Travis will push new `cargomedia/bipbip` docker image 
+3. Release gem using `bundle exec rake release`
