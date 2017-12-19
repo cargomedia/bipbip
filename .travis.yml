@@ -13,11 +13,11 @@ install:
 
 script:
 - docker-compose build bipbip
-- docker-compose run bipbip bin/test.sh
+- docker-compose run bipbip scripts/test.sh
 
 deploy:
   provider: script
   skip_cleanup: true
-  script: bash deploy.sh
+  script: bash scripts/deploy.sh
   on:
     branch: master

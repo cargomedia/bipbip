@@ -139,7 +139,7 @@ Development
 docker-compose build bipbip
 docker-compose run --volume $(pwd):/opt/bipbip bash
 bundle install
-bundle exec rake
+scripts/test.sh
 ```
 
 Release new version
