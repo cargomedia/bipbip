@@ -2,7 +2,7 @@ require 'bipbip'
 require 'bipbip/plugin/mysql'
 
 describe Bipbip::Plugin::Mysql do
-  let(:plugin) { Bipbip::Plugin::Mysql.new('mysql', { 'hostname' => 'localhost', 'port' => 3306, 'username' => 'root', 'password' => '' }, 10) }
+  let(:plugin) { Bipbip::Plugin::Mysql.new('mysql', { 'hostname' => 'mysql', 'port' => 3306, 'username' => 'root', 'password' => '' }, 10) }
 
   it 'should collect data' do
     data = plugin.monitor

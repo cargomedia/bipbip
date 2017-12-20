@@ -1,0 +1,26 @@
+version: '3.1'
+services:
+  bipbip:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: cargomedia/bipbip
+    restart: on-failure
+    depends_on:
+    - mysql
+    - memcached
+    - redis
+
+  mysql:
+    image: mysql:5.7
+    ports:
+    - 32000:3306
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+  redis:
+    image: redis:3.2
+
+  memcached:
+    image: memcached:1.4
+    command: "-p 11211 -m 2048 -u memcache -l 0.0.0.0 -c 1000 -v"

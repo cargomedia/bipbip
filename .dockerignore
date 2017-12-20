@@ -1,0 +1,9 @@
+node_modules
+docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+.git
+.travis.yml
+.gitignore
+.idea

@@ -1,20 +1,23 @@
-language: ruby
-sudo: false
-
-rvm:
-  - 2.4
-  - 2.3
-  - 2.2
-  - 2.1
-
+sudo: required
 services:
-  - memcached
-  - mysql
-  - redis-server
+- docker
+env:
+  global:
+  - DOCKER_USERNAME=cargomediabot
+  - secure: dp4mSHiuvuIWNtewMRyAw3cfMBtL6xS94K7oUk/0o1mUQ/jjBKnh8b/V4863wPwISb2FDBjLl6o0beJvOtkBI9xx+G2xXCWhPTiKBb7cWLMfIBxDm1sPas1b3GlIAAE/MM4TLo0na7GLqitiMnM0zP8zSa8ihZ7Z+6Vi5nzGerw=
 
-notifications:
-  email: false
+install:
+- sudo apt-get update
+- sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+- docker --version
 
-# to avoid travis-ci issue since 2015-12-25
-before_install:
-  - gem update bundler
+script:
+- docker-compose build bipbip
+- docker-compose run bipbip scripts/test.sh
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: bash scripts/deploy.sh
+  on:
+    branch: master
