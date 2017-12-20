@@ -7,4 +7,3 @@ docker-compose.yml
 .travis.yml
 .gitignore
 .idea
-Gemfile.lock

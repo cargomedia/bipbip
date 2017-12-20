@@ -6,7 +6,7 @@ RUN gem install bundle
 ADD https://git.io/vyCoJ /usr/local/bin/wait-for-it
 RUN chmod a+x /usr/local/bin/wait-for-it
 
-COPY Gemfile bipbip.gemspec /opt/bipbip/
+COPY Gemfile Gemfile.lock bipbip.gemspec /opt/bipbip/
 COPY lib/bipbip/version.rb /opt/bipbip/lib/bipbip/version.rb
 
 
