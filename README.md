@@ -137,7 +137,7 @@ Development
 *Currently specs depends on live services (mysql, memcache, redis)*
 ```
 docker-compose build bipbip
-docker-compose run --volume $(pwd):/opt/bipbip bash
+docker-compose run --volume $(pwd):/opt/bipbip bipbip bash
 bundle install
 scripts/test.sh
 ```
