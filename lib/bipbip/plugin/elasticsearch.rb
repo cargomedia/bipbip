@@ -74,7 +74,7 @@ module Bipbip
     end
 
     def nodes_stats
-      connection.nodes.stats(node_id: '_local')
+      connection.nodes.stats
     end
 
     def stats_sum(keys)
