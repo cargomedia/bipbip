@@ -1,6 +1,6 @@
-FROM library/ruby
+FROM library/ruby:2.5-stretch
 
-RUN apt-get update && apt-get install -y g++ libsasl2-dev libmysqlclient-dev libxslt1-dev libxml2-dev
+RUN apt-get update && apt-get install -y g++ libsasl2-dev default-libmysqlclient-dev libxslt1-dev libxml2-dev
 RUN gem install bundle
 
 ADD https://git.io/vyCoJ /usr/local/bin/wait-for-it
