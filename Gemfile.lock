@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bipbip (0.7.26)
+    bipbip (0.8.0)
       bson (~> 4.0.0)
       copperegg-revealmetrics (~> 0.8.1)
       elasticsearch (~> 5.0.4)
@@ -155,4 +155,4 @@ DEPENDENCIES
   webmock (~> 3.0.1)
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
