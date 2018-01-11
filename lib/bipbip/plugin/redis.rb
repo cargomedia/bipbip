@@ -24,7 +24,8 @@ module Bipbip
     def monitor
       redis = RedisClient.new(
         host: config['hostname'],
-        port: config['port']
+        port: config['port'],
+        password: config['password']
       )
       stats = redis.info
       redis.quit
