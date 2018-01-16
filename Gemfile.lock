@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bipbip (0.8.1)
+    bipbip (0.8.2)
       bson (~> 4.0.0)
       copperegg-revealmetrics (~> 0.8.1)
       elasticsearch (~> 5.0.4)

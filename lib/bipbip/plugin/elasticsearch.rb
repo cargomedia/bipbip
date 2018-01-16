@@ -70,7 +70,11 @@ module Bipbip
     private
 
     def connection
-      ElasticsearchClient.new(url: config['url'])
+      if config['url']
+        ElasticsearchClient.new(url: config['url'])
+      else
+        ElasticsearchClient.new(host: [config['hostname'], config['port']].join(':'))
+      end
     end
 
     def nodes_stats
