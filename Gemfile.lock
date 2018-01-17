@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bipbip (0.8.0)
+    bipbip (0.8.2)
       bson (~> 4.0.0)
       copperegg-revealmetrics (~> 0.8.1)
       elasticsearch (~> 5.0.4)
@@ -81,7 +81,7 @@ GEM
       activesupport (~> 3.2.12)
       nokogiri (~> 1.5.2)
     mono_logger (1.1.0)
-    multi_json (1.13.0)
+    multi_json (1.13.1)
     multipart-post (2.0.0)
     mysql2 (0.3.21)
     net-telnet (0.1.1)

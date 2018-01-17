@@ -26,10 +26,12 @@ Configuration options:
 Configuration options:
 - **hostname**
 - **port**
+- **password** (optional)
 
 ### resque
 - **hostname** (optional): Will default to `localhost`.
 - **port** (optional): Will default to `6369`.
+- **password** (optional)
 - **database**
 - **namespace**
 
@@ -137,8 +139,9 @@ No configuration necessary.
 
 ### elasticsearch
 Configuration options:
-- **hostname**
-- **port**
+- **url** (optional if hostname/port provided)
+- **hostname** (ignored if url provided)
+- **port** (ignored if url provided)
 
 ### puppet
 - **lastrunfile** (optional): Path of `last_run_summary.yaml`. Defaults to `/var/lib/puppet/state/last_run_summary.yaml`.
